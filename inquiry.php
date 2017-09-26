@@ -30,6 +30,8 @@ if(isset($_REQUEST["send"])){
     $admin_email = "suteado@edetchi.com";
     $add_header = "From:" . $admin_email;
     $result = mb_send_mail($admin_email, $subject, $mail_body, $add_header);
+    //サンキューメッセージ作成
+    $thnakyou = "お問い合わせ有難うございます！";
 } else {
     echo "直見";
 }
@@ -39,6 +41,10 @@ if(isset($_REQUEST["send"])){
 ?>
 <?php $page_title = "お問い合わせ"; ?>
 <?php require "header.php"; ?>
+    <!-- サンキューメッセージ表示 -->
+    <p>
+      <?= $thnakyou ?>
+    </p>
     <p>
       お問い合わせは以下よりお願いします
     </p>
