@@ -1,17 +1,28 @@
 <?php $page_title = "お問い合わせ"; ?>
 <?php require "header.php"; ?>
 <?php
-/*=========================================
+/*----------------------------------------------------------------------------
+    フォーム項目のエラーチェック
+----------------------------------------------------------------------------*/
+//エラーメッセージの初期化
+$error_message = "";
+if(isset($_REQUEST["send"])):
+    if($_REQUEST["uname"] == "") $error_message .= "お名前を入力して下さい\n";
+    if($_REQUEST["email"] == "") $error_message .= "メールアドレスを入力して下さい\n";
+    if($_REQUEST["body"] == "") $error_message .= "質問内容を入力してください\n";
+endif;
+/*=============================================================================
     送信モードの判別開始
-=========================================*/
-if(isset($_REQUEST["send"])){
+=============================================================================*/
+//直見でない送信ボタン押した後AND全項目記入済みの時
+if(isset($_REQUEST["send"]) && $error_message == ""){
     echo "送信モード<br>";
     var_dump($_REQUEST);
 /*----------------------------------------------------------------------------
     管理者向けメールの送信、mb_send_mail(送信先, 件名, 本文, ヘッダ);
 ----------------------------------------------------------------------------*/
     //メール送信用に、言語と文字コードの指定
-    mb_language("Japanese"); 
+    mb_language("Japanese");
     mb_internal_encoding("UTF-8");
     //本文用の変数を初期化して、条件に合致するたびに本文を追加していく
     $mail_body = "";
@@ -45,20 +56,25 @@ if(isset($_REQUEST["send"])){
     <p>
       <?= $thnakyou ?>
     </p>
+    <!--エラーメッセージの表示-->
+    <p class="attention">
+      <!--$error_messageはユーザーから受け取る値は入っていないが、変数を表示するときはサニタイズするのがベター-->
+      <?= htmlentities($error_message, ENT_QUOTES) ?>
+    </p>
     <p>
       お問い合わせは以下よりお願いします
     </p>
     <form action="inquiry.php" method="post">
         <div>
-            <label for="namae">お名前: </label>
+            <label for="namae">お名前<span class="attention">【必須】</span></label>
             <input type="text" name="uname" id="namae" size="30">
         </div>
         <div>
-            <label for="meado">メールアドレス: </label>
+            <label for="meado">メールアドレス<span class="attention">【必須】</span></label>
             <input type="email" name="email" id="meado" size="30">
         </div>
         <div>
-            <label for="toiawase">お問い合わせ内容: </label>
+            <label for="toiawase">お問い合わせ内容<span class="attention">【必須】</span></label>
             <textarea name="body" rows="5" id="toiawase" cols="20"></textarea>
         </div>
         <div>
