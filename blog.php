@@ -1,5 +1,5 @@
+<?php $page_title = "ブログ"; ?>
 <?php require "header.php"; ?>
-    <h1>ブログ</h1>
     <p>
       準備中
     </p>

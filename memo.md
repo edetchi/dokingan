@@ -4,6 +4,6 @@
 
 # PHP
  - include/require構文: require構文はファイルが存在しなかったらエラー出力で停止、include構文はそのまま続行
-
+ - <?= 出力したい文字列 ?>: これはどのphpバージョンでもサポートしている（<?php echo 文字列; ?>と同義）
 # Linux
  - 改行: LinuxではLF（Line Feed）、MacではCR（Carriage Return）
