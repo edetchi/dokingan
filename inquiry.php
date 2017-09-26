@@ -7,9 +7,14 @@
 //エラーメッセージの初期化
 $error_message = "";
 if(isset($_REQUEST["send"])):
+    //空欄チェック
     if($_REQUEST["uname"] == "") $error_message .= "お名前を入力して下さい\n";
     if($_REQUEST["email"] == "") $error_message .= "メールアドレスを入力して下さい\n";
     if($_REQUEST["body"] == "") $error_message .= "質問内容を入力してください\n";
+    //メアドの形式チェック、全項目記入されて初めてメアドの形式チェックエラーを表示する
+    if($error_message == ""):
+      if (!preg_match('/^([a-zA-Z0-9\.\_\-\+\?\#\&\%])*@([a-zA-Z0-9\_\-])+([a-zA-Z0-9\.\_\-]+)+$/', $_REQUEST["email"])) $error_message .= "メールアドレスを正しく入力してください\n";
+    endif;
 endif;
 /*=============================================================================
     送信モードの判別開始
@@ -38,11 +43,17 @@ if(isset($_REQUEST["send"]) && $error_message == ""){
         $mail_body .= "本文: ";
         $mail_body .= $_REQUEST['body'] . "\n";
     }
-    //送信実行
+    //管理者に送信実行
     $subject = "新規問い合わせ";
     $admin_email = "suteado@edetchi.com";
     $add_header = "From:" . $admin_email;
     $result = mb_send_mail($admin_email, $subject, $mail_body, $add_header);
+    //送信者に確認メールをに送信
+    $subject = "お問い合わせ有難うございます";
+    $admin_email = "suteado@edetchi.com";
+    $add_header = "From:" . $admin_email;
+    $mail_to = $_REQUEST["email"];//メアドのバリデーションがないと脆弱性が発生する
+    $result = mb_send_mail($mail_to, $subject, $mail_body, $add_header);
     //サンキューメッセージ作成
     $thnakyou = "お問い合わせ有難うございます！";
 } else {
