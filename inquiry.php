@@ -1,4 +1,11 @@
-<?php var_dump($_REQUEST) ; ?>
+<?php
+if(isset($_REQUEST["send"])){
+    echo "送信モード<br>";
+    var_dump($_REQUEST);
+} else {
+    echo "直見";
+}
+?>
 <?php $page_title = "お問い合わせ"; ?>
 <?php require "header.php"; ?>
     <p>

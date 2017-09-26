@@ -15,6 +15,11 @@
  - include/require構文を呼び出すファイルで、変数を、呼び出すファイルに反映させたいときは、呼び出す前に変数の定義をしておく
  - <?= 出力したい文字列 ?>: これはどのphpバージョンでもサポートしている（<?php echo 文字列; ?>と同義）
  - $_REQUEST: $_POST, $_GET, $_COOKIEの合算ver
+ - elseifはelse ifでもおｋ
+ - フォームが直見か送信後の画面かの判別は、$_REQUEST["submitのname"]があるかないかで判別する
+
+# Git
+ - `git commit --amend`: 直近のコミットのコメント修正
 
 # Linux
  - 改行: LinuxではLF（Line Feed）、MacではCR（Carriage Return）
