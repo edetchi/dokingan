@@ -1,3 +1,4 @@
+<?php var_dump($_REQUEST) ; ?>
 <?php $page_title = "お問い合わせ"; ?>
 <?php require "header.php"; ?>
     <p>
