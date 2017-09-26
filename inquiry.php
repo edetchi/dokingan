@@ -64,13 +64,14 @@ if(isset($_REQUEST["send"]) && $error_message == ""){
 =============================================================================*/
 ?>
     <!-- サンキューメッセージ表示 -->
+    <!--サニタイズ化-->
     <p>
-      <?= $thnakyou ?>
+      <?= he($thnakyou) ?>
     </p>
     <!--エラーメッセージの表示-->
     <p class="attention">
       <!--$error_messageはユーザーから受け取る値は入っていないが、変数を表示するときはサニタイズするのがベター-->
-      <?= htmlentities($error_message, ENT_QUOTES) ?>
+      <?= he($error_message) ?>
     </p>
     <p>
       お問い合わせは以下よりお願いします
@@ -93,3 +94,12 @@ if(isset($_REQUEST["send"]) && $error_message == ""){
         </div>
     </form>
 <?php require "footer.php"; ?>
+<?php
+/*=============================================================================
+    関数コーナー
+=============================================================================*/
+//サニタイズを多用するのでhtmlentities()を簡略化
+function he($str){
+  return htmlentities($str, ENT_QUOTES, "utf-8");
+}
+?>
