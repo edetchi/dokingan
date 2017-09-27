@@ -11,6 +11,8 @@ $request = array();
 foreach($whitelists as $whitelist){
     $request[$whitelist] = null;
     if(isset($_REQUEST[$whitelist])){
+      //keyからヌルバイト除去
+      $whitelist = str_replace("\0", "", $whitelist);
       $request[$whitelist] = $_REQUEST[$whitelist];
     }
 }

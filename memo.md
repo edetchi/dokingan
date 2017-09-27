@@ -36,9 +36,20 @@
     大きな処理終了
  =========================================*/
  ```
+ - `if(条件) 処理;` : 一行if文
+ - `preg_match("検索文字列", "対象文字列")` : 検索文字列があるときは1を返す、ないときは0を返す
  - サニタイズ: タグ等に使う特殊文字をエスケープ処理する
  - `htmlspecialchars("文字列", ENT_QUOTES, "utf-8")`
  - `htmlentities("文字列", ENT_QUOTES, "utf-8")`
+ - `str_replace("検索文字列", "置換文字列", "対象文字列")`: 文字列の置換
+ - 変数のホワイトリスト化
+ ```php
+ $whitelists = array(white1, white2, white3, ...);
+ $white = array();
+ foreach($whitelists as $whitelist){
+   $white[$whitelist] = $whitelist;
+ }
+ ```
 
 # Git
  - `git commit --amend`: 直近のコミットのコメント修正
