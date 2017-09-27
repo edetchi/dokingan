@@ -2,27 +2,40 @@
 <?php require "header.php"; ?>
 <?php
 /*----------------------------------------------------------------------------
+    変数をホワイトリスト化
+----------------------------------------------------------------------------*/
+//$_REQUEST[]の取りうるキーを限定する
+$whitelists = array("uname", "email", "body", "send");
+$request = array();
+//入力欄が空欄なら連想配列$requestにnull、入力値があるならその値を格納
+foreach($whitelists as $whitelist){
+    $request[$whitelist] = null;
+    if(isset($_REQUEST[$whitelist])){
+      $request[$whitelist] = $_REQUEST[$whitelist];
+    }
+}
+/*----------------------------------------------------------------------------
     フォーム項目のエラーチェック
 ----------------------------------------------------------------------------*/
 //エラーメッセージの初期化
 $error_message = "";
-if(isset($_REQUEST["send"])):
+if(isset($request["send"])):
     //空欄チェック
-    if($_REQUEST["uname"] == "") $error_message .= "お名前を入力して下さい\n";
-    if($_REQUEST["email"] == "") $error_message .= "メールアドレスを入力して下さい\n";
-    if($_REQUEST["body"] == "") $error_message .= "質問内容を入力してください\n";
+    if($request["uname"] == "") $error_message .= "お名前を入力して下さい\n";
+    if($request["email"] == "") $error_message .= "メールアドレスを入力して下さい\n";
+    if($request["body"] == "") $error_message .= "質問内容を入力してください\n";
     //メアドの形式チェック、全項目記入されて初めてメアドの形式チェックエラーを表示する
     if($error_message == ""):
-      if (!preg_match('/^([a-zA-Z0-9\.\_\-\+\?\#\&\%])*@([a-zA-Z0-9\_\-])+([a-zA-Z0-9\.\_\-]+)+$/', $_REQUEST["email"])) $error_message .= "メールアドレスを正しく入力してください\n";
+      if (!preg_match('/^([a-zA-Z0-9\.\_\-\+\?\#\&\%])*@([a-zA-Z0-9\_\-])+([a-zA-Z0-9\.\_\-]+)+$/', $request["email"])) $error_message .= "メールアドレスを正しく入力してください\n";
     endif;
 endif;
 /*=============================================================================
     送信モードの判別開始
 =============================================================================*/
 //直見でない送信ボタン押した後AND全項目記入済みの時
-if(isset($_REQUEST["send"]) && $error_message == ""){
+if(isset($request["send"]) && $error_message == ""){
     echo "送信モード<br>";
-    var_dump($_REQUEST);
+    var_dump($request);
 /*----------------------------------------------------------------------------
     管理者向けメールの送信、mb_send_mail(送信先, 件名, 本文, ヘッダ);
 ----------------------------------------------------------------------------*/
@@ -31,17 +44,17 @@ if(isset($_REQUEST["send"]) && $error_message == ""){
     mb_internal_encoding("UTF-8");
     //本文用の変数を初期化して、条件に合致するたびに本文を追加していく
     $mail_body = "";
-    if(isset($_REQUEST["uname"])){
+    if(isset($request["uname"])){
         $mail_body .= "名前: ";
-        $mail_body .= $_REQUEST['uname'] . "\n";
+        $mail_body .= $request['uname'] . "\n";
     }
-    if(isset($_REQUEST["email"])){
+    if(isset($request["email"])){
         $mail_body .= "メアド: ";
-        $mail_body .= $_REQUEST['email'] . "\n";
+        $mail_body .= $request['email'] . "\n";
     }
-    if(isset($_REQUEST["body"])){
+    if(isset($request["body"])){
         $mail_body .= "本文: ";
-        $mail_body .= $_REQUEST['body'] . "\n";
+        $mail_body .= $request['body'] . "\n";
     }
     //管理者に送信実行
     $subject = "新規問い合わせ";
@@ -52,7 +65,7 @@ if(isset($_REQUEST["send"]) && $error_message == ""){
     $subject = "お問い合わせ有難うございます";
     $admin_email = "suteado@edetchi.com";
     $add_header = "From:" . $admin_email;
-    $mail_to = $_REQUEST["email"];//メアドのバリデーションがないと脆弱性が発生する
+    $mail_to = $request["email"];//メアドのバリデーションがないと脆弱性が発生する
     $result = mb_send_mail($mail_to, $subject, $mail_body, $add_header);
     //サンキューメッセージ作成
     $thnakyou = "お問い合わせ有難うございます！";
