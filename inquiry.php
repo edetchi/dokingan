@@ -71,6 +71,8 @@ if(isset($request["send"]) && $error_message == ""){
     $result = mb_send_mail($mail_to, $subject, $mail_body, $add_header);
     //サンキューメッセージ作成
     $thnakyou = "お問い合わせ有難うございます！";
+    //送信成功時に入力欄を空にする
+    $request =array();
 } else {
     echo "直見";
 }
@@ -94,15 +96,15 @@ if(isset($request["send"]) && $error_message == ""){
     <form action="inquiry.php" method="post">
         <div>
             <label for="namae">お名前<span class="attention">【必須】</span></label>
-            <input type="text" name="uname" id="namae" size="30">
+            <input type="text" name="uname" id="namae" size="30" value="<?= he($request['uname']) ?>">
         </div>
         <div>
             <label for="meado">メールアドレス<span class="attention">【必須】</span></label>
-            <input type="email" name="email" id="meado" size="30">
+            <input type="email" name="email" id="meado" size="30" value="<?= he($request['email']) ?>">
         </div>
         <div>
             <label for="toiawase">お問い合わせ内容<span class="attention">【必須】</span></label>
-            <textarea name="body" rows="5" id="toiawase" cols="20"></textarea>
+            <textarea name="body" rows="5" id="toiawase" cols="20"><?= he($request['body']) ?></textarea>
         </div>
         <div>
             <input type="submit" name="send" value="送信する">
