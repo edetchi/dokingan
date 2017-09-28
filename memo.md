@@ -50,7 +50,10 @@
    $white[$whitelist] = $whitelist;
  }
  ```
-
+ - データベースへの接続: `$pdo = new PDO(データソースネーム, データベースユーザー, ユーザーパス);`
+ - データソースネーム(`$dsn`): `$dsn = "mysql:host=localhost;dbname=データベース名;charset=utf8";`
+ - データベース接続エラー時は、try catch文のcatch分で`try{} catch(PDOException $e){die($e->getMessage());}`
+ 
 #SQL
  - `where 1`, `where 1=1`の使用で条件数による場合分けを簡潔にできる。条件が1つの時は`where`, ２つ以上の時は`and`, `or`になるので面倒くさい
  - `truncate table テーブル名`: テーブルを空にする
