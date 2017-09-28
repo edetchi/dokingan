@@ -6,6 +6,7 @@
    <input type="text" name="mei" id="lastname">
    ```
    - textareaの属性: rows="縦文字数（行数）" cols="横文字数"
+ - `time`タグ  
 # CSS
  - reset.cssは、自分の適用させたいスタイルより前に読み込むこと
  - CSSプロパティの並び順は、**視覚整形→ボックス→背景→フォント→コンテンツ**がベター
@@ -53,6 +54,53 @@
  - データベースへの接続: `$pdo = new PDO(データソースネーム, データベースユーザー, ユーザーパス);`
  - データソースネーム(`$dsn`): `$dsn = "mysql:host=localhost;dbname=データベース名;charset=utf8";`
  - データベース接続エラー時は、try catch文のcatch分で`try{} catch(PDOException $e){die($e->getMessage());}`
+ - デバッグ用関数 `print_f()`, `var_dump()`, `var_export()`の違い
+ ```php
+<?php
+$data = array(
+    "A" => "Apple",
+    "B" => "Banana",
+    "C" => "Cherry"
+);
+print_r($data);
+/*出力結果
+Array
+(
+    [A] => Apple
+    [B] => Banana
+    [C] => Cherry
+)
+*/
+var_dump($data);
+/*出力結果
+array(3) {
+  ["A"]=>
+  string(5) "Apple"
+  ["B"]=>
+  string(6) "Banana"
+  ["C"]=>
+  string(6) "Cherry"
+}
+*/
+var_export($data);
+/*出力結果
+array (
+  'A' => 'Apple',
+  'B' => 'Banana',
+  'C' => 'Cherry',
+)
+*/
+ ```
+ - ステートメントハンドラ`fetchAll()`と`fetch()`の使い分け: 一般的に取得データが多い時`fetchAll()`だと処理が停止することがあるので、1件ずつ処理する`fetch()`を使用するほうがベター。両者ともオプション`PDO::FETCH_ASSOC`の指定がなければ連番配列が入ってくるので注意
+ - `fetch`で1件ずつ取得する場合は、事前に`$row = $stmh->fetch("PDO::FETCH_ASSOC")を定義して、while($row)とすると無限ループに陥るので、whileの条件内で$rowを定義すること、つまり`while($row = $stmh->fetch("PDO::FETCH_ASSOC"))`
+ - `fetchAll()`と`fetch()`で得られる取得結果の違い
+```php
+ //fetchAllの結果
+ array ( 0 => array ( 'post_id' => 1, 0 => 1, 'post_title' => '記事1', 1 => '記事1', 'post_content' => '内容です1', 2 => '内容です1', 'post_updated' => '2017-09-28 10:11:40', 3 => '2017-09-28 10:11:40', 'post_created' => '2017-09-28 00:00:00', 4 => '2017-09-28 00:00:00', ), 1 => array ( 'post_id' => 2, 0 => 2, 'post_title' => '記事2', 1 => '記事2', 'post_content' => '内容です2', 2 => '内容です2', 'post_updated' => '2017-09-28 10:11:40', 3 => '2017-09-28 10:11:40', 'post_created' => '2017-09-28 00:00:00', 4 => '2017-09-28 00:00:00', ), 2 => array ( 'post_id' => 3, 0 => 3, 'post_title' => '記事3', 1 => '記事3', 'post_content' => '内容です3', 2 => '内容です3', 'post_updated' => '2017-09-28 10:11:40', 3 => '2017-09-28 10:11:40', 'post_created' => '2017-09-28 00:00:00', 4 => '2017-09-28 00:00:00', ), 3 => array ( 'post_id' => 4, 0 => 4, 'post_title' => '記事4', 1 => '記事4', 'post_content' => '内容です4', 2 => '内容です4', 'post_updated' => '2017-09-28 10:11:40', 3 => '2017-09-28 10:11:40', 'post_created' => '2017-09-28 00:00:00', 4 => '2017-09-28 00:00:00', ), 4 => array ( 'post_id' => 5, 0 => 5, 'post_title' => '記事5', 1 => '記事5', 'post_content' => '内容です5', 2 => '内容です5', 'post_updated' => '2017-09-28 10:11:40', 3 => '2017-09-28 10:11:40', 'post_created' => '2017-09-28 00:00:00', 4 => '2017-09-28 00:00:00', ), )
+ //fetchの結果
+ array ( 'post_id' => 1, 0 => 1, 'post_title' => '記事1', 1 => '記事1', 'post_content' => '内容です1', 2 => '内容です1', 'post_updated' => '2017-09-28 10:11:40', 3 => '2017-09-28 10:11:40', 'post_created' => '2017-09-28 00:00:00', 4 => '2017-09-28 00:00:00', )
+```
+ - `fetchAll()`, `fetch()`の取得結果から、連番配列を除去するオプション: `fetchAll(PDO::FETCH_ASSOC)`, `fetch(PDO::FETCH_ASSOC)`
  
 #SQL
  - `where 1`, `where 1=1`の使用で条件数による場合分けを簡潔にできる。条件が1つの時は`where`, ２つ以上の時は`and`, `or`になるので面倒くさい
