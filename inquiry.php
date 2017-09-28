@@ -1,3 +1,7 @@
+<?php
+//ライブラリの読み込み
+require_once("system/common.php");
+?>
 <?php $page_title = "お問い合わせ"; ?>
 <?php require "header.php"; ?>
 <?php
@@ -110,13 +114,4 @@ if(isset($request["send"]) && $error_message == ""){
             <input type="submit" name="send" value="送信する">
         </div>
     </form>
-<?php require "footer.php"; ?>
-<?php
-/*=============================================================================
-    関数コーナー
-=============================================================================*/
-//サニタイズを多用するのでhtmlentities()を簡略化
-function he($str){
-  return htmlentities($str, ENT_QUOTES, "utf-8");
-}
-?>
+<?php require("footer.php"); ?>

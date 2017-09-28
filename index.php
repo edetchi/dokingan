@@ -1,5 +1,9 @@
-<?php $page_title = "トップページ"; ?>
-<?php require "header.php"; ?>
+<?php
+//ライブラリの読み込み
+require_once("system/common.php");
+$page_title = "トップページ";
+require("header.php");
+?>
     <p>
       閲覧ありがとうございます。<br>
       こちらはフレームリフュジーページです。
@@ -13,4 +17,4 @@
         <a href="inquiry.php">お問い合わせ</a>
       </li>
     </ul>
-<?php require "footer.php"; ?>
+<?php require("footer.php"); ?>
