@@ -12,16 +12,7 @@ $ignore_login = true;
 -----------------------------------------------------------------------------*/
 //$_REQUEST[]の取りうるキーを限定する
 $whitelists = array("user_loginid", "user_password", "send");
-$request = array();
-//入力欄が空欄なら連想配列$requestにnull、入力値があるならその値を格納
-foreach($whitelists as $whitelist){
-    $request[$whitelist] = null;
-    if(isset($_REQUEST[$whitelist])){
-      //keyからヌルバイト除去
-      $whitelist = str_replace("\0", "", $whitelist);
-      $request[$whitelist] = $_REQUEST[$whitelist];
-    }
-}
+$request = whitelist($whitelists);
 //ページメッセージ初期化
 $page_message = "";
 //エラーメッセージの初期化
