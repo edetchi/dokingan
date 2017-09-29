@@ -92,7 +92,7 @@ if(isset($request["send"]) && $error_message == ""){
     <!--エラーメッセージの表示-->
     <p class="attention">
       <!--$error_messageはユーザーから受け取る値は入っていないが、変数を表示するときはサニタイズするのがベター-->
-      <?= he($error_message) ?>
+      <?= nl2br(he($error_message)) ?>
     </p>
     <p>
       お問い合わせは以下よりお願いします
