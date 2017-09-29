@@ -32,15 +32,23 @@ if (isset($request["send"])) {
     if ($request["user_loginid"] == "") $error_message .= "ログインIDを入力してください\n";
     if ($request["user_password"] == "") $error_message .= "パスワードを入力してください\n";
 }
-//送信ボタンが押されて、エラーメッセージがない時、ログイン実行
+/*=============================================================================
+    送信ボタンが押されて、エラーメッセージがない時、ログイン実行開始
+=============================================================================*/
 if (isset($request["send"]) && $error_message == "") {
+/*----------------------------------------------------------------------------------------------------------------------------------------------------------
+    ログインIDとパスが一致したら、セッション名user_idにデーターベースの一意なuser_idの値を代入する（ログイン実行）
+----------------------------------------------------------------------------------------------------------------------------------------------------------*/
     try {
-        // まずはログインIDでSELECTする
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE user_loginid = ? LIMIT 1");
-        $stmt->execute(array($request["user_loginid"])); // クエリの実行
-        $row_user = $stmt->fetch(PDO::FETCH_ASSOC); // SELECT結果を配列に格納
+        // ユーザーの入力したログインIDでセレクト実行、ユーザーの入力したユーザーIDはプレースホルダーとして:user_idに定義
+        $sql = "SELECT * FROM users WHERE user_loginid = :user_id LIMIT 1";
+        $stmt = $pdo->prepare($sql);
+        //プレースホルダー:user_idとユーザーの入力したユーザーIDを結びつけ、データ型を指定
+        $stmt->bindValue(":user_id", $request["user_loginid"], PDO::PARAM_INT);
+        $stmt->execute();
+        $row_user = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row_user) {
-            // 該当のuserレコードがあったら、パスワードを照合する
+            // 該当のユーザーIDレコードがあったら、パスワードを照合し、セッション名user_idにデーターベースの一意なuser_idの値を代入
             if (sha1($request["user_password"]) == $row_user["user_password"]) {
                 $_SESSION["user_id"] = $row_user["user_id"];
                 header("Location: index.php");
@@ -53,6 +61,9 @@ if (isset($request["send"]) && $error_message == "") {
         exit("ログイン処理に失敗しました");
     }
 }
+/*=============================================================================
+    送信ボタンが押されて、エラーメッセージがない時、ログイン実行終了
+=============================================================================*/
 ?>
 <?php $page_title = "ログイン";?>
 <?php require("header.php"); ?>

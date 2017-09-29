@@ -18,11 +18,12 @@ if (!isset($ignore_login)) {
     ログイン状態時の処理、$_SESSION["user_id"]にはログイン成功時にデーターベースの一意なuser_idが入っている
 ----------------------------------------------------------------------------------------------------------------------------------------------------------*/
     if (isset($_SESSION["user_id"])) {
-        $session_user_id = $_SESSION["user_id"];
         try {
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ? LIMIT 1");
-            $stmt->execute(array($session_user_id)); // クエリの実行
-            $row_user = $stmt->fetch(PDO::FETCH_ASSOC); // SELECT結果を配列に格納
+            $sql = "SELECT * FROM users WHERE user_id = :session_user_id LIMIT 1";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(":session_user_id", $_SESSION["user_id"], PDO::PARAM_INT);
+            $stmt->execute();
+            $row_user = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($row_user) {
                 // 該当のuserレコードがあったらログイン状態にする
                 $logined_flag = true;
