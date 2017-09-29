@@ -1,4 +1,16 @@
 <?php require_once("../system/admin_common.php"); ?>
+<?php
+/*-----------------------------------------------------------------------------
+    フレーム一覧用データ取得
+-----------------------------------------------------------------------------*/
+try {
+    $sql = "SELECT * FROM posts ORDER BY post_created DESC";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+} catch (PDOException $e) {
+		die("エラー: " . $e->getMessage());
+}
+?>
 <?php $page_title = "フレーム管理";?>
 <?php require("header.php"); ?>
 	<a href="item_edit.php">フレームを追加する</a>
@@ -12,21 +24,15 @@
 			<th>作成日時</th>
 			<th></th>
 		</tr>
+<?php while ($row_post = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
 		<tr>
-			<td><a href="item_edit.php?mode=change">編集</a></td>
-			<td>記事タイトル（ダミー）</td>
-			<td>記事本文（ダミー）</td>
-			<td>2000-01-01 00:00:00</td>
-			<td>2000-01-01 00:00:00</td>
-			<td><a href="item_edit.php?mode=delete">削除</a></td>
+			<td><a href="item_edit.php?mode=change&post_id=<?= he($row_post["post_id"]) ?>">編集</a></td>
+			<td><?= he($row_post["post_title"]) ?></td>
+			<td><?= nl2br(he($row_post["post_content"]));?></td>
+			<td><?= he($row_post["post_updated"]) ?></td>
+			<td><?= he($row_post["post_created"]) ?></td>
+			<td><a href="item_edit.php?mode=delete&post_id=<?= he($row_post["post_id"]) ?>">削除</a></td>
 		</tr>
-		<tr>
-			<td><a href="item_edit.php?mode=change">編集</a></td>
-			<td>記事タイトル（ダミー）</td>
-			<td>記事本文（ダミー）</td>
-			<td>2000-01-01 00:00:00</td>
-			<td>2000-01-01 00:00:00</td>
-			<td><a href="item_edit.php?mode=delete">削除</a></td>
-		</tr>
+<?php endwhile; ?>
 	</table>
 <?php require("footer.php"); ?>
