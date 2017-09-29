@@ -2,7 +2,7 @@
 /*----------------------------------------------------------------------------
     サニタイズを多用するのでhtmlentities()を簡略化
 ----------------------------------------------------------------------------*/
-function he($str){
-  return htmlentities($str, ENT_QUOTES, "utf-8");
+function he($str) {
+ 	return htmlentities($str, ENT_QUOTES, "utf-8");
 }
 ?>

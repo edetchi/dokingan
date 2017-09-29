@@ -24,7 +24,7 @@ try {
 	var_export($fetch_all);
 	var_export($fetch);
 	*/
-} catch(PDOException $e){
+} catch (PDOException $e) {
 	//エラー時のロールバック
 	$pdo->rollBack();
 	print "エラー: " . $e->getMessage();

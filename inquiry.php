@@ -12,9 +12,9 @@ require_once("system/common.php");
 $whitelists = array("uname", "email", "body", "send");
 $request = array();
 //入力欄が空欄なら連想配列$requestにnull、入力値があるならその値を格納
-foreach($whitelists as $whitelist){
+foreach ($whitelists as $whitelist) {
     $request[$whitelist] = null;
-    if(isset($_REQUEST[$whitelist])){
+    if (isset($_REQUEST[$whitelist])) {
       //keyからヌルバイト除去
       $whitelist = str_replace("\0", "", $whitelist);
       $request[$whitelist] = $_REQUEST[$whitelist];
@@ -25,13 +25,13 @@ foreach($whitelists as $whitelist){
 ----------------------------------------------------------------------------*/
 //エラーメッセージの初期化
 $error_message = "";
-if(isset($request["send"])):
+if (isset($request["send"])):
     //空欄チェック
-    if($request["uname"] == "") $error_message .= "お名前を入力して下さい\n";
-    if($request["email"] == "") $error_message .= "メールアドレスを入力して下さい\n";
-    if($request["body"] == "") $error_message .= "質問内容を入力してください\n";
+    if ($request["uname"] == "") $error_message .= "お名前を入力して下さい\n";
+    if ($request["email"] == "") $error_message .= "メールアドレスを入力して下さい\n";
+    if ($request["body"] == "") $error_message .= "質問内容を入力してください\n";
     //メアドの形式チェック、全項目記入されて初めてメアドの形式チェックエラーを表示する
-    if($error_message == ""):
+    if ($error_message == ""):
       if (!preg_match('/^([a-zA-Z0-9\.\_\-\+\?\#\&\%])*@([a-zA-Z0-9\_\-])+([a-zA-Z0-9\.\_\-]+)+$/', $request["email"])) $error_message .= "メールアドレスを正しく入力してください\n";
     endif;
 endif;
@@ -39,7 +39,7 @@ endif;
     送信モードの判別開始
 =============================================================================*/
 //直見でない送信ボタン押した後AND全項目記入済みの時
-if(isset($request["send"]) && $error_message == ""){
+if (isset($request["send"]) && $error_message == "") {
     echo "送信モード<br>";
     var_dump($request);
 /*----------------------------------------------------------------------------
@@ -50,15 +50,15 @@ if(isset($request["send"]) && $error_message == ""){
     mb_internal_encoding("UTF-8");
     //本文用の変数を初期化して、条件に合致するたびに本文を追加していく
     $mail_body = "";
-    if(isset($request["uname"])){
+    if (isset($request["uname"])) {
         $mail_body .= "名前: ";
         $mail_body .= $request['uname'] . "\n";
     }
-    if(isset($request["email"])){
+    if (isset($request["email"])) {
         $mail_body .= "メアド: ";
         $mail_body .= $request['email'] . "\n";
     }
-    if(isset($request["body"])){
+    if (isset($request["body"])) {
         $mail_body .= "本文: ";
         $mail_body .= $request['body'] . "\n";
     }
