@@ -52,15 +52,32 @@ if (isset($request["send"])) {
     if ($request["item_comment"] == "") $error_message .= "コメントを入力してください\n";
 }
 /*=============================================================================
-    送信ボタンが押されて、エラーメッセージがない時、修正開始
+    送信ボタンが押されて、エラーメッセージがない時、新規登録or修正開始
 =============================================================================*/
 if (isset($request["send"]) && $error_message == "") {
     try {
 				$pdo->beginTransaction();
-        $sql = "insert into posts (post_title, post_content, post_created) VALUES (:item_name, :item_comment, NOW())";
-        $stmt = $pdo->prepare($sql);
-				$stmt->bindValue(":item_name", $request["item_name"], PDO::PARAM_STR);
-				$stmt->bindValue(":item_comment", $request["item_comment"], PDO::PARAM_STR);
+/*-----------------------------------------------------------------------------
+    修正モード
+-----------------------------------------------------------------------------*/
+				if ($mode == "change") {
+					$sql = "update posts set post_title = :item_name, post_content = :item_comment where post_id = :post_id";
+					$stmt = $pdo->prepare($sql);
+					$stmt->bindValue(":item_name", $request["item_name"], PDO::PARAM_STR);
+					$stmt->bindValue(":item_comment", $request["item_comment"], PDO::PARAM_STR);
+					$stmt->bindValue(":post_id", $request["post_id"], PDO::PARAM_INT);
+/*-----------------------------------------------------------------------------
+    新規登録モード
+-----------------------------------------------------------------------------*/
+					} else {
+					$sql = "insert into posts (post_title, post_content, post_created) VALUES (:item_name, :item_comment, NOW())";
+					$stmt = $pdo->prepare($sql);
+					$stmt->bindValue(":item_name", $request["item_name"], PDO::PARAM_STR);
+					$stmt->bindValue(":item_comment", $request["item_comment"], PDO::PARAM_STR);
+					// 新規作成が成功したら、修正モードにして直近のデータを修正できるようにする
+					$mode = "change";
+					$form["post_id"] = $pdo->lastInsertId("post_id");
+				}
         $stmt->execute();
 				$pdo->commit();
     } catch (PDOException $e) {
@@ -71,7 +88,7 @@ if (isset($request["send"]) && $error_message == "") {
 		$page_message = "登録が完了しました";
 }
 /*=============================================================================
-送信ボタンが押されて、エラーメッセージがない時、修正終了
+送信ボタンが押されて、エラーメッセージがない時、新規登録or修正終了
 =============================================================================*/
 ?>
 <?php $page_title = "フレーム編集";?>
@@ -101,6 +118,8 @@ if (isset($request["send"]) && $error_message == "") {
 		</div>
 		<div>
 			<input type="submit" name="send" value="送信する">
+			<input type="hidden" name="mode" value="<?= he($mode); ?>">
+			<input type="hidden" name="post_id" value="<?= he($form["post_id"]); ?>">
 		</div>
 	</form>
 <?php require("footer.php"); ?>
