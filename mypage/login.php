@@ -3,7 +3,7 @@
     ログインページ判別変数をtrueに（login.phpならture、それ以外ならfalse）
 -----------------------------------------------------------------------------*/
 //ログイン判別を行うadmin_common.phpより先に読み込む
-$ignore_login = true;
+$is_login_page = true;
 ?>
 <?php require_once("../system/common.php"); ?>
 <?php

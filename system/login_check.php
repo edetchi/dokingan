@@ -33,7 +33,7 @@ if (!isset($is_login_page)) {
     非ログイン状態かつ管理ページの時
 -----------------------------------------------------------------------------*/
     $url = $_SERVER['REQUEST_URI'];
-    if (!$login_flag && strpos($url,'/admin/') == true) {
+    if (!$login_flag && strpos($url,'/mypage/') == true) {
         //ログインページへジャンプ
         header("location: login.php");
         exit;

@@ -8,3 +8,15 @@
   </head>
   <body>
     <h1><?= "$page_title"; ?></h1>
+<?php if ($login_flag): ?>
+    <div>
+      <a href="mypage">マイページ</a>
+    </div>
+    <div>
+      <a href="mypage/logout.php">ログアウト</a>
+    </div>
+<?php else: ?>
+    <div>
+      <a href="mypage/login.php">ログイン</a>
+    </div>
+<?php endif; ?>
