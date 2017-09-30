@@ -23,9 +23,9 @@ $form["post_id"] = $request["post_id"];
 $form["item_name"] = $request["item_name"];
 $form["item_comment"] = $request["item_comment"];
 /*-----------------------------------------------------------------------------
-    修正モード時の処理
+    修正モードor削除モード時の処理
 -----------------------------------------------------------------------------*/
-if (!isset($request["send"]) && $mode == "change") {
+if (!isset($request["send"]) && $mode == "change" || $mode == "delete") {
 	try {
 		$sql = "select * from posts where post_id = :post_id";
 		$stmt = $pdo->prepare($sql);
@@ -36,11 +36,29 @@ if (!isset($request["send"]) && $mode == "change") {
 				$form["item_name"] = $row_post["post_title"];
 				$form["item_comment"] = $row_post["post_content"];
 			} else {
-				die("異常なアクセスですkk");
+				die("異常なアクセスです");
 			}
 	} catch (PDOException $e) {
 		die("エラー: " . $e->getMessage());
 	}
+}
+/*-----------------------------------------------------------------------------
+    削除モード時の処理
+-----------------------------------------------------------------------------*/
+if ($mode == "delete") {
+	try {
+		$pdo->beginTransaction();
+		$sql = "delete from posts where post_id = :post_id";
+		$stmt = $pdo->prepare($sql);
+		$stmt->bindValue(":post_id", $request["post_id"], PDO::PARAM_INT);
+		$stmt->execute();
+		$pdo->commit();
+	} catch (PDOException $e) {
+		$pdo->rollBack();
+		die("エラー; " . $e->getMessage());
+	}
+	header("Location: item_list.php");
+	exit;
 }
 /*-----------------------------------------------------------------------------
     フォーム項目のエラーチェック
