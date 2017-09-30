@@ -1,4 +1,4 @@
-<?php require_once("../system/admin_common.php"); ?>
+<?php require_once("../system/common.php"); ?>
 <?php $page_title = "トップページ";?>
 <?php require("header.php"); ?>
 	<ul>

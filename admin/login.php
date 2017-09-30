@@ -5,7 +5,7 @@
 //ログイン判別を行うadmin_common.phpより先に読み込む
 $ignore_login = true;
 ?>
-<?php require_once("../system/admin_common.php"); ?>
+<?php require_once("../system/common.php"); ?>
 <?php
 /*-----------------------------------------------------------------------------
     変数をホワイトリスト化

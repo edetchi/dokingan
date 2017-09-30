@@ -1,4 +1,4 @@
-<?php require_once("../system/admin_common.php"); ?>
+<?php require_once("../system/common.php"); ?>
 <?php
 $_SESSION["user_id"] = array();
 if (isset($_COOKIE["PHPSESSID"])) {
