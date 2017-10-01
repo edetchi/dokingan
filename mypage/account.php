@@ -84,7 +84,7 @@ if (isset($request["send"]) && $error_message == "") {
 <?php $page_title = "アカウント設定";?>
 <?php require("header.php"); ?>
 	<p>
-		<a href="item_list.php">一覧へ戻る</a>
+		<a href="frame_list.php">一覧へ戻る</a>
 	</p>
 	<p>
 		<?= he($page_message) ?>

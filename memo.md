@@ -124,4 +124,4 @@ array (
 
 # Linux
  - 改行: LinuxではLF（Line Feed）、MacではCR（Carriage Return）
- - `grep -r パターン 場所`: ファイル内容にパターンの文字列を含むものを返す
+ - `grep -r パターン 場所 --exclude-dir=ディレクトリ名`: ファイル内容にパターンの文字列を含むものを返す

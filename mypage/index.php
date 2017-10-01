@@ -3,7 +3,7 @@
 <?php require("header.php"); ?>
 	<ul>
 		<li>
-			<a href="item_list.php">フレーム管理</a>
+			<a href="frame_list.php">フレーム管理</a>
 		</li>
 		<li>
 			<a href="account.php">アカウント設定</a>
