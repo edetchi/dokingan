@@ -5,7 +5,8 @@ if (isset($_COOKIE["PHPSESSID"])) {
   setcookie("PHPSESSID", "", time()-3600, "/");
 }
 session_destroy();
-$page_message = "ログアウトしました"
+$page_message = "ログアウトしました";
+$login_flag = false;
 ?>
 <?php $page_title = "ログアウト";?>
 <?php require("header.php"); ?>
