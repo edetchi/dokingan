@@ -41,7 +41,8 @@ if (!isset($request["send"]) && $mode == "change" || $mode == "delete") {
 		$stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
 		$stmt->execute();
 		$row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
-			if ($row_frame) {
+		        //自分の投稿したデータのみ修正削除可
+			if ($row_frame  && $row_frame["frame_poster_id"] == $_SESSION["user_id"]) {
 				$form["frame_id"] = $row_frame["frame_id"];
 				$form["frame_title"] = $row_frame["frame_title"];
 				$form["frame_content"] = $row_frame["frame_content"];
@@ -69,7 +70,9 @@ if ($mode == "delete") {
 		$sql = "delete from frames where frame_id = :frame_id";
 		$stmt = $pdo->prepare($sql);
 		$stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
-		$stmt->execute();
+		$row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
+		//自分の投稿したデータのみ削除可
+		if ($row_frame["frame_poster_id"] == $_SESSION["user_id"]) $stmt->execute();
 		$pdo->commit();
 	} catch (PDOException $e) {
 		$pdo->rollBack();
