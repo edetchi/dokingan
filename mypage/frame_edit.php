@@ -112,8 +112,10 @@ if (isset($request["send"]) && $error_message == "") {
     修正モード
 -----------------------------------------------------------------------------*/
 				if ($mode == "change") {
-					$sql = "update frames set frame_title = :frame_title, frame_content = :frame_content, frame_price = :frame_price, frame_image = :frame_image, frame_link = :frame_link, frame_lens_width = :frame_lens_width, frame_lens_height = :frame_lens_height, frame_bridge_width = :frame_bridge_width, frame_temple_length = :frame_temple_length, frame_frame_width = :frame_frame_width where frame_id = :frame_id";
+					$sql = "update frames set frame_poster_id = :frame_poster_id, frame_title = :frame_title, frame_content = :frame_content, frame_price = :frame_price, frame_image = :frame_image, frame_link = :frame_link, frame_lens_width = :frame_lens_width, frame_lens_height = :frame_lens_height, frame_bridge_width = :frame_bridge_width, frame_temple_length = :frame_temple_length, frame_frame_width = :frame_frame_width where frame_id = :frame_id";
 					$stmt = $pdo->prepare($sql);
+          $request["frame_poster_id"] = $_SESSION["user_id"];
+          $stmt->bindValue(":frame_poster_id", $request["frame_poster_id"], PDO::PARAM_INT);
 					$stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
           $stmt->bindValue(":frame_title", $request["frame_title"], PDO::PARAM_STR);
   				$stmt->bindValue(":frame_content", $request["frame_content"], PDO::PARAM_STR);
@@ -130,8 +132,10 @@ if (isset($request["send"]) && $error_message == "") {
     新規登録モード
 -----------------------------------------------------------------------------*/
 					} else {
-					$sql = "insert into frames (frame_title, frame_content, frame_price, frame_image, frame_link, frame_lens_width, frame_lens_height, frame_bridge_width, frame_temple_length, frame_frame_width) values (:frame_title, :frame_content, :frame_price, :frame_image, :frame_link, :frame_lens_width, :frame_lens_height, :frame_bridge_width, :frame_temple_length, :frame_frame_width)";
+					$sql = "insert into frames (frame_poster_id, frame_title, frame_content, frame_price, frame_image, frame_link, frame_lens_width, frame_lens_height, frame_bridge_width, frame_temple_length, frame_frame_width) values (:frame_poster_id, :frame_title, :frame_content, :frame_price, :frame_image, :frame_link, :frame_lens_width, :frame_lens_height, :frame_bridge_width, :frame_temple_length, :frame_frame_width)";
 					$stmt = $pdo->prepare($sql);
+          $request["frame_poster_id"] = $_SESSION["user_id"];
+          $stmt->bindValue(":frame_poster_id", $request["frame_poster_id"], PDO::PARAM_INT);
           $stmt->bindValue(":frame_title", $request["frame_title"], PDO::PARAM_STR);
   				$stmt->bindValue(":frame_content", $request["frame_content"], PDO::PARAM_STR);
   				$stmt->bindValue(":frame_price", $request["frame_price"], PDO::PARAM_INT);
