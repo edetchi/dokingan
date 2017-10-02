@@ -43,7 +43,7 @@ try {
 		<p><?= he($row["frame_title"]) ?></p>
 		<p><?= he(nl2br($row["frame_content"])) ?></p>
 		<p><?= he($row["frame_pricee"]) ?></p>
-		<p><?= he($row["frame_image"]) ?></p>
+		<p><img src='<?= "./images/frames/" . he($row["frame_image"]) ?>'></p>
 		<p><?= he($row["frame_link"]) ?></p>
 		<p><?= he($row["frame_lens_width"]) ?></p>
 		<p><?= he($row["frame_lens_height"]) ?></p>
