@@ -183,7 +183,7 @@ if (isset($request["send"]) && $error_message == "") {
       フレームID【<?= he($form["frame_id"]) ?>】を修正しています
     </p>
 	<?php endif; ?>
-	<form action="frame_edit.php" method="post">
+	<form enctype="multipart/form-data" action="frame_edit.php" method="post">
 		<div>
 			<label for="hure-mumei">フレーム名<span class="attention">【必須】</span></label>
 			<input type="text" name="frame_title" id="hure-mumei" size="30" value="<?= he($form["frame_title"]); ?>">
@@ -198,7 +198,11 @@ if (isset($request["send"]) && $error_message == "") {
 		</div>
 		<div>
 			<label for="gazou">画像<span class="attention">【必須】</span></label>
-			<input type="text" name="frame_image" id="gazou" size="50" value="<?= he($form["frame_image"]); ?>">
+			<?php if ($form["frame_image"]): ?>
+			<p>test</p>
+			<?php else : ?>
+			<input type="file" name="frame_image" id="gazou">
+			<?php endif; ?>
 		</div>
 		<div>
 			<label for="shohinrinku">商品リンク<span class="attention">【必須】</span></label>
