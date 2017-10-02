@@ -10,7 +10,7 @@ require_once("system/common.php");
 try {
 	//ロールバックようにトランザクション開始を設定
 	$pdo->beginTransaction();
-	$sql = "select * from frames order by frame_created desc";
+	$sql = "select * from frames left join users on frames.frame_poster_id = users.user_id order by frames.frame_created desc";
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute();
 	//処理を確定
@@ -39,13 +39,20 @@ try {
 <?php require("header.php"); ?>
 <?php while($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
 	<article>
-		<h2><?= he($row["frame_poster_id"]) ?></h2>
-		<time><?= he($row["frame_title"]) ?></time>
+		<p><?= he($row["user_loginid"]) ?></p>
+		<p><?= he($row["frame_title"]) ?></p>
 		<p><?= he(nl2br($row["frame_content"])) ?></p>
 		<p><?= he($row["frame_pricee"]) ?></p>
 		<p><?= he($row["frame_image"]) ?></p>
 		<p><?= he($row["frame_link"]) ?></p>
-		<p><?= he($row["frame_updated"]) ?></p>
+		<p><?= he($row["frame_lens_width"]) ?></p>
+		<p><?= he($row["frame_lens_height"]) ?></p>
+		<p><?= he($row["frame_bridge_width"]) ?></p>
+		<p><?= he($row["frame_temple_length"]) ?></p>
+		<p><?= he($row["frame_frame_width"]) ?></p>
+		<time><?= he($row["frame_created"]) ?></time>
+		<time><?= he($row["frame_updated"]) ?></time>
 	</article>
+  <hr>
 <?php endwhile; ?>
 <?php require("footer.php"); ?>
