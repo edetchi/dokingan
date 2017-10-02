@@ -4,8 +4,9 @@
     フレーム一覧用データ取得
 -----------------------------------------------------------------------------*/
 try {
-    $sql = "select * from frames order by frame_created desc";
+    $sql = "select * from frames where frame_poster_id = :frame_poster_id order by frame_created desc";
     $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(":frame_poster_id", $_SESSION["user_id"], PDO::PARAM_INT);
     $stmt->execute();
 } catch (PDOException $e) {
 		die("エラー: " . $e->getMessage());
