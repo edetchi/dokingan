@@ -7,6 +7,11 @@
 $whitelists = array("mode", "frame_id","frame_poster_id", "frame_title", "frame_content","frame_price","frame_image","frame_link","frame_lens_width","frame_lens_height","frame_bridge_width","frame_temple_length","frame_frame_width", "send");
 $request = whitelist($whitelists);
 /*-----------------------------------------------------------------------------
+    画像を変数に格納
+-----------------------------------------------------------------------------*/
+$image = $_FILES["frame_image"];
+$image_name = date("YmdHis") . $image["name"];
+/*-----------------------------------------------------------------------------
     メッセージの初期化
 -----------------------------------------------------------------------------*/
 $page_message = "";
@@ -90,13 +95,29 @@ if (isset($request["send"])) {
     if ($request["frame_title"] == "") $error_message .= "フレーム名を入力してください\n";
 		//if ($request["frame_content"] == "") $error_message .= "コメントを入力してください\n";
 		if ($request["frame_price"] == "") $error_message .= "価格を入力してください\n";
-		if ($request["frame_image"] == "") $error_message .= "画像をアップロードしてください\n";
+		//ブラウザが判断するファイルタイプがjpegじゃなかったら、もしくは拡張子がjpegじゃなかったら
+		if (($image["type"] != "image/jpeg"  && $image["type"] != "image/pjpeg") || strtolower(mb_strrchr($image["name"], ".", false)) != ".jpg") $error_message .= "画像(jpegファイル)をアップロードして下さい\n";
+		//画像サイズを制限
+		if ($image["size"] > 10*1024*1024) $error_message .= "画像サイズは10MB以下にして下さい\n";
 		if ($request["frame_link"] == "") $error_message .= "商品リンクを入力してください\n";
 		if ($request["frame_lens_width"] == "") $error_message .= "レンズ幅を入力してください\n";
 		//if ($request["frame_lens_height"] == "") $error_message .= "レンズの高さを入力してください\n";
 		if ($request["frame_bridge_width"] == "") $error_message .= "ブリッジ幅を入力してください\n";
 		if ($request["frame_temple_length"] == "") $error_message .= "テンプルの長さを入力してください\n";
 		//if ($request["frame_frame_width"] == "") $error_message .= "フレーム幅を入力してください\n";
+/*=============================================================================
+    画像の投稿処理
+=============================================================================*/
+    move_uploaded_file($image["tmp_name"], "../images/frames/{$image_name}");
+		//サムネ作成
+		$original_image = imagecreatefromjpeg("../images/frames/{$image_name}");
+		list($original_w, $original_h) = getimagesize("../images/frames/{$image_name}");
+		//$original_w : $original_h = $thumb_w : $thumb_h
+    $thumb_w = 320;
+		$thumb_h = $original_h*$thumb_w/$original_w;
+		$thumb_image = imagecreatetruecolor($thumb_w, $thumb_h);
+		imagecopyresized($thumb_image, $original_image, 0, 0, 0, 0, $thumb_w, $thumb_h, $original_w, $original_h);
+		imagejpeg($thumb_image, "../images/frames/thumb_{$image_name}");
 }
 /*-----------------------------------------------------------------------------
     フォーム項目が空欄の場合、NULLに設定
@@ -104,16 +125,15 @@ if (isset($request["send"])) {
 if ($request["frame_content"] == "") $request["frame_content"] = null;
 if ($request["frame_lens_height"] == "") $request["frame_lens_height"] = null;
 if ($request["frame_frame_width"] == "") $request["frame_frame_width"] = null;
-
-/*=============================================================================
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     送信ボタンが押されて、エラーメッセージがない時、新規登録or修正開始
-=============================================================================*/
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
 if (isset($request["send"]) && $error_message == "") {
     try {
 				$pdo->beginTransaction();
-/*-----------------------------------------------------------------------------
+/*=============================================================================
     修正モード
------------------------------------------------------------------------------*/
+=============================================================================*/
 				if ($mode == "change") {
 					$sql = "update frames set frame_poster_id = :frame_poster_id, frame_title = :frame_title, frame_content = :frame_content, frame_price = :frame_price, frame_image = :frame_image, frame_link = :frame_link, frame_lens_width = :frame_lens_width, frame_lens_height = :frame_lens_height, frame_bridge_width = :frame_bridge_width, frame_temple_length = :frame_temple_length, frame_frame_width = :frame_frame_width where frame_id = :frame_id";
 					$stmt = $pdo->prepare($sql);
@@ -123,7 +143,7 @@ if (isset($request["send"]) && $error_message == "") {
           $stmt->bindValue(":frame_title", $request["frame_title"], PDO::PARAM_STR);
   				$stmt->bindValue(":frame_content", $request["frame_content"], PDO::PARAM_STR);
   				$stmt->bindValue(":frame_price", $request["frame_price"], PDO::PARAM_INT);
-  				$stmt->bindValue(":frame_image", $request["frame_image"], PDO::PARAM_STR);
+          $stmt->bindValue(":frame_image", $image_name, PDO::PARAM_STR);
   				$stmt->bindValue(":frame_link", $request["frame_link"], PDO::PARAM_STR);
   				$stmt->bindValue(":frame_lens_width", $request["frame_lens_width"], PDO::PARAM_INT);
   				$stmt->bindValue(":frame_lens_height", $request["frame_lens_height"], PDO::PARAM_INT);
@@ -131,9 +151,9 @@ if (isset($request["send"]) && $error_message == "") {
   				$stmt->bindValue(":frame_temple_length", $request["frame_temple_length"], PDO::PARAM_INT);
   				$stmt->bindValue(":frame_frame_width", $request["frame_frame_width"], PDO::PARAM_INT);
           $stmt->execute();
-/*-----------------------------------------------------------------------------
+/*=============================================================================
     新規登録モード
------------------------------------------------------------------------------*/
+=============================================================================*/
 					} else {
 					$sql = "insert into frames (frame_poster_id, frame_title, frame_content, frame_price, frame_image, frame_link, frame_lens_width, frame_lens_height, frame_bridge_width, frame_temple_length, frame_frame_width) values (:frame_poster_id, :frame_title, :frame_content, :frame_price, :frame_image, :frame_link, :frame_lens_width, :frame_lens_height, :frame_bridge_width, :frame_temple_length, :frame_frame_width)";
 					$stmt = $pdo->prepare($sql);
@@ -142,7 +162,7 @@ if (isset($request["send"]) && $error_message == "") {
           $stmt->bindValue(":frame_title", $request["frame_title"], PDO::PARAM_STR);
   				$stmt->bindValue(":frame_content", $request["frame_content"], PDO::PARAM_STR);
   				$stmt->bindValue(":frame_price", $request["frame_price"], PDO::PARAM_INT);
-  				$stmt->bindValue(":frame_image", $request["frame_image"], PDO::PARAM_STR);
+          $stmt->bindValue(":frame_image", $image_name, PDO::PARAM_STR);
   				$stmt->bindValue(":frame_link", $request["frame_link"], PDO::PARAM_STR);
   				$stmt->bindValue(":frame_lens_width", $request["frame_lens_width"], PDO::PARAM_INT);
   				$stmt->bindValue(":frame_lens_height", $request["frame_lens_height"], PDO::PARAM_INT);
@@ -199,7 +219,7 @@ if (isset($request["send"]) && $error_message == "") {
 		<div>
 			<label for="gazou">画像<span class="attention">【必須】</span></label>
 			<?php if ($form["frame_image"]): ?>
-			<p>test</p>
+      <input type="file" name="frame_image" id="gazou">
 			<?php else : ?>
 			<input type="file" name="frame_image" id="gazou">
 			<?php endif; ?>
