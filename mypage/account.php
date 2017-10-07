@@ -18,18 +18,9 @@ if ($_FILES["user_icon"]) {
 -----------------------------------------------------------------------------*/
 $page_message = "";
 $error_message = "";
-/*-----------------------------------------------------------------------------
-    フォームの初期化
------------------------------------------------------------------------------*/
-$form = array();
-$form["user_loginid"] = $request["user_loginid"];
-$form["user_password"] = $request["user_password"];
-$form["user_email"] = $request["user_email"];
-$form["user_sph"] = $request["user_sph"];
-$form["user_pd"] = $request["user_pd"];
-/*-----------------------------------------------------------------------------
+/*=============================================================================
     ページ読み込み時に各値を取得
------------------------------------------------------------------------------*/
+=============================================================================*/
 try {
     $sql = "select * from users where user_id = :user_id";
     $stmt = $pdo->prepare($sql);
@@ -37,15 +28,19 @@ try {
     $stmt->execute();
     $row_user = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt = null;
+/*-----------------------------------------------------------------------------
+    フォームの初期化
+-----------------------------------------------------------------------------*/
     if ($row_user) {
-        $form["user_loginid"] = $row_user["user_loginid"];
-        $form["user_password"] = $row_user["user_password"];
-        $form["user_icon"] = $row_user["user_icon"];
-        $form["user_email"] = $row_user["user_email"];
-        $form["user_sph"] = $row_user["user_sph"];
-        $form["user_pd"] = $row_user["user_pd"];
-        //古い画像削除用にファイル名をセッションに取得しておく
-        $_SESSION["old_image"] = $row_user["user_icon"];
+      $form = array();
+      $form["user_loginid"] = $row_user["user_loginid"];
+      $form["user_password"] = $row_user["user_password"];
+      $form["user_icon"] = $row_user["user_icon"];
+      $form["user_email"] = $row_user["user_email"];
+      $form["user_sph"] = $row_user["user_sph"];
+      $form["user_pd"] = $row_user["user_pd"];
+      //古い画像削除用にファイル名をセッションに取得しておく
+      $_SESSION["old_image"] = $row_user["user_icon"];
     } else {
         die("異常なアクセスです");
     }
@@ -63,9 +58,11 @@ if (isset($request["send"])) {
     if ($request["user_loginid"] == "") {
         $error_message .= "ユーザーIDを入力してください\n";
     }
+    /*
     if ($request["user_password"] == "") {
         $error_message .= "パスワードを入力してください\n";
     }
+    */
     //ブラウザが判断するファイルタイプがjpegじゃなかったら、もしくは拡張子がjpegじゃなかったら
     if (!$user_icon["error"]) {
       if (($user_icon["type"] != "image/jpeg"  && $user_icon["type"] != "image/pjpeg") || strtolower(mb_strrchr($user_icon["name"], ".", false)) != ".jpg") {
@@ -125,7 +122,12 @@ if (isset($request["send"]) && $error_message == "") {
       $stmt = $pdo->prepare($sql);
       $stmt->bindValue(":user_id", $_SESSION["user_id"], PDO::PARAM_INT);
       $stmt->bindValue(":user_loginid", $request["user_loginid"], PDO::PARAM_STR);
-      $stmt->bindValue(":user_password", $request["user_password"], PDO::PARAM_STR);
+      //パスワードの更新がある時とない時
+      if ($request["user_password"] == "" ) {
+        $stmt->bindValue(":user_password", $form["user_password"], PDO::PARAM_STR);
+      } else {
+        $stmt->bindValue(":user_password", $request["user_password"], PDO::PARAM_STR);
+      }
       //プロフ画像の更新があれば新しいのに、なければ古い画像のまま
       if ($user_icon["error"] == 0) {
         $stmt->bindValue(":user_icon", $user_icon_name, PDO::PARAM_STR);
@@ -154,7 +156,7 @@ if (isset($request["send"]) && $error_message == "") {
       $stmt = null;
       if ($row_user) {
         $form["user_loginid"] = $row_user["user_loginid"];
-        $form["user_password"] = $row_user["user_password"];
+        //$form["user_password"] = $row_user["user_password"];
         $form["user_icon"] = $row_user["user_icon"];
         $form["user_email"] = $row_user["user_email"];
         $form["user_sph"] = $row_user["user_sph"];
@@ -174,7 +176,7 @@ $page_message = "修正しました";
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     送信ボタンが押されて、エラーメッセージがない時>>
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-/*
+
 print '$user_icon';
 print "<br>";
 var_export($user_icon);
@@ -187,7 +189,7 @@ print '$form["user_icon"]';
 print "<br>";
 var_export($form["user_icon"]);
 print "<br>";
-*/
+
 ?>
 <?php $page_title = "アカウント設定";?>
 <?php require("header.php"); ?>
@@ -207,11 +209,11 @@ print "<br>";
     </div>
     <div>
     <label for="pasuwa-do">パスワード<span class="attention">【必須】</span></label>
-      <input type="password" name="user_password" id="pasuwa-do" size="30" value="<?= he($form["user_password"]); ?>">
+      <input type="password" name="user_password" id="pasuwa-do" size="30" >
     </div>
     <div>
       <label for="aikon">アイコン<span class="attention"></span></label>
-      <?php if ($user_icon["error"] == 0 && $error_message == ""): ?>
+      <?php if ($user_icon["error"] === 0 && $error_message === ""): ?>
       <p><img src='<?= "../images/users/" . he($user_icon_name) ?>'></p>
       <input type="file" name="user_icon" id="aikon">
       <?php else : ?>
