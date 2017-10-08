@@ -78,7 +78,11 @@ require("header.php");
       <p><?= he($row_frame["frame_title"]) ?></p>
       <p><?= he(nl2br($row_frame["frame_content"])) ?></p>
       <p><?= he($row_frame["frame_pricee"]) ?></p>
-      <p><img src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'></p>
+      <p>
+        <a href="detail.php?frame_id=<?= he($row_frame["frame_id"]) ?>">
+        <img src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
+        </a>
+      </p>
       <p><?= he($row_frame["frame_link"]) ?></p>
       <p><?= he($row_frame["frame_lens_width"]) ?></p>
       <p><?= he($row_frame["frame_lens_height"]) ?></p>
