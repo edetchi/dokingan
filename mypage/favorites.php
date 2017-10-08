@@ -1,7 +1,6 @@
 <?php
-var_export(sha1("admin"));
 //ライブラリの読み込み
-require_once("system/common.php");
+require_once("../system/common.php");
 /*=============================================================================
     <<フレーム一覧用データ取得
 =============================================================================*/
@@ -23,7 +22,7 @@ try {
     フレームデータ取得
 -----------------------------------------------------------------------------*/
   $pdo->beginTransaction();
-  $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id order by frame_updated desc";
+  $sql = "select * from favorites left join frames on favorites.frame_id = frames.frame_id order by favorites.favorite_updated desc";
   $stmt = $pdo->prepare($sql);
   $stmt->execute();
   $pdo->commit();
@@ -78,7 +77,7 @@ require("header.php");
       <p><?= he($row_frame["frame_title"]) ?></p>
       <p><?= he(nl2br($row_frame["frame_content"])) ?></p>
       <p><?= he($row_frame["frame_pricee"]) ?></p>
-      <p><img src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'></p>
+      <p><img src='<?= "../images/frames/" . he($row_frame["frame_image"]) ?>'></p>
       <p><?= he($row_frame["frame_link"]) ?></p>
       <p><?= he($row_frame["frame_lens_width"]) ?></p>
       <p><?= he($row_frame["frame_lens_height"]) ?></p>

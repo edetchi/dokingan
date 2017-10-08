@@ -2,7 +2,10 @@
 <?php $page_title = "マイページ";?>
 <?php require("header.php"); ?>
 	<ul>
-		<li>
+    <li>
+			<a href="favorites.php">お気に入り</a>
+		</li>
+    <li>
 			<a href="frame_list.php">フレーム管理</a>
 		</li>
 		<li>
