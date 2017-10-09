@@ -19,11 +19,12 @@ try {
   $pdo->commit();
   $stmt = null;
 /*-----------------------------------------------------------------------------
-    フレームデータ取得
+    フレームデータ取得(ユーザー個人の削除フラグの立っていない全フレーム)
 -----------------------------------------------------------------------------*/
   $pdo->beginTransaction();
-  $sql = "select * from favorites left join frames on favorites.frame_id = frames.frame_id order by favorites.favorite_updated desc";
+  $sql = "select * from favorites left join frames on favorites.frame_id = frames.frame_id where favorites.user_id = :user_id and removed_flag = 0 order by favorites.favorite_updated desc";
   $stmt = $pdo->prepare($sql);
+  $stmt->bindValue(":user_id", $_SESSION["user_id"], PDO::PARAM_INT);
   $stmt->execute();
   $pdo->commit();
 } catch (PDOException $e) {
@@ -33,7 +34,7 @@ try {
 /*=============================================================================
     フレーム一覧用データ取得>>
 =============================================================================*/
-$page_title = "トップページ";
+$page_title = "お気に入り";
 require("header.php");
 ?>
     <p>
@@ -77,7 +78,11 @@ require("header.php");
       <p><?= he($row_frame["frame_title"]) ?></p>
       <p><?= he(nl2br($row_frame["frame_content"])) ?></p>
       <p><?= he($row_frame["frame_pricee"]) ?></p>
-      <p><img src='<?= "../images/frames/" . he($row_frame["frame_image"]) ?>'></p>
+      <p>
+        <a href="../detail.php?frame_id=<?= he($row_frame["frame_id"]) ?>">
+        <img src='<?= "../images/frames/" . he($row_frame["frame_image"]) ?>'>
+        </a>
+      </p>
       <p><?= he($row_frame["frame_link"]) ?></p>
       <p><?= he($row_frame["frame_lens_width"]) ?></p>
       <p><?= he($row_frame["frame_lens_height"]) ?></p>
