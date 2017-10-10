@@ -14,23 +14,28 @@
 <body>
 <div class="wrapper">
   <header>
-    <ul class="nav-bar">
-      <li class="nav-bar__logo">
+    <div class="nav-bar">
+      <div class="nav-bar__logo">
         <a href="./"><img src="#" alt="<?= $site_name ?>"></a>
-      </li>
-      <?php if (!$login_flag): ?>
-      <li class="nav-bar__login">ログイン</li>
-      <li class="nav-bar__register">新規登録</li>
+      </div>
+      <ul class="nav-bar__menu">
+        <?php if (!$login_flag): ?>
+        <li class="nav-bar__login">ログイン</li>
+        <li class="nav-bar__register">新規登録</li>
+        <?php else: ?>
+        <li class="nav-bar__mymenu">マイメニュー</li>
+        <?php endif; ?>
+        <?php if(!$is_detail_page): ?>
+        <li class="nav-bar__filter">
+          <span class="icon icon-filter">
+        </li>
       <?php else: ?>
-      <li class="nav-bar__mymenu">マイメニュー</li>
+        <li class="nav-bar__back"></span>
+          <span class="icon icon-undo"></span>
+        </li>
       <?php endif; ?>
-      <li class="nav-bar__filter">
-        <span class="icon icon-filter">
-      </li>
-      <li class="nav-bar__back"></span>
-        <span class="icon icon-undo"></span>
-      </li>
-    </ul><!--.nav-bar-->
+      </ul>
+    </div><!--.nav-bar-->
     <div class="login-pop">
       <h2>ログイン</h2>
       <form class="login-pop__login-form" action="login.php" method="post">
