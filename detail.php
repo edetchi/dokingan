@@ -5,6 +5,10 @@
 -----------------------------------------------------------------------------*/
 $page_message = "";
 $error_message = "";
+/*-----------------------------------------------------------------------------
+    お気に入り用
+-----------------------------------------------------------------------------*/
+$_SESSION["frame_id"] = $_REQUEST["frame_id"];
 /*=============================================================================
     <<フレーム一覧用データ取得
 =============================================================================*/
@@ -31,13 +35,24 @@ try {
   $row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
   $pdo->commit();
   $stmt = null;
-} catch (PDOException $e) {
-  $pdo->rollBack();
-  die("エラー: " . $e->getMessage());
-}
 /*=============================================================================
     フレーム一覧用データ取得>>
 =============================================================================*/
+/*-----------------------------------------------------------------------------
+    お気に入りチェック
+-----------------------------------------------------------------------------*/
+  $sql = "select * from favorites where user_id = :user_id and frame_id = :frame_id";
+  $stmt = $pdo->prepare($sql);
+  $stmt->bindValue(":user_id", $_SESSION["user_id"], PDO::PARAM_INT);
+  $stmt->bindValue(":frame_id", $_SESSION["frame_id"], PDO::PARAM_INT);
+  $stmt->execute();
+  $row_favorite = $stmt->fetch(PDO::FETCH_ASSOC);
+  $stmt = null;
+} catch (PDOException $e) {
+  die("エラー: " . $e->getMessage());
+}
+$removed_flag = ($row_favorite["removed_flag"] == null or $row_favorite["removed_flag"] == 1) ? 1 : 0;
+var_export($removed_flag);
 /*-----------------------------------------------------------------------------
     レンズの厚み計算
 -----------------------------------------------------------------------------*/
@@ -61,6 +76,27 @@ if (isset($_REQUEST["send"])) {
   //空欄チェック
   if ($_REQUEST["frame_comment"] == "") $error_message .= "コメントを入力してください\n";
 }
+/*=============================================================================
+    <<お気に入り登録機能
+=============================================================================*/
+/*
+try {
+  $pdo->beginTransaction();
+  $sql = "insert into favorites (user_id, frame_id, removed_flag) values(:user_id, :frame_id, :removed_flag)";
+  $stmt = $pdo->prepare($sql);
+  $stmt->bindValue(":user_id", $_SESSION["user_id"], PDO::PARAM_INT);
+  $stmt->bindValue(":frame_id", $_REQUEST["frame_id"], PDO::PARAM_INT);
+  $stmt->bindValue(":frame_id", , PDO::PARAM_INT);
+  $stmt->execute();
+  $row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
+  $pdo->commit();
+  $stmt = null;
+} catch (PDOException $e) {
+  $pdo->rollBack();
+  die("エラー: " . $e->getMessage());
+}
+*/
+
 ?>
 <?php $page_title = "フレーム詳細";?>
 <?php require("header.php"); ?>
@@ -90,4 +126,53 @@ if (isset($_REQUEST["send"])) {
   <p><?= he($row_frame["frame_frame_width"]) ?></p>
   <time><?= he($row_frame["frame_created"]) ?></time>
   <time><?= he($row_frame["frame_updated"]) ?></time>
+  <p><button data-favorite=<?= $removed_flag ?>><i class="fa" aria-hidden="true"></i></button></p>
+  <div id="result">
+
+  </div>
+
+
 <?php require("footer.php"); ?>
+<script>
+$(function(){
+  var fbtn = $("button[data-favorite]");
+  if (fbtn.data("favorite")==0)  {
+    //fbtn.css("color", "yellow");
+    $("button[data-favorite] i").addClass("fa-star").css("color", "yellow");
+  } else {
+    $("button[data-favorite] i").addClass("fa-star-o");
+  }
+  fbtn.click(function() {
+    if (fbtn.data("favorite")==0) {
+      $.ajax({
+        url: "favorite.php",
+        type: "post",
+        data: {favorite: 1}
+      })
+      .done(function(data) {
+        fbtn.data("favorite", 1);
+        $("button[data-favorite] i").removeClass("fa-star").addClass("fa-star-o").css("color", "");
+        $("#result").html(data);
+      })
+      .fail(function() {
+        console.log("error");
+      });
+    }
+    if (fbtn.data("favorite")==1) {
+      $.ajax({
+        url: "favorite.php",
+        type: "post",
+        data: {favorite: 0}
+      })
+      .done(function(data) {
+        fbtn.data("favorite", 0);
+        $("button[data-favorite] i").removeClass("fa-star-o").addClass("fa-star").css("color", "yellow");
+        $("#result").html(data);
+      })
+      .fail(function() {
+        console.log("error");
+      });
+    }
+  });
+});
+</script>
