@@ -54,16 +54,24 @@
     <div class="mymenu-pop">
       <ul>
         <li>
-          <i class="fa fa-star-o" aria-hidden="true"></i>お気に入り
+          <a href="mypage/favorites.php">
+            <i class="fa fa-star-o" aria-hidden="true"></i>お気に入り
+          </a>
         </li>
         <li>
-          <span class="icon icon-glasses"></span>フレーム管理
+          <a href="mypage/frame_list.php">
+            <span class="icon icon-glasses"></span>フレーム管理
+          </a>
         </li>
         <li>
-          <span class="icon icon-setting1"></span>アカウント設定
+          <a href="mypage/account.php">
+            <span class="icon icon-setting1"></span>アカウント設定
+          </a>
         </li>
         <li>
-          <i class="fa fa-sign-out" aria-hidden="true"></i>ログアウト
+          <a href="mypage/logout.php">
+            <i class="fa fa-sign-out" aria-hidden="true"></i>ログアウト
+          </a>
         </li>
       </ul>
     </div><!--.mymenu-pop-->
