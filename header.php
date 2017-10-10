@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $page_title; ?> | フレームリフュジー</title>
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/script.js"></script>
