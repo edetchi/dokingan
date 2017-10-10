@@ -1,5 +1,5 @@
 <?php
-var_export(sha1("admin"));
+//var_export(sha1("admin"));
 //ライブラリの読み込み
 require_once("system/common.php");
 /*=============================================================================
@@ -34,22 +34,9 @@ try {
 /*=============================================================================
     フレーム一覧用データ取得>>
 =============================================================================*/
-$page_title = "トップページ";
+$page_title = "トップ";
 require("header.php");
 ?>
-    <p>
-      閲覧ありがとうございます。<br>
-      こちらはフレームリフュジーページです。
-    </p>
-    <h2>メニュー</h2>
-    <ul>
-      <li>
-        <a href="blog.php">ブログ</a>
-      </li>
-      <li>
-        <a href="inquiry.php">お問い合わせ</a>
-      </li>
-    </ul>
     <?php while($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
     <?php
 /*-----------------------------------------------------------------------------
@@ -67,31 +54,48 @@ require("header.php");
     $index = 1.74;
     //minimum blank sizeとは$max_edge*2の値のこと
     $thick= (pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick;
+    //中心（目元より）の厚さ
+    $edge1_thick = (pow($edge1, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick;
+    //端の厚さ
+    $edge2_thick = (pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick;
+/*=============================================================================
+    <<body部
+=============================================================================*/
     ?>
-    <article>
-      <?php if ($_SESSION["user_id"]):?>
-      <p><?= he($thick) ?></p>
-      <p><?= he($max_edge) ?></p>
-      <p><?= he($min_edge) ?></p>
-      <?php endif; ?>
-      <p><?= he($row_frame["user_loginid"]) ?></p>
-      <p><?= he($row_frame["frame_title"]) ?></p>
-      <p><?= he(nl2br($row_frame["frame_content"])) ?></p>
-      <p><?= he($row_frame["frame_pricee"]) ?></p>
-      <p>
+  <div class="main-wrap">
+    <main>
+      <div class="frame-list">
         <a href="detail.php?frame_id=<?= he($row_frame["frame_id"]) ?>">
-        <img src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
+          <img src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
         </a>
-      </p>
-      <p><?= he($row_frame["frame_link"]) ?></p>
-      <p><?= he($row_frame["frame_lens_width"]) ?></p>
-      <p><?= he($row_frame["frame_lens_height"]) ?></p>
-      <p><?= he($row_frame["frame_bridge_width"]) ?></p>
-      <p><?= he($row_frame["frame_temple_length"]) ?></p>
-      <p><?= he($row_frame["frame_frame_width"]) ?></p>
-      <time><?= he($row_frame["frame_created"]) ?></time>
-      <time><?= he($row_frame["frame_updated"]) ?></time>
-    </article>
-    <hr>
-    <?php endwhile; ?>
+        <ul class="frame-list__info">
+          <?php if (!$_SESSION["user_id"]):?>
+          <li class="frame-list__userid"><?= he($row_frame["user_loginid"]) ?></li>
+          <?php else: ?>
+            <?php if($edge1_thick == $max_edge): ?>
+          <li class="frame-list__thickness">中心: <span class="frame-list__max"><?= $edge1_thick ?></span>端: <span class="frame-list__min"><?= $edge2_thick ?></span>
+            <?php else: ?>
+          <li class="frame-list__thickness">中心: <span class="frame-list__min"><?= $edge1_thick ?></span>端: <span class="frame-list__max"><?= $edge2_thick ?></span>
+            <?php endif; ?>
+          </li><!--.frame-list__thickness-->
+          <?php endif; ?>
+          <li class="frame-list__size">
+            <?= he($row_frame["frame_lens_width"]) ?>□<?= he($row_frame["frame_bridge_width"]) ?>-<?= he($row_frame["frame_temple_length"]) ?>
+          </li>
+          <li class="frame-list__price">
+            <span><?= he($row_frame["frame_price"]) ?></span>
+            <span><i class="fa fa-star-o" aria-hidden="true"></i><?= he("64") ?></span>
+          </li>
+        </ul><!--.frame-list__info-->
+      </div><!--.frame-list-->
+    </main>
+    <aside>
+
+    </aside>
+  </div><!--.main-wrap-->
+    <?php endwhile;
+/*=============================================================================
+    body部>>
+=============================================================================*/
+    ?>
 <?php require("footer.php"); ?>
