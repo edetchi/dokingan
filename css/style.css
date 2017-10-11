@@ -126,7 +126,7 @@ img {
 .nav-bar__filter,
 .nav-bar__back {
   float: left;
-  display: inline;
+  display: block;
 }
 .nav-bar__login {
 
@@ -139,16 +139,42 @@ img {
   margin: 7.5px 10px;
   width: 80px;
   height: 32px;
+  border-right: 1px dotted #95989A;
   border-radius: 16px;
   color: #fff;
   background-color: #E50640;
   line-height: 32px;
   text-align: center;
 }
+.nav-bar__mymenu {
+  width: 175px;
+  text-align: center;
+}
+.nav-bar__mymenu-link {
+  display: block;
+ }
 .nav-bar__filter {
-  padding-left: 27px;
+  width: 35px;
+  height: 46px;
+  font-size: 28px;
   border-left: 1px dotted #95989A;
-  line-height: 47px;
+}
+.nav-bar__filter-link {
+  display: block;
+  padding-top: 5px;
+  padding-left: 24px;
+  width: 55px;
+}
+.nav-bar__back {
+  border-left: 1px dotted #95989A;
+  font-size: 28px;
+  vertical-align: center;
+}
+.nav-bar__back-link {
+  display: block;
+  width: 32px;
+  padding: 10px 20px;
+}
   text-align: center;
 
 }

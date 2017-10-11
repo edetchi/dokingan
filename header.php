@@ -23,15 +23,15 @@
         <li class="nav-bar__login">ログイン</li>
         <li class="nav-bar__register">新規登録</li>
         <?php else: ?>
-        <li class="nav-bar__mymenu">マイメニュー</li>
+        <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link" href="#"><i class="fa fa-user-o" aria-hidden="true"></i>マイメニュー</a></li>
         <?php endif; ?>
         <?php if(!$is_detail_page): ?>
         <li class="nav-bar__filter">
-          <span class="icon icon-filter">
+          <a class="nav-bar__filter-link" href="#"><span class="icon icon-filter"></a>
         </li>
       <?php else: ?>
         <li class="nav-bar__back"></span>
-          <span class="icon icon-undo"></span>
+          <a class="nav-bar__back-link" href="#"><span class="icon icon-undo"></span></a>
         </li>
       <?php endif; ?>
       </ul>
