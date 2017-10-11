@@ -82,5 +82,31 @@ $(function(){
       });
     }
   });
-  
+/*-----------------------------------------------------------------------------
+    .modal-login
+-----------------------------------------------------------------------------*/
+  $('.modal-login__trigger').click(function() {
+    $('body').append('<div class="modal-login__overlay"></div>');
+    $('.modal-login__overlay').fadeIn();
+    var modal = '.' + $(this).attr('data-modal');
+    modalResize();
+    $(modal).fadeIn();
+    $('.modal-login__overlay').off().click(function() {
+      $(modal).fadeOut('slow', function() {
+        $('.modal-login__overlay').remove();
+      });
+    });
+    $(window).on('resize', function() {
+      modalResize();
+    });
+    function modalResize() {
+      var w = $(window).width();
+      var h = $(window).height();
+      //.modal-loginを真ん中に表示
+      var x = (w - $(modal).outerWidth(true)) / 2;
+      var y = (h - $(modal).outerHeight(true)) / 2;
+      $(modal).css({'left': x + 'px','top': y + 'px'});
+	  console.log(x, y);
+    }
+  });
 });

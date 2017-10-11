@@ -20,7 +20,7 @@
       </div>
       <ul class="nav-bar__menu">
         <?php if (!$login_flag): ?>
-        <li class="nav-bar__login">ログイン</li>
+        <li class="nav-bar__login"><a class="modal-login__trigger" data-modal="modal-login">ログイン</a></li>
         <li class="nav-bar__register">新規登録</li>
         <?php else: ?>
         <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link" href="#"><i class="fa fa-user-o" aria-hidden="true"></i>マイメニュー</a></li>
@@ -36,24 +36,24 @@
       <?php endif; ?>
       </ul>
     </div><!--.nav-bar-->
-    <div class="login-pop">
-      <h2>ログイン</h2>
-      <form class="login-pop__login-form" action="login.php" method="post">
-        <div class="login-pop__email">
+    <div class="modal-login">
+      <h2 class="modal-login__title">ログイン</h2>
+      <form action="login.php" method="post">
+        <div>
           <label for="roguin"><span class="attention"></span></label>
-          <input type="text" name="user_loginid" id="roguin" size="30" value="ユーザー名→メールアドレスに変更したい">
+          <input type="text" name="user_loginid" class="modal-login__email-input" id="roguin" size="30" value="ユーザー名→メールアドレスに変更したい">
         </div>
-        <div class=login-pop__password>
+        <div>
           <label for="pasuwa-do"><span class="attention"></span></label>
-          <input type="password" name="user_password" id="pasuwa-do" size="30" value="パスワード">
+          <input type="password" name="user_password" class="modal-login__password-input" id="pasuwa-do" size="30" value="パスワード">
         </div>
-        <div class="login-pop__btn">
-          <input type="submit" name="send" value="ログイン">
+        <div>
+          <input type="submit" name="send" class="modal-login__btn-input" value="ログイン">
         </div>
-        <p class="login-pop__notice-password">パスワードを忘れた方は <a href="#  ">こちら</a></p>
-        <p class="login-pop__notice-register">アカウントをお持ちでない方 <a href="#">新規登録</a></p>
+        <p class="modal-login__notice-password">パスワードを忘れた方は <a class="modal-login__notice-password-link" href="#  ">こちら</a></p>
+        <p class="modal-login__notice-register">アカウントをお持ちでない方 <a class="modal-login__notice-register-link" href="#">新規登録</a></p>
       </form>
-    </div><!--.login-pop-->
+    </div><!--.modal-login-->
     <div class="register-pop">
 
     </div><!--.register-pop-->
