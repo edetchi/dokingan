@@ -37,6 +37,13 @@ try {
 $page_title = "トップ";
 require("header.php");
 ?>
+  <div class="main-wrap">
+    <main>
+<?php
+/*=============================================================================
+    <<フレームデータ表示用ループ
+=============================================================================*/
+?>
     <?php while($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
     <?php
 /*-----------------------------------------------------------------------------
@@ -62,15 +69,14 @@ require("header.php");
     <<body部
 =============================================================================*/
     ?>
-  <div class="main-wrap">
-    <main>
+      <div class="frame-list__layout">
       <div class="frame-list">
         <a href="detail.php?frame_id=<?= he($row_frame["frame_id"]) ?>">
-          <img src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
+          <img class="frame-list__image" src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
         </a>
         <ul class="frame-list__info">
           <?php if (!$_SESSION["user_id"]):?>
-          <li class="frame-list__userid"><?= he($row_frame["user_loginid"]) ?></li>
+          <li class="frame-list__userid"><i class="fa fa-user-o" aria-hidden="true"></i><?= he($row_frame["user_loginid"]) ?></li>
           <?php else: ?>
             <?php if($edge1_thick == $max_edge): ?>
           <li class="frame-list__thickness">中心: <span class="frame-list__max"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-list__min"><?= round($edge2_thick, 1); ?></span>
@@ -88,14 +94,21 @@ require("header.php");
           </li>
         </ul><!--.frame-list__info-->
       </div><!--.frame-list-->
+    </div><!--.frame-list__layout-->
+  <?php endwhile;
+/*=============================================================================
+      <<フレームデータ表示用ループ
+=============================================================================*/
+  ?>
     </main>
     <aside>
-
+      <?php
+//var_dump(frame_id(40));
+?>
     </aside>
   </div><!--.main-wrap-->
-    <?php endwhile;
+<?php
 /*=============================================================================
     body部>>
 =============================================================================*/
-    ?>
-<?php require("footer.php"); ?>
+require("footer.php"); ?>
