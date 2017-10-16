@@ -43,6 +43,7 @@ $(function(){
 /*-----------------------------------------------------------------------------
     ajaxでお気に入り登録改
 -----------------------------------------------------------------------------*/
+/*
   var fbtn = $("button[data-favorite]");
   if (fbtn.data("favorite")==0)  {
     //fbtn.css("color", "yellow");
@@ -81,6 +82,35 @@ $(function(){
         console.log("error");
       });
     }
+  });
+  */
+/*-----------------------------------------------------------------------------
+    登録時に行うユーザー名とメアドの重複チェック
+-----------------------------------------------------------------------------*/
+  $(document).on('keyup', '#yu-za-mei, #me-ruadoresu', function() {
+    var user_loginid = $('#yu-za-mei').val();
+    var user_email = $('#me-ruadoresu').val();
+    console.log(user_loginid);
+    $.ajax({
+      url: 'register_validater.php',
+      type: 'post',
+      data: {
+        user_loginid: user_loginid,
+        user_email: user_email
+        }
+    })
+    .done(function(data) {
+      console.log(data);
+      $('.user_loginid_result').html(data.user_loginid);
+      $('.user_email_result').html(data.user_email);
+    })
+    .fail(function() {
+      console.log('error');
+      console.log("XMLHttpRequest : " + XMLHttpRequest.status);
+console.log("textStatus     : " + textStatus);
+console.log("errorThrown    : " + errorThrown.message);
+
+    });
   });
 /*-----------------------------------------------------------------------------
     .modal-login
