@@ -52,7 +52,7 @@ try {
   die("エラー: " . $e->getMessage());
 }
 $removed_flag = ($row_favorite["removed_flag"] == null or $row_favorite["removed_flag"] == 1) ? 1 : 0;
-var_export($removed_flag);
+//var_export($removed_flag);
 /*-----------------------------------------------------------------------------
     レンズの厚み計算
 -----------------------------------------------------------------------------*/
@@ -67,7 +67,11 @@ $center_thick = 1.0;
 //レンズ屈折率
 $index = 1.74;
 //minimum blank sizeとは$max_edge*2の値のこと
-$thick= (pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick;
+$thick= round((pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
+//中心（目元より）の厚さ
+$edge1_thick = round((pow($edge1, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
+//端の厚さ
+$edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
 /*-----------------------------------------------------------------------------
     フォーム項目のエラーチェック
 -----------------------------------------------------------------------------*/
@@ -100,36 +104,62 @@ try {
 ?>
 <?php $page_title = "フレーム詳細";?>
 <?php require("header.php"); ?>
-  <p>
-    <?= he($page_message) ?>
-  </p>
-  <p class="attention">
-    <?= nl2br(he($error_message)) ?>
-  </p>
-  <?php if ($_SESSION["user_id"]):?>
-  <p><?= he($thick) ?></p>
-  <p><?= he($max_edge) ?></p>
-  <p><?= he($min_edge) ?></p>
-  <?php endif; ?>
-  <p><?= he($row_frame["user_loginid"]) ?></p>
-  <p><?= he($row_frame["frame_title"]) ?></p>
-  <p><?= he(nl2br($row_frame["frame_content"])) ?></p>
-  <p><?= he($row_frame["frame_pricee"]) ?></p>
-  <p>
-    <img src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
-  </p>
-  <p><?= he($row_frame["frame_link"]) ?></p>
-  <p><?= he($row_frame["frame_lens_width"]) ?></p>
-  <p><?= he($row_frame["frame_lens_height"]) ?></p>
-  <p><?= he($row_frame["frame_bridge_width"]) ?></p>
-  <p><?= he($row_frame["frame_temple_length"]) ?></p>
-  <p><?= he($row_frame["frame_frame_width"]) ?></p>
-  <time><?= he($row_frame["frame_created"]) ?></time>
-  <time><?= he($row_frame["frame_updated"]) ?></time>
-  <p><button data-favorite=<?= $removed_flag ?>><i class="fa" aria-hidden="true"></i></button></p>
-  <div id="result">
-
+  <div class="main-wrap">
+    <main>
+      <p>
+        <?= he($page_message) ?>
+      </p>
+      <p class="attention">
+        <?= nl2br(he($error_message)) ?>
+      </p>
+      <div class="frame-list__layout frame-list__layout_desc_true">
+        <div class="frame-list frame-list_desc_true">
+          <a href="detail.php?frame_id=<?= he($row_frame["frame_id"]) ?>">
+            <img class="frame-list__image" src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
+          </a>
+          <ul class="frame-list__info">
+            <li class="frame-list__userid"><i class="fa fa-user-o" aria-hidden="true"></i><?= he($row_frame["user_loginid"]) ?></li>
+            <li class="frame-list__size">
+              <?= he($row_frame["frame_lens_width"]) ?>□<?= he($row_frame["frame_bridge_width"]) ?>-<?= he($row_frame["frame_temple_length"]) ?>
+            </li>
+            <li class="frame-list_desc_true__optional">
+            <?php if($row_frame["frame_frame_width"]) echo "フレーム幅" . he($row_frame["frame_frame_width"]); ?>
+            </li>
+            <li class="frame-list_desc_true__optional">
+            <?php if($row_frame["frame_lens_height"]) echo "レンズ高" . he($row_frame["frame_frame_width"]); ?>
+            </li>
+            <?php if ($_SESSION["user_id"]):?>
+              <?php if($edge1_thick == $max_edge): ?>
+            <li class="frame-list__thickness frame-list_desc_true__thickness">中心: <span class="frame-list__max"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-list__min"><?= round($edge2_thick, 1); ?></span>
+              <?php else: ?>
+            <li class="frame-list__thickness frame-list_desc_true__thickness">中心: <span class="frame-list__min"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-list__max"><?= round($edge2_thick, 1); ?></span>
+              <?php endif; ?>
+            </li><!--.frame-list__thickness-->
+            <?php endif; ?>
+          </ul><!--.frame-list__info-->
+        </div><!--.frame-list-->
+      </div><!--.frame-list__layout-->
+      <ul class="frame-detail">
+        <li class="frame-detail__price">
+          <span><i class="fa fa-jpy" aria-hidden="true"></i><?= he($row_frame["frame_price"]) ?></span>
+        </li>
+        <li class="frame-detail__seller">
+          <a class="frame-detail__seller-link" href="<?= he($row_frame['frame_link']) ?>">
+            <i class="fa fa-external-link" aria-hidden="true"></i>Buy
+          </a>
+        </li>
+        <li clas="frame-detail__report">
+          <button data-report=<?= $report_removed_flag ?>>
+            <i class="fa fa-flag-o frame-detail__report-icon" aria-hidden="true"></i>
+          </button>
+        </li>
+        <li class="frame-detail__favorite">
+          <button data-favorite=<?= $removed_flag ?>>
+            <i class="fa fa-star-o frame-detail__favorite-icon" aria-hidden="true"></i><?= he("64") ?>
+          </button>
+        </li>
+      </ul><!--.frame-detail-->
+      <!--<div id="result"></div>-->
+    </main>
   </div>
-
-
 <?php require("footer.php"); ?>
