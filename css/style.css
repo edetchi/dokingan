@@ -229,6 +229,138 @@ header {
 .modal-login__notice-password-link, .modal-login__notice-register-link {
   transition: 0.3s;
 }
+/*-----------------------------------------------------------------------------
+    .modal-register
+-----------------------------------------------------------------------------*/
+.modal-register__overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-register {
+  display: none;
+  position: fixed;
+  z-index: 3;
+  margin: 0;
+  padding: 10px 20px;
+  width: 70vw;
+  height: 70vh;
+  max-width: 360px;
+  max-height: 360px;
+  border-radius: 10px;
+  background: #fff;
+  text-align: center;
+}
+.modal-register__trigger {
+  display: block;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.modal-register__title {
+	font-size: 28px;
+}
+.modal-register__email, .modal-register__password {
+	padding-top: 20px;
+}
+.modal-register__email-input, .modal-register__password-input {
+  box-sizing: border-box;
+  margin-top: 20px;
+  padding: 10px;
+  width: 70vw;
+  max-width: 300px;
+  font-size: 1.3em;
+  /*ボーダー初期化*/
+  border:0;
+  border:solid 1px #ccc;
+  /*丸角*/
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  /*シャドー*/
+  -moz-box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+  box-shadow: inner 0 0 4px rgba(0, 0, 0, 0.2);
+}
+.modal-register__btn-input {
+	margin-top: 20px;
+	width: 70vw;
+	max-width:300px;
+	height: 45px;
+	border: 0;
+	border-radius: 3px;
+	background: #f5f5f5;
+	font-size: 20px;
+	/*:hoverにtransitionをかけると一方向に、元要素にかけると外した時もなる*/
+	transition: 0.3s;
+}
+.modal-register__btn-input:hover {
+  background: #E50640;
+  color: #fff;
+}
+.modal-register__notice {
+	padding-top: 10px;
+	font-size: 16px;
+}
+.modal-register__notice-link {
+  transition: 0.3s;
+}
+/*-----------------------------------------------------------------------------
+    .modal-mymenu
+-----------------------------------------------------------------------------*/
+.modal-mymenu__overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-mymenu {
+  display: none;
+  position: fixed;
+  z-index: 3;
+  margin: 0;
+  padding: 10px 20px;
+  width: 70vw;
+  height: 70vh;
+  max-width: 360vmin;
+  max-height: 200vmin;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 4vh;
+  text-align: center;
+}
+.modal-mymenu__layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.modal-mymenu__layout li {
+  margin: 5vh 0;
+}
+.modal-mymenu:after {
+/*
+  display: block;
+  clear: both;
+  content: "";
+*/
+}
+.modal-mymenu__trigger {
+  display: block;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.modal-mymenu__title {
+	font-size: 28px;
+}
 /*=============================================================================
     .header>>
 =============================================================================*/

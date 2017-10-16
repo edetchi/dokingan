@@ -39,7 +39,7 @@
     </div><!--.nav-bar-->
     <div class="modal-login">
       <h2 class="modal-login__title">ログイン</h2>
-      <form action="login.php" method="post">
+      <form action="mypage/login.php" method="post">
         <div>
           <label for="roguin"><span class="attention"></span></label>
           <input type="text" name="user_loginid" class="modal-login__email-input" id="roguin" size="30" value="ユーザー名→メールアドレスに変更したい">
@@ -55,11 +55,12 @@
         <p class="modal-login__notice-register">アカウントをお持ちでない方 <a class="modal-login__notice-register-link" href="#">新規登録</a></p>
       </form>
     </div><!--.modal-login-->
-    <div class="register-pop">
-
-    </div><!--.register-pop-->
-    <div class="mymenu-pop">
-      <ul>
+    <div class="modal-register">
+      <h2 class="modal-register__title">アカウントの作成</h2>
+      <p class="modal-register__notice">すでにアカウントをお持ちの方は <a class="modal-register__notice-link" href="#  ">こちら</a></p>
+    </div><!--.modal-register-->
+    <div class="modal-mymenu">
+      <ul class="modal-mymenu__layout">
         <li>
           <a href="mypage/favorites.php">
             <i class="fa fa-star-o" aria-hidden="true"></i>お気に入り
@@ -81,5 +82,5 @@
           </a>
         </li>
       </ul>
-    </div><!--.mymenu-pop-->
+    </div><!--.modal-mymenu-->
   </header>

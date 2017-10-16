@@ -139,6 +139,66 @@ console.log("errorThrown    : " + errorThrown.message);
 	  console.log(x, y);
     }
   });
+
+
+
+/*-----------------------------------------------------------------------------
+    .modal-register
+-----------------------------------------------------------------------------*/
+  $('.modal-register__trigger').click(function() {
+    $('body').append('<div class="modal-register__overlay"></div>');
+    $('.modal-register__overlay').fadeIn();
+    var modal = '.' + $(this).attr('data-modal');
+    modalResize();
+    $(modal).fadeIn();
+    $('.modal-register__overlay').off().click(function() {
+      $(modal).fadeOut('slow', function() {
+        $('.modal-register__overlay').remove();
+      });
+    });
+    $(window).on('resize', function() {
+      modalResize();
+    });
+    function modalResize() {
+      var w = $(window).width();
+      var h = $(window).height();
+      //.modal-registerを真ん中に表示
+      var x = (w - $(modal).outerWidth(true)) / 2;
+      var y = (h - $(modal).outerHeight(true)) / 2;
+      $(modal).css({'left': x + 'px','top': y + 'px'});
+	  console.log(x, y);
+    }
+  });
+
+
+/*-----------------------------------------------------------------------------
+    .modal-mymenu
+-----------------------------------------------------------------------------*/
+  $('.modal-mymenu__trigger').click(function() {
+    $('body').append('<div class="modal-mymenu__overlay"></div>');
+    $('.modal-mymenu__overlay').fadeIn();
+    var modal = '.' + $(this).attr('data-modal');
+    modalResize();
+    $(modal).fadeIn();
+    $('.modal-mymenu__overlay').off().click(function() {
+      $(modal).fadeOut('slow', function() {
+        $('.modal-mymenu__overlay').remove();
+      });
+    });
+    $(window).on('resize', function() {
+      modalResize();
+    });
+    function modalResize() {
+      var w = $(window).width();
+      var h = $(window).height();
+      //.modal-mymenuを真ん中に表示
+      var x = (w - $(modal).outerWidth(true)) / 2;
+      var y = (h - $(modal).outerHeight(true)) / 2;
+      $(modal).css({'left': x + 'px','top': y + 'px'});
+	  console.log(x, y);
+    }
+  });
+
 /*-----------------------------------------------------------------------------
     .nav-bar
 -----------------------------------------------------------------------------*/
