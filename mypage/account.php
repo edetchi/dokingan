@@ -176,7 +176,7 @@ $page_message = "修正しました";
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     送信ボタンが押されて、エラーメッセージがない時>>
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-
+/*
 print '$user_icon';
 print "<br>";
 var_export($user_icon);
@@ -189,52 +189,54 @@ print '$form["user_icon"]';
 print "<br>";
 var_export($form["user_icon"]);
 print "<br>";
-
+*/
 ?>
 <?php $page_title = "アカウント設定";?>
 <?php require("header.php"); ?>
-  <p>
+<div class="main-wrap">
+  <main>
     <a href="frame_list.php">一覧へ戻る</a>
-  </p>
-  <p>
-    <?= he($page_message) ?>
-  </p>
-  <p class="attention">
-    <?= nl2br(he($error_message)) ?>
-  </p>
-  <form enctype="multipart/form-data" action="account.php" method="post">
-    <div>
-      <label for="yu-za-mei">ユーザー名<span class="attention">【必須】</span></label>
-      <input type="text" name="user_loginid" id="yu-za-mei" size="30" value="<?= he($form["user_loginid"]); ?>">
-    </div>
-    <div>
-    <label for="pasuwa-do">パスワード<span class="attention">【必須】</span></label>
-      <input type="password" name="user_password" id="pasuwa-do" size="30" >
-    </div>
-    <div>
-      <label for="aikon">アイコン<span class="attention"></span></label>
-      <?php if ($user_icon["error"] === 0 && $error_message === ""): ?>
-      <p><img src='<?= "../images/users/" . he($user_icon_name) ?>'></p>
-      <input type="file" name="user_icon" id="aikon">
-      <?php else : ?>
-      <p><img src="<?= '../images/users/' . he($form["user_icon"]) ?>"></p>
-      <input type="file" name="user_icon" id="aikon">
-      <?php endif; ?>
-    </div>
-    <div>
-    <label for="meado">メールアドレス<span class="attention">【必須】</span></label>
-      <input type="text" name="user_email" id="meado" size="30" value="<?= he($form["user_email"]); ?>">
-    </div>
-    <div>
-    <label for="esupieichi">SPH（度数）<span class="attention">【必須】</span></label>
-      <input type="number" name="user_sph" id="esupieichi" size="30" value="<?= he($form["user_sph"]); ?>">
-    </div>
-    <div>
-    <label for="doukoukankyori">瞳孔間距離<span class="attention">【必須】</span></label>
-      <input type="number" name="user_pd" id="doukoukankyori" size="30" value="<?= he($form["user_pd"]); ?>">
-    </div>
-    <div>
-      <input type="submit" name="send" value="更新">
-    </div>
-  </form>
+    <p>
+      <?= he($page_message) ?>
+    </p>
+    <p class="attention">
+      <?= nl2br(he($error_message)) ?>
+    </p>
+    <form enctype="multipart/form-data" action="account.php" method="post">
+      <div>
+        <label for="yu-za-mei">ユーザー名<span class="attention">【必須】</span></label>
+        <input type="text" name="user_loginid" id="yu-za-mei" size="30" value="<?= he($form["user_loginid"]); ?>">
+      </div>
+      <div>
+      <label for="pasuwa-do">パスワード<span class="attention">【必須】</span></label>
+        <input type="password" name="user_password" id="pasuwa-do" size="30" >
+      </div>
+      <div>
+        <label for="aikon">アイコン<span class="attention"></span></label>
+        <?php if ($user_icon["error"] === 0 && $error_message === ""): ?>
+        <p><img src='<?= "../images/users/" . he($user_icon_name) ?>'></p>
+        <input type="file" name="user_icon" id="aikon">
+        <?php else : ?>
+        <p><img src="<?= '../images/users/' . he($form["user_icon"]) ?>"></p>
+        <input type="file" name="user_icon" id="aikon">
+        <?php endif; ?>
+      </div>
+      <div>
+      <label for="meado">メールアドレス<span class="attention">【必須】</span></label>
+        <input type="text" name="user_email" id="meado" size="30" value="<?= he($form["user_email"]); ?>">
+      </div>
+      <div>
+      <label for="esupieichi">SPH（度数）<span class="attention">【必須】</span></label>
+        <input type="number" name="user_sph" id="esupieichi" size="30" value="<?= he($form["user_sph"]); ?>">
+      </div>
+      <div>
+      <label for="doukoukankyori">瞳孔間距離<span class="attention">【必須】</span></label>
+        <input type="number" name="user_pd" id="doukoukankyori" size="30" value="<?= he($form["user_pd"]); ?>">
+      </div>
+      <div>
+        <input type="submit" name="send" value="更新">
+      </div>
+    </form>
+  </main>
+</div>
 <?php require("footer.php"); ?>
