@@ -53,11 +53,11 @@ require("header.php");
     //レンズ屈折率
     $index = 1.74;
     //minimum blank sizeとは$max_edge*2の値のこと
-    $thick= (pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick;
+    $thick= round((pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
     //中心（目元より）の厚さ
-    $edge1_thick = (pow($edge1, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick;
+    $edge1_thick = round((pow($edge1, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
     //端の厚さ
-    $edge2_thick = (pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick;
+    $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
 /*=============================================================================
     <<body部
 =============================================================================*/
@@ -73,9 +73,9 @@ require("header.php");
           <li class="frame-list__userid"><?= he($row_frame["user_loginid"]) ?></li>
           <?php else: ?>
             <?php if($edge1_thick == $max_edge): ?>
-          <li class="frame-list__thickness">中心: <span class="frame-list__max"><?= $edge1_thick ?></span>端: <span class="frame-list__min"><?= $edge2_thick ?></span>
+          <li class="frame-list__thickness">中心: <span class="frame-list__max"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-list__min"><?= round($edge2_thick, 1); ?></span>
             <?php else: ?>
-          <li class="frame-list__thickness">中心: <span class="frame-list__min"><?= $edge1_thick ?></span>端: <span class="frame-list__max"><?= $edge2_thick ?></span>
+          <li class="frame-list__thickness">中心: <span class="frame-list__min"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-list__max"><?= round($edge2_thick, 1); ?></span>
             <?php endif; ?>
           </li><!--.frame-list__thickness-->
           <?php endif; ?>
