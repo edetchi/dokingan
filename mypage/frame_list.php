@@ -14,42 +14,50 @@ try {
 ?>
 <?php $page_title = "フレーム管理";?>
 <?php require("header.php"); ?>
-	<a href="frame_edit.php">フレームを追加する</a>
-	<hr>
-	<table border="1" width="100%">
-		<tr>
-			<th></th>
-			<th>フレーム名</th>
-      <th>コメント</th>
-      <th>価格(円)</th>
-      <th>画像</th>
-      <th>商品リンク</th>
-      <th>レンズ幅(mm)</th>
-      <th>レンズの高さ(mm)</th>
-      <th>ブリッジ幅(mm)</th>
-      <th>テンプルの長さ(mm)</th>
-      <th>フレーム幅(mm)</th>
-			<th>更新日時</th>
-			<th>作成日時</th>
-			<th></th>
-		</tr>
-<?php while ($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-		<tr>
-			<td><a href="frame_edit.php?mode=change&frame_id=<?= he($row_frame["frame_id"]) ?>">編集</a></td>
-			<td><?= he($row_frame["frame_title"]) ?></td>
-			<td><?= nl2br(he($row_frame["frame_content"]));?></td>
-      <td><?= he($row_frame["frame_price"]) ?></td>
-      <td><img src='<?= "../images/frames/" . he($row_frame["frame_image"]) ?>'></td>
-      <td><?= he($row_frame["frame_link"]) ?></td>
-      <td><?= he($row_frame["frame_lens_width"]) ?></td>
-      <td><?= he($row_frame["frame_lens_height"]) ?></td>
-      <td><?= he($row_frame["frame_bridge_width"]) ?></td>
-      <td><?= he($row_frame["frame_temple_length"]) ?></td>
-      <td><?= he($row_frame["frame_frame_width"]) ?></td>
-      <td><?= he($row_frame["frame_updated"]) ?></td>
-			<td><?= he($row_frame["frame_created"]) ?></td>
-			<td><a href="frame_edit.php?mode=delete&frame_id=<?= he($row_frame["frame_id"]) ?>">削除</a></td>
-		</tr>
-<?php endwhile; ?>
-	</table>
+<div class="main-wrap">
+  <main>
+    <a class="frame-list__add-btn" href="frame_edit.php">フレームを追加する</a>
+    <?php while ($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+    <div class="frame-list__layout frame-list__layout_desc_true frame-list__layout_mymenu_on">
+      <div class="frame-list frame-list_desc_true">
+        <a href="../detail.php?frame_id=<?= he($row_frame["frame_id"]) ?>">
+          <img class="frame-list__image" src='<?= "../images/frames/" . he($row_frame["frame_image"]) ?>'>
+        </a>
+        <ul class="frame-list__info">
+          <li class="frame-detail__price">
+            <span><i class="fa fa-jpy" aria-hidden="true"></i><?= he($row_frame["frame_price"]) ?></span>
+          </li>
+          <li class="frame-list__size">
+            <?= he($row_frame["frame_lens_width"]) ?>□<?= he($row_frame["frame_bridge_width"]) ?>-<?= he($row_frame["frame_temple_length"]) ?>
+          </li>
+          <li class="frame-list_desc_true__optional">
+          <?php if($row_frame["frame_frame_width"]) echo "フレーム幅" . he($row_frame["frame_frame_width"]); ?>
+          </li>
+          <li class="frame-list_desc_true__optional">
+          <?php if($row_frame["frame_lens_height"]) echo "レンズ高" . he($row_frame["frame_frame_width"]); ?>
+          </li>
+          <li class="frame-detail__seller">
+            <a class="frame-detail__seller-link" href="<?= he($row_frame['frame_link']) ?>">
+              <i class="fa fa-external-link" aria-hidden="true"></i>Link
+            </a>
+          </li>
+        </ul><!--.frame-list__info-->
+      </div><!--.frame-list-->
+    </div><!--.frame-list__layout-->
+    <ul class="frame-detail">
+      <li clas="frame-detail__edit">
+        <a href="frame_edit.php?mode=change&frame_id=<?= he($row_frame["frame_id"]) ?>">
+          編集
+        </a>
+      </li>
+      <li class="frame-detail__delete">
+        <a href="frame_edit.php?mode=delete&frame_id=<?= he($row_frame["frame_id"]) ?>">
+          削除
+        </a>
+      </li>
+    </ul><!--.frame-detail-->
+    <!--<div id="result"></div>-->
+  <?php endwhile; ?>
+  </main>
+</div>
 <?php require("footer.php"); ?>
