@@ -117,7 +117,7 @@ if (isset($request["send"]) && $error_message == "") {
 /*-----------------------------------------------------------------------------
     画像の投稿処理
 -----------------------------------------------------------------------------*/
-  if ($image["error"] == 0){
+  if ($image["error"] == 0 && $mode == "change"){
     //古い画像削除
     unlink("../images/frames/{$_SESSION["old_image"]}");
     unlink("../images/frames/thumb_{$_SESSION["old_image"]}");
@@ -232,8 +232,8 @@ if (isset($request["send"]) && $error_message == "") {
     } catch (PDOException $e) {
       die("エラー: " . $e->getMessage());
     }
-  }
   $page_message = "登録が完了しました";
+  }
 //}
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     送信ボタンが押されて、エラーメッセージがない時、新規登録or修正終了>>
@@ -241,71 +241,73 @@ if (isset($request["send"]) && $error_message == "") {
 ?>
 <?php $page_title = "フレーム編集";?>
 <?php require("header.php"); ?>
-  <p>
-    <a href="frame_list.php">フレーム一覧へ戻る</a>
-  </p>
-  <p>
-    <?= he($page_message) ?>
-  </p>
-  <p class="attention">
-    <?= nl2br(he($error_message)) ?>
-  </p>
-  <?php if ($mode == "change"): ?>
+<div class="main-wrap">
+  <main>
+    <a class="frame-list-list-btn" href="frame_list.php">フレーム一覧へ戻る</a>
+    <p>
+      <?= he($page_message) ?>
+    </p>
+    <p class="attention">
+      <?= nl2br(he($error_message)) ?>
+    </p>
+    <?php if ($mode == "change"): ?>
     <p>
       フレームID【<?= he($form["frame_id"]) ?>】を修正しています
     </p>
-  <?php endif; ?>
-  <form enctype="multipart/form-data" action="frame_edit.php" method="post">
-    <div>
-      <label for="hure-mumei">フレーム名<span class="attention">【必須】</span></label>
-      <input type="text" name="frame_title" id="hure-mumei" size="30" value="<?= he($form['frame_title']); ?>">
-    </div>
-    <div>
-      <label for="komento">コメント</label>
-      <textarea name="frame_content" id="komento" rows="5" cols="20"><?= he($form["frame_content"]); ?></textarea>
-    </div>
-    <div>
-      <label for="kakaku">価格(円)<span class="attention">【必須】</span></label>
-      <input type="number" name="frame_price" id="kakaku" max="99999" value="<?= he($form['frame_price']); ?>">
-    </div>
-    <div>
-      <label for="gazou">画像<span class="attention">【必須】</span></label>
-      <?php if ($image["error"] === 0 && $error_message === ""): ?>
-      <p><img src='<?= "../images/frames/" . he($image_name) ?>'></p>
-      <input type="file" name="frame_image" id="aikon">
-      <?php else : ?>
-      <p><img src="<?= '../images/frames/' . he($form["frame_image"]) ?>"></p>
-      <input type="file" name="frame_image" id="aikon">
-      <?php endif; ?>
-    </div>
-    <div>
-      <label for="shohinrinku">商品リンク<span class="attention">【必須】</span></label>
-      <input type="text" name="frame_link" id="shohinrinku" size="100" value="<?= he($form['frame_link']); ?>">
-    </div>
-    <div>
-      <label for="renzuhaba">レンズ幅(mm)<span class="attention">【必須】</span></label>
-      <input type="number" name="frame_lens_width" id="renzuhaba" max="999" value="<?= he($form['frame_lens_width']); ?>">
-    </div>
-    <div>
-      <label for="renzunotakasa">レンズの高さ(mm)</label>
-      <input type="number" name="frame_lens_height" id="renzunotakasa" max="999" value="<?= he($form['frame_lens_height']); ?>">
-    </div>
-    <div>
-      <label for="burijjihaba">ブリッジ幅(mm)<span class="attention">【必須】</span></label>
-      <input type="number" name="frame_bridge_width" id="burijjihaba" max="999" value="<?= he($form['frame_bridge_width']); ?>">
-    </div>
-    <div>
-      <label for="tenpurunonagasa">テンプルの長さ(mm)<span class="attention">【必須】</span></label>
-      <input type="number" name="frame_temple_length" id="tenpurunonagasa" max="999" value="<?= he($form['frame_temple_length']); ?>">
-    </div>
-    <div>
-      <label for="hure-muhaba">フレーム幅(mm)</label>
-      <input type="number" name="frame_frame_width" id="hure-muhaba" max="999" value="<?= he($form['frame_frame_width']); ?>">
-    </div>
-    <div>
-      <input type="submit" name="send" value="送信する">
-      <input type="hidden" name="mode" value="<?= he($mode); ?>">
-      <input type="hidden" name="frame_id" value="<?= he($form['frame_id']); ?>">
-    </div>
-  </form>
+    <?php endif; ?>
+    <form class="frame-edit" enctype="multipart/form-data" action="frame_edit.php" method="post">
+      <div>
+        <label for="hure-mumei">フレーム名<span class="attention">【必須】</span></label>
+        <input type="text" name="frame_title" id="hure-mumei" size="30" value="<?= he($form['frame_title']); ?>">
+      </div>
+      <div>
+        <label for="komento">コメント</label>
+        <textarea name="frame_content" id="komento" rows="5" cols="20"><?= he($form["frame_content"]); ?></textarea>
+      </div>
+      <div>
+        <label for="kakaku">価格(円)<span class="attention">【必須】</span></label>
+        <input type="number" name="frame_price" id="kakaku" max="99999" value="<?= he($form['frame_price']); ?>">
+      </div>
+      <div>
+        <label for="gazou">画像<span class="attention">【必須】</span></label>
+        <?php if ($image["error"] === 0 && $error_message === ""): ?>
+        <p><img src='<?= "../images/frames/" . he($image_name) ?>'></p>
+        <input type="file" name="frame_image" id="aikon">
+        <?php else : ?>
+        <p><img src="<?= '../images/frames/' . he($form["frame_image"]) ?>"></p>
+        <input type="file" name="frame_image" id="aikon">
+        <?php endif; ?>
+      </div>
+      <div>
+        <label for="shohinrinku">商品リンク<span class="attention">【必須】</span></label>
+        <input type="text" name="frame_link" id="shohinrinku" size="100" value="<?= he($form['frame_link']); ?>">
+      </div>
+      <div>
+        <label for="renzuhaba">レンズ幅(mm)<span class="attention">【必須】</span></label>
+        <input type="number" name="frame_lens_width" id="renzuhaba" max="999" value="<?= he($form['frame_lens_width']); ?>">
+      </div>
+      <div>
+        <label for="renzunotakasa">レンズの高さ(mm)</label>
+        <input type="number" name="frame_lens_height" id="renzunotakasa" max="999" value="<?= he($form['frame_lens_height']); ?>">
+      </div>
+      <div>
+        <label for="burijjihaba">ブリッジ幅(mm)<span class="attention">【必須】</span></label>
+        <input type="number" name="frame_bridge_width" id="burijjihaba" max="999" value="<?= he($form['frame_bridge_width']); ?>">
+      </div>
+      <div>
+        <label for="tenpurunonagasa">テンプルの長さ(mm)<span class="attention">【必須】</span></label>
+        <input type="number" name="frame_temple_length" id="tenpurunonagasa" max="999" value="<?= he($form['frame_temple_length']); ?>">
+      </div>
+      <div>
+        <label for="hure-muhaba">フレーム幅(mm)</label>
+        <input type="number" name="frame_frame_width" id="hure-muhaba" max="999" value="<?= he($form['frame_frame_width']); ?>">
+      </div>
+      <div>
+        <input type="submit" name="send" value="送信する">
+        <input type="hidden" name="mode" value="<?= he($mode); ?>">
+        <input type="hidden" name="frame_id" value="<?= he($form['frame_id']); ?>">
+      </div>
+    </form>
+  </main>
+</div>
 <?php require("footer.php"); ?>
