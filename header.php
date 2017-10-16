@@ -16,22 +16,23 @@
   <header>
     <div class="nav-bar">
       <div class="nav-bar__logo">
-        <a href="./"><img src="#" alt="<?= $site_name ?>"></a>
+        <a class="nav-bar__logo-link" href="./"><!--<img src="images/10.jpg" alt="<?= $site_name ?>">--><i class="fa fa-home nav-bar__logo-icon" aria-hidden="true"></i></a>
       </div>
       <ul class="nav-bar__menu">
         <?php if (!$login_flag): ?>
-        <li class="nav-bar__login"><a class="modal-login__trigger" data-modal="modal-login">ログイン</a></li>
-        <li class="nav-bar__register">新規登録</li>
+        <li class="nav-bar__login"><a class="nav-bar__login-link modal-login__trigger" data-modal="modal-login">ログイン</a></li>
+        <li class="nav-bar__register"><a class="modal-register__trigger" data-modal="modal-register">新規登録</a></li>
         <?php else: ?>
-        <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link" href="#"><i class="fa fa-user-o" aria-hidden="true"></i>マイメニュー</a></li>
+        <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link modal-mymenu__trigger" data-modal="modal-mymenu"><i class="fa fa-user nav-bar__mymenu-icon" aria-hidden="true"></i>マイメニュー</a></li>
         <?php endif; ?>
         <?php if(!$is_detail_page): ?>
         <li class="nav-bar__filter">
-          <a class="nav-bar__filter-link" href="#"><span class="icon icon-filter"></a>
+          <a class="nav-bar__filter-link" href="#"><!--<span class="icon icon-filter">--><i class="fa fa-filter nav-bar__filter-icon" aria-hidden="true"></i></a>
         </li>
       <?php else: ?>
         <li class="nav-bar__back"></span>
-          <a class="nav-bar__back-link" href="#"><span class="icon icon-undo"></span></a>
+          <a class="nav-bar__back-link" href="./"><!--<span class="icon icon-undo"></span>--><i class="fa fa-arrow-left nav-bar__back-icon" aria-hidden="true"></i>
+</a>
         </li>
       <?php endif; ?>
       </ul>

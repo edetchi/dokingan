@@ -102,77 +102,51 @@ img {
 /*=============================================================================
     <<.header
 =============================================================================*/
+header {
+}
 /*-----------------------------------------------------------------------------
     .nav-bar
 -----------------------------------------------------------------------------*/
 .nav-bar {
-  margin-top: 10px;
-  height: 70px;
+  height: 50px;
+  width: 100%;
+  background: #5f5f5f;
+  box-shadow: 0 5px 5px rgba(160, 166, 179, 0.3);
+  line-height: 50px;
+  text-align: center;
+  font-size: 3vw;
+}
+.fixed {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 100;
 }
 .nav-bar__logo {
   float: left;
+  width: 25vw;
 }
 .nav-bar__menu {
   float: right;
-  width: 255px;
-  height: 46px;
-  border: 1px solid #95989A;
-  border-radius: 10px;
-  line-height: 46px;
+  /*width: 60%;*/
 }
-.nav-bar__login,
-.nav-bar__register,
-.nav-bar__mymenu,
-.nav-bar__filter,
-.nav-bar__back {
+.nav-bar__login, .nav-bar__register, .nav-bar__mymenu, .nav-bar__filter, .nav-bar__back {
   float: left;
-  display: block;
+  width: 25vw;
 }
-.nav-bar__login {
-  padding: 0 10px;
-  width: 60px;
-  border-right: 1px dotted #95989A;
-  text-align: center;
-}
-.nav-bar__register {
-  margin: 7.5px 10px;
-  width: 80px;
-  height: 32px;
-  border-right: 1px dotted #95989A;
-  border-radius: 16px;
+.nav-bar__logo-icon, .nav-bar__mymenu-icon, .nav-bar__filter-icon, .nav-bar__back-icon {
   color: #fff;
-  background-color: #E50640;
-  line-height: 32px;
-  text-align: center;
+  font-size: 32px;
+  line-height: 50px;
+
 }
-.nav-bar__mymenu {
-  width: 175px;
-  text-align: center;
-}
-.nav-bar__mymenu-link {
+.nav-bar__logo-link, .nav-bar__login-link, .nav-bar__register-link, .nav-bar__mymenu-link, .nav-bar__filter-link, .nav-bar__back-link {
   display: block;
- }
-.nav-bar__filter {
-  width: 35px;
-  height: 46px;
-  font-size: 28px;
-  border-left: 1px dotted #95989A;
+  color: #fff;
 }
-.nav-bar__filter-link {
-  display: block;
-  padding-top: 5px;
-  padding-left: 24px;
-  width: 55px;
-}
-.nav-bar__back {
-  border-left: 1px dotted #95989A;
-  font-size: 28px;
-  vertical-align: center;
-}
-.nav-bar__back-link {
-  display: block;
-  width: 32px;
-  padding: 10px 20px;
+.nav-bar__logo-link:hover, .nav-bar__login-link:hover, .nav-bar__register-link:hover, .nav-bar__mymenu-link:hover, .nav-bar__filter-link:hover, .nav-bar__back-link:hover {
+  background: #4CAF50;
+  color: #fff;
 }
 /*-----------------------------------------------------------------------------
     .modal-login
