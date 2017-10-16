@@ -37,61 +37,78 @@ try {
 $page_title = "お気に入り";
 require("header.php");
 ?>
-    <p>
-      閲覧ありがとうございます。<br>
-      こちらはフレームリフュジーページです。
-    </p>
-    <h2>メニュー</h2>
-    <ul>
-      <li>
-        <a href="blog.php">ブログ</a>
-      </li>
-      <li>
-        <a href="inquiry.php">お問い合わせ</a>
-      </li>
-    </ul>
-    <?php while($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-    <?php
+<div class="main-wrap">
+  <main>
+<?php
+/*=============================================================================
+  <<フレームデータ表示用ループ
+=============================================================================*/
+?>
+  <?php while($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+  <?php
 /*-----------------------------------------------------------------------------
-    レンズの厚み計算
+  レンズの厚み計算
 -----------------------------------------------------------------------------*/
-    //瞳孔から目元までの距離(mm)
-    $edge1 = ($user_pd - $row_frame["frame_bridge_width"])/2;
-    //瞳孔から目尻までの距離(mm)
-    $edge2 = $row_frame["frame_lens_width"] - $edge1;
-    $max_edge = $edge1 > $edge2 ? $edge1 : $edge2;
-    $min_edge = $edge1 < $edge2 ? $edge1 : $edge2;
-    //レンズ中央の厚み
-    $center_thick = 1.0;
-    //レンズ屈折率
-    $index = 1.74;
-    //minimum blank sizeとは$max_edge*2の値のこと
-    $thick= (pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick;
-    ?>
-    <article>
-      <?php if ($_SESSION["user_id"]):?>
-      <p><?= he($thick) ?></p>
-      <p><?= he($max_edge) ?></p>
-      <p><?= he($min_edge) ?></p>
-      <?php endif; ?>
-      <p><?= he($row_frame["user_loginid"]) ?></p>
-      <p><?= he($row_frame["frame_title"]) ?></p>
-      <p><?= he(nl2br($row_frame["frame_content"])) ?></p>
-      <p><?= he($row_frame["frame_pricee"]) ?></p>
-      <p>
-        <a href="../detail.php?frame_id=<?= he($row_frame["frame_id"]) ?>">
-        <img src='<?= "../images/frames/" . he($row_frame["frame_image"]) ?>'>
-        </a>
-      </p>
-      <p><?= he($row_frame["frame_link"]) ?></p>
-      <p><?= he($row_frame["frame_lens_width"]) ?></p>
-      <p><?= he($row_frame["frame_lens_height"]) ?></p>
-      <p><?= he($row_frame["frame_bridge_width"]) ?></p>
-      <p><?= he($row_frame["frame_temple_length"]) ?></p>
-      <p><?= he($row_frame["frame_frame_width"]) ?></p>
-      <time><?= he($row_frame["frame_created"]) ?></time>
-      <time><?= he($row_frame["frame_updated"]) ?></time>
-    </article>
-    <hr>
-    <?php endwhile; ?>
-<?php require("footer.php"); ?>
+  //瞳孔から目元までの距離(mm)
+  $edge1 = ($user_pd - $row_frame["frame_bridge_width"])/2;
+  //瞳孔から目尻までの距離(mm)
+  $edge2 = $row_frame["frame_lens_width"] - $edge1;
+  $max_edge = $edge1 > $edge2 ? $edge1 : $edge2;
+  $min_edge = $edge1 < $edge2 ? $edge1 : $edge2;
+  //レンズ中央の厚み
+  $center_thick = 1.0;
+  //レンズ屈折率
+  $index = 1.74;
+  //minimum blank sizeとは$max_edge*2の値のこと
+  $thick= round((pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
+  //中心（目元より）の厚さ
+  $edge1_thick = round((pow($edge1, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
+  //端の厚さ
+  $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
+/*=============================================================================
+  <<body部
+=============================================================================*/
+  ?>
+    <div class="frame-list__layout">
+    <div class="frame-list">
+      <a href="../detail.php?frame_id=<?= he($row_frame["frame_id"]) ?>">
+        <img class="frame-list__image" src='<?= "../images/frames/" . he($row_frame["frame_image"]) ?>'>
+      </a>
+      <ul class="frame-list__info">
+        <?php if (!$_SESSION["user_id"]):?>
+        <li class="frame-list__userid"><i class="fa fa-user-o" aria-hidden="true"></i><?= he($row_frame["user_loginid"]) ?></li>
+        <?php else: ?>
+          <?php if($edge1_thick == $max_edge): ?>
+        <li class="frame-list__thickness">中心: <span class="frame-list__max"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-list__min"><?= round($edge2_thick, 1); ?></span>
+          <?php else: ?>
+        <li class="frame-list__thickness">中心: <span class="frame-list__min"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-list__max"><?= round($edge2_thick, 1); ?></span>
+          <?php endif; ?>
+        </li><!--.frame-list__thickness-->
+        <?php endif; ?>
+        <li class="frame-list__size">
+          <?= he($row_frame["frame_lens_width"]) ?>□<?= he($row_frame["frame_bridge_width"]) ?>-<?= he($row_frame["frame_temple_length"]) ?>
+        </li>
+        <li class="frame-list__price">
+          <span><?= he($row_frame["frame_price"]) ?></span>
+          <span><i class="fa fa-star-o" aria-hidden="true"></i><?= he("64") ?></span>
+        </li>
+      </ul><!--.frame-list__info-->
+    </div><!--.frame-list-->
+  </div><!--.frame-list__layout-->
+<?php endwhile;
+/*=============================================================================
+    <<フレームデータ表示用ループ
+=============================================================================*/
+?>
+  </main>
+  <aside>
+    <?php
+//var_dump(frame_id(40));
+?>
+  </aside>
+</div><!--.main-wrap-->
+<?php
+/*=============================================================================
+  body部>>
+=============================================================================*/
+require("footer.php"); ?>
