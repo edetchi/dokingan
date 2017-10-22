@@ -1,5 +1,5 @@
 <?php
-//var_export(sha1("admin"));
+//var_export(md5("admin"));
 //ライブラリの読み込み
 require_once("system/common.php");
 /*=============================================================================

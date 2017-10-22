@@ -43,7 +43,7 @@ if (isset($request["send"]) && $error_message == "") {
         $row_user = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row_user) {
             // 該当のユーザーIDレコードがあったら、パスワードを照合し、セッション名user_idにデーターベースの一意なuser_idの値を代入
-            if (sha1($request["user_password"]) == $row_user["user_password"]) {
+            if (md5($request["user_password"]) == $row_user["user_password"]) {
                 $_SESSION["user_id"] = $row_user["user_id"];
                 header("Location: index.php");
                 exit;
