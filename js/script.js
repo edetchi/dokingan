@@ -92,7 +92,7 @@ $(function(){
     var user_email = $('#me-ruadoresu').val();
     console.log(user_loginid);
     $.ajax({
-      url: 'register_validater.php',
+      url: 'registration_validator.php',
       type: 'post',
       data: {
         user_loginid: user_loginid,

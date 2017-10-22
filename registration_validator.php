@@ -11,8 +11,10 @@ try {
   $stmt = null;
   if ($row_user["user_loginid"]) {
     $msg_user_loginid = "そのユーザーIDは使用されています";
+    $_SESSION["msg_user_loginid"] = 1;
   } else {
     $msg_user_loginid = "OK";
+    $_SESSION["msg_user_loginid"] = 0;
   }
   $sql = "select * from users where user_email = :user_email";
   $stmt = $pdo->prepare($sql);
@@ -22,8 +24,10 @@ try {
   $stmt = null;
   if ($row_user["user_email"]) {
     $msg_user_email = "そのメールアドレスは登録済みです";
+    $_SESSION["msg_user_email"] = 1;
   } else {
     $msg_user_email = "OK";
+    $_SESSION["msg_user_email"] = 0;
   }
 } catch (PDOException $e) {
   die("エラー: " . $e->getMessage());
