@@ -1,8 +1,6 @@
 <?php
 //ライブラリの読み込み
 require_once("system/common.php");
-//ログインセッションがあればセット
-$_SESSION["user_id"] = (!empty($_SESSION["user_id"])) ? $_SESSION["user_id"] : "";
 /*=============================================================================
     <<フレーム一覧用データ取得
 =============================================================================*/
@@ -10,7 +8,6 @@ $_SESSION["user_id"] = (!empty($_SESSION["user_id"])) ? $_SESSION["user_id"] : "
     ログインユーザーデーター取得
 -----------------------------------------------------------------------------*/
 try {
-  $pdo->beginTransaction();
   $sql = "select * from users where user_id = :user_id";
   $stmt = $pdo->prepare($sql);
   $stmt->bindValue(":user_id", $_SESSION["user_id"], PDO::PARAM_INT);
@@ -18,20 +15,11 @@ try {
   $row_user = $stmt->fetch(PDO::FETCH_ASSOC);
   $user_pd = $row_user["user_pd"];
   $user_sph = $row_user["user_sph"];
-  $pdo->commit();
   $stmt = null;
 /*-----------------------------------------------------------------------------
     フレームデータ取得
 -----------------------------------------------------------------------------*/
-  $pdo->beginTransaction();
   $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id order by frame_updated desc";
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute();
-  $pdo->commit();
-} catch (PDOException $e) {
-  $pdo->rollBack();
-  die("エラー: " . $e->getMessage());
-}
 /*=============================================================================
     フレーム一覧用データ取得>>
 =============================================================================*/
@@ -103,9 +91,6 @@ require("header.php");
   ?>
     </main>
     <aside>
-      <?php
-//var_dump(frame_id(40));
-?>
     </aside>
   </div><!--.main-wrap-->
 <?php
