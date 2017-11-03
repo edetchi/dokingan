@@ -23,25 +23,6 @@ try {
   $stmt = $pdo->query($sql);
   $frames = array();
   while($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)) {
-/*-----------------------------------------------------------------------------
-    レンズの厚み計算
------------------------------------------------------------------------------*/
-    //瞳孔から目元までの距離(mm)
-    $edge1 = ($user_pd - $row_frame["frame_bridge_width"]) / 2;
-    //瞳孔から目尻までの距離(mm)
-    $edge2 = $row_frame["frame_lens_width"] - $edge1;
-    $max_edge = $edge1 > $edge2 ? $edge1 : $edge2;
-    $min_edge = $edge1 < $edge2 ? $edge1 : $edge2;
-    //レンズ中央の厚み
-    $center_thick = 1.0;
-    //レンズ屈折率
-    $index = 1.74;
-    //minimum blank sizeとは$max_edge*2の値のこと
-    $thick= round((pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
-    //中心（目元より）の厚さ
-    $edge1_thick = round((pow($edge1, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 1);
-    //端の厚さ
-    $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 1);
     $frames[] = array(
       "frame_id" => $row_frame["frame_id"],
       "frame_image" => $row_frame["frame_image"],
@@ -50,8 +31,8 @@ try {
       "frame_bridge_width" => $row_frame["frame_bridge_width"],
       "frame_temple_length" => $row_frame["frame_temple_length"],
       "user_loginid" => $row_frame["user_loginid"],
-      "edge1_thick" => $edge1_thick,
-      "edge2_thick" => $edge2_thick,
+      "edge1_thick" => edgeThickness()["edge1_thick"],
+      "edge2_thick" => edgeThickness()["edge2_thick"],
     );
   }
 } catch (PDOException $e) {
@@ -85,7 +66,7 @@ require("header.php");
             </li>
             <?php else: ?>
             <li class="frame-list__thickness">
-              中心: <span class="frame-list__max"><?= $edge1_thick ?></span>端: <span class="frame-list__min"><?= $edge2_thick ?></span>
+              中心: <span class="frame-list__max"><?= $frame["edge1_thick"] ?></span>端: <span class="frame-list__min"><?= $frame["edge2_thick"] ?></span>
             </li><!--.frame-list__thickness-->
             <?php endif; ?>
           </ul><!--.frame-list__info-->

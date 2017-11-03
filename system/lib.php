@@ -58,7 +58,34 @@ function frame_id($frame_id) {
   }
 
 }
-
+/*-----------------------------------------------------------------------------
+    レンズの厚み計算、while文でフレームデータを取得している時にレンズの厚みを計算する
+-----------------------------------------------------------------------------*/
+function edgeThickness() {
+  global $row_frame;
+  global $user_pd;
+  global $user_sph;
+  //瞳孔から目元までの距離(mm)
+  $edge1 = ($user_pd - $row_frame["frame_bridge_width"]) / 2;
+  //瞳孔から目尻までの距離(mm)
+  $edge2 = $row_frame["frame_lens_width"] - $edge1;
+  $max_edge = $edge1 > $edge2 ? $edge1 : $edge2;
+  $min_edge = $edge1 < $edge2 ? $edge1 : $edge2;
+  //レンズ中央の厚み
+  $center_thick = 1.0;
+  //レンズ屈折率
+  $index = 1.74;
+  //minimum blank sizeとは$max_edge*2の値のこと
+  $thick= round((pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
+  //中心（目元より）の厚さ
+  $edge1_thick = round((pow($edge1, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 1);
+  //端の厚さ
+  $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 1);
+  return array(
+    "edge1_thick" => $edge1_thick,
+    "edge2_thick" => $edge2_thick,
+  );
+}
 /*=============================================================================
     ユーザー定義関数>>
 =============================================================================*/
