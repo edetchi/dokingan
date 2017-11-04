@@ -19,7 +19,7 @@ try {
 /*-----------------------------------------------------------------------------
     フレームデータ取得
 -----------------------------------------------------------------------------*/
-  $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id order by frame_updated desc";
+  $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id left join (select frame_id, count(removed_flag) as favorite_cnt from favorites where removed_flag = 0 group by frame_id) as t_favorite_cnt on t_favorite_cnt.frame_id = frames.frame_id order by frame_updated desc";
   $stmt = $pdo->query($sql);
   $frames = array();
   while($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -30,9 +30,10 @@ try {
       "frame_lens_width" => $row_frame["frame_lens_width"],
       "frame_bridge_width" => $row_frame["frame_bridge_width"],
       "frame_temple_length" => $row_frame["frame_temple_length"],
-      "user_loginid" => $row_frame["user_loginid"],
       "edge1_thick" => edgeThickness()["edge1_thick"],
       "edge2_thick" => edgeThickness()["edge2_thick"],
+      "user_loginid" => $row_frame["user_loginid"],
+      "favorite_cnt" => $row_frame["favorite_cnt"],
     );
   }
 } catch (PDOException $e) {
@@ -55,7 +56,7 @@ require("header.php");
           <ul class="frame-list__info">
             <li class="frame-list__price">
               <span><?= he($frame["frame_price"]) ?></span>
-              <span><i class="fa fa-star-o" aria-hidden="true"></i><?= he("64") ?></span>
+              <span><i class="fa fa-star-o" aria-hidden="true"></i><?= he($frame["favorite_cnt"]) ?></span>
             </li>
             <li class="frame-list__size">
               <?= he($frame["frame_lens_width"]) ?>□<?= he($frame["frame_bridge_width"]) ?>-<?= he($frame["frame_temple_length"]) ?>
