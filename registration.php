@@ -51,8 +51,15 @@ if (!empty($_POST["send"]) && empty($error_msgs)) {
   mb_internal_encoding("UTF-8");
   //本文用の変数を初期化して、条件に合致するたびに本文を追加していく
   $mail_body = <<<EOM
-24時間以内に下記のURLからご登録下さい。
+本メールは、{$_(SITE_NAME)}に登録ご希望のユーザーに確認のためにお送りしています。
+24時間以内に下記のURLにアクセスしてご登録を完了して下さい。
 $url
+
+━─━─━─━─━─━─━─━─━─━─━─━─━─━─━─━─━─
+  {$_(SITE_NAME)}
+  URL: {$_SERVER["HTTP_HOST"]}
+  E-MAIL: {$_(EMAIL_CONTACT_SENDER)}
+━─━─━─━─━─━─━─━─━─━─━─━─━─━─━─━─━─
 EOM;
   //送信者に確認メールをに送信
   $subject = "会員登録を完了してください";
@@ -62,7 +69,7 @@ EOM;
   if ($result = mb_send_mail($mail_to, $subject, $mail_body, $add_header)) {
     //セッション系削除
     $_SESSION = array();
-    if (isset($_COOKIE["PHPSESSID"])) {
+    if (!empty($_COOKIE["PHPSESSID"])) {
       setcookie("PHPSESSID", '', time() - 1800, '/');
     }
     session_destroy();
@@ -89,21 +96,21 @@ EOM;
       </p>
       <form class="frame-edit" action="registration.php" method="post">
         <div>
-          <label for="yu-za-mei">ユーザー名<span class="attention">【必須】</span></label>
+          <label for="yu-za-mei">ユーザー名<span class="attention">*</span></label>
           <div class="user_loginid_result"></div>
-          <input type="text" name="user_loginid" id="yu-za-mei" size="30" value="">
+          <input type="text" name="user_loginid" id="yu-za-mei" size="30" value="<?= he($_SESSION["user_loginid"]) ?>">
         </div>
         <div>
-          <label for="me-ruadoresu">メールアドレス<span class="attention">【必須】</span></label>
+          <label for="me-ruadoresu">メールアドレス<span class="attention">*</span></label>
           <div class="user_email_result"></div>
-          <input type="text" name="user_email" id="me-ruadoresu" size="30" value="">
+          <input type="text" name="user_email" id="me-ruadoresu" size="30" value="<?= he($_SESSION["user_email"]) ?>">
         </div>
         <div>
-          <label for="pasuwa-do">パスワード<span class="attention">【必須】</span></label>
-          <input type="password" name="user_password" id="pasuwa-do" size="30" >
+          <label for="pasuwa-do">パスワード<span class="attention">*</span></label>
+          <input type="password" name="user_password" id="pasuwa-do" size="30" value="<?= he($_SESSION["user_password"]) ?>">
         </div>
         <div>
-          <input type="hidden" name="token" value="<?= $_SESSION['token'] ?>">
+          <input type="hidden" name="token" value="<?= he($_SESSION['token']) ?>">
           <input class="registration-btn" type="submit" name="send" value="送信する">
         </div>
       </form>
