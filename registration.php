@@ -8,9 +8,18 @@ $error_msgs = array();
 /*-----------------------------------------------------------------------------
     $_POSTの値を格納
 -----------------------------------------------------------------------------*/
-$user_loginid = isset($_POST["user_loginid"]) ? $_POST["user_loginid"] : NULL;
-$user_email = isset($_POST["user_email"]) ? $_POST["user_email"] : NULL;
-$user_password = isset($_POST["user_password"]) ? md5($_POST["user_password"]) : NULL;
+$user_loginid = (!empty($_POST["user_loginid"])) ? $_POST["user_loginid"] : "";
+$user_email = (!empty($_POST["user_email"])) ? $_POST["user_email"] : "";
+$user_password = (!empty($_POST["user_password"])) ? md5($_POST["user_password"]) : "";
+/*-----------------------------------------------------------------------------
+    セッション未定義インデックスのエラー避け
+-----------------------------------------------------------------------------*/
+//セッション初期化でエラーが入力欄に表示されるのでそれ避け
+$_SESSION["user_loginid"] = (!empty($_SESSION["user_loginid"])) ? $_SESSION["user_loginid"] : "";
+$_SESSION["user_email"] = (!empty($_SESSION["user_email"])) ? $_SESSION["user_email"] : "";
+$_SESSION["user_password"] = (!empty($_SESSION["user_password"])) ? $_SESSION["user_password"] : "";
+$_SESSION["msg_user_loginid"] = (!empty($_SESSION["msg_user_loginid"])) ? $_SESSION["msg_user_loginid"] : "";
+$_SESSION["msg_user_email"] = (!empty($_SESSION["msg_user_email"])) ? $_SESSION["msg_user_email"] : "";
 /*-----------------------------------------------------------------------------
     フォーム項目のエラーチェック
 -----------------------------------------------------------------------------*/
