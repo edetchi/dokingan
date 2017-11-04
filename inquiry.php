@@ -55,13 +55,12 @@ if (isset($request["send"]) && $error_message == "") {
     }
     //管理者に送信実行
     $subject = "新規問い合わせ";
-    $admin_email = "suteado@edetchi.com";
-    $add_header = "From:" . $admin_email;
+    $admin_email = "tatsutobacco@gmail.com";
+    $add_header = "From:" . EMAIL_ADMIN_SENDER;
     $result = mb_send_mail($admin_email, $subject, $mail_body, $add_header);
     //送信者に確認メールをに送信
     $subject = "お問い合わせ有難うございます";
-    $admin_email = "suteado@edetchi.com";
-    $add_header = "From:" . $admin_email;
+    $add_header = "From:" . EMAIL_CONTACT_SENDER;
     $mail_to = $request["email"];//メアドのバリデーションがないと脆弱性が発生する
     $result = mb_send_mail($mail_to, $subject, $mail_body, $add_header);
     //サンキューメッセージ作成

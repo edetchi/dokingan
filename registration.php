@@ -56,8 +56,7 @@ $url
 EOM;
   //送信者に確認メールをに送信
   $subject = "会員登録を完了してください";
-  $admin_email = "ttsrnkt@gmail.com";
-  $add_header = "From:" . $admin_email;
+  $add_header = "From:" . EMAIL_NOREPLY_SENDER;
   $mail_to = $_POST["user_email"];//メアドのバリデーションがないと脆弱性が発生する
   //メールの送信&送信が成功した時の処理
   if ($result = mb_send_mail($mail_to, $subject, $mail_body, $add_header)) {

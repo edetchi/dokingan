@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?= $page_title; ?> | ドキンガン</title>
+  <title><?= $page_title; ?> | <?= SITE_NAME ?></title>
   <script src="js/jquery-3.2.1.min.js"></script>
   <script src="js/script.js"></script>
   <link rel="stylesheet" href="css/reset.css">
@@ -16,7 +16,7 @@
   <header>
     <div class="nav-bar">
       <div class="nav-bar__logo">
-        <a class="nav-bar__logo-link" href="./"><!--<img src="images/10.jpg" alt="<?= $site_name ?>">--><i class="fa fa-home nav-bar__logo-icon" aria-hidden="true"></i></a>
+        <a class="nav-bar__logo-link" href="./"><!--<img src="images/10.jpg" alt="<?= SITE_NAME ?>">--><i class="fa fa-home nav-bar__logo-icon" aria-hidden="true"></i></a>
       </div>
       <ul class="nav-bar__menu">
         <?php if (!$login_flag): ?>
