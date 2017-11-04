@@ -21,6 +21,12 @@ $_SESSION["user_password"] = (!empty($_SESSION["user_password"])) ? $_SESSION["u
 $_SESSION["msg_user_loginid"] = (!empty($_SESSION["msg_user_loginid"])) ? $_SESSION["msg_user_loginid"] : "";
 $_SESSION["msg_user_email"] = (!empty($_SESSION["msg_user_email"])) ? $_SESSION["msg_user_email"] : "";
 /*-----------------------------------------------------------------------------
+    エラー時の入力項目のセッションに保持する
+-----------------------------------------------------------------------------*/
+$_SESSION["user_loginid"] = (!empty($_POST["user_loginid"])) ? $_POST["user_loginid"] : "";
+$_SESSION["user_email"] = (!empty($_POST["user_email"])) ? $_POST["user_email"] : "";
+$_SESSION["user_password"] = (!empty($_POST["user_password"])) ? $_POST["user_password"] : "";
+/*-----------------------------------------------------------------------------
     フォーム項目のエラーチェック
 -----------------------------------------------------------------------------*/
 if (empty($user_loginid)) $error_msgs[] =  "ユーザー名を入力してください\n";
