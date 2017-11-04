@@ -3,8 +3,8 @@ $_SESSION["token"] = md5(session_id());
 /*-----------------------------------------------------------------------------
     メッセージの初期化
 -----------------------------------------------------------------------------*/
-$page_message = "";
-$error_message = "";
+$page_msgs = array();
+$error_msgs = array();
 /*-----------------------------------------------------------------------------
     $_POSTの値を格納
 -----------------------------------------------------------------------------*/
@@ -14,18 +14,18 @@ $user_password = isset($_POST["user_password"]) ? md5($_POST["user_password"]) :
 /*-----------------------------------------------------------------------------
     フォーム項目のエラーチェック
 -----------------------------------------------------------------------------*/
-if ($user_loginid === "") $error_message .= "ユーザー名を入力してください\n";
-if ($user_email === "") $error_message .= "メールアドレスを入力してください\n";
-if($user_email !== NULL && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $user_email)) $error_message .= "メールアドレスの形式が正しくありません。\n";
-if ($user_password === "") $error_message .= "パスワードを入力してください\n";
-if ($_SESSION["msg_user_loginid"] == 1) $error_message .= "そのユーザーIDは使用されています\n";
-if ($_SESSION["msg_user_email"] == 1) $error_message .= "そのメールアドレスは登録済みです\n";
+if (empty($user_loginid)) $error_msgs[] =  "ユーザー名を入力してください\n";
+if (empty($user_email)) $error_msgs[] =  "メールアドレスを入力してください\n";
+if(!empty($user_email) && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $user_email)) $error_msgs[] =  "メールアドレスの形式が正しくありません。\n";
+if (empty($user_password)) $error_msgs[] =  "パスワードを入力してください\n";
+if ($_SESSION["msg_user_loginid"] == 1) $error_msgs[] =  "そのユーザーIDは使用されています\n";
+if ($_SESSION["msg_user_email"] == 1) $error_msgs[] =  "そのメールアドレスは登録済みです\n";
 //var_dump($_SESSION["msg_user_loginid"]);
-//var_dump($error_message);
+//var_dump($error_msgs);
 /*-----------------------------------------------------------------------------
     エラーなしでメール送信、
 -----------------------------------------------------------------------------*/
-if (isset($_POST["send"]) && $error_message == "") {
+if (!empty($_POST["send"]) && empty($error_msgs)) {
   $url = "http://192.168.33.10/framerefugee/registration_complete.php?urltoken=" . $_SESSION["token"];
   try {
     $pdo->beginTransaction();
@@ -67,9 +67,9 @@ EOM;
     }
     session_destroy();
     //メッセージ作成
-    $page_message = "メールをお送りしました。24時間以内にメールに記載されたURLからご登録を完了させてください。";
+    $page_msgs[] = "メールを送信致しました。24時間以内にメールに記載されたURLから登録を完了させて下さい。";
   } else {
-    $error_message .= "メールの送信に失敗しました。";
+    $error_msgs[] =  "メールの送信に失敗しました。お手数ですが、再度新規登録を開始して下さい。";
   }
 }
 ?>
@@ -78,10 +78,14 @@ EOM;
   <div class="main-wrap">
     <main>
       <p>
-        <?= he($page_message) ?>
+        <?php foreach ($page_msgs as $page_msg): ?>
+        <p><?= he($page_msg) ?></p>
+        <?php endforeach; ?>
       </p>
       <p class="attention">
-        <?= nl2br(he($error_message)) ?>
+        <?php foreach ($error_msgs as $error_msg): ?>
+        <p><?= he($error_msg) ?></p>
+        <?php endforeach; ?>
       </p>
       <form class="frame-edit" action="registration.php" method="post">
         <div>
