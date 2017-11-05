@@ -101,8 +101,12 @@ $(function(){
     })
     .done(function(data) {
       console.log(data);
+      /*
       $('.registration_user-loginid-result').html(data.user_loginid);
       $('.registration_user-email-result').html(data.user_email);
+      */
+      $('.user_loginid_result').html(data.user_loginid);
+      $('.user_email_result').html(data.user_email);
     })
     .fail(function() {
       console.log('error');
