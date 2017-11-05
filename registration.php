@@ -109,15 +109,15 @@ EOM;
         <p><?= he($error_msg) ?></p>
         <?php endforeach; ?>
       </p>
-      <form class="frame-edit" action="registration.php" method="post">
+      <form class="registration" action="registration.php" method="post">
         <div>
           <label for="yu-za-mei">ユーザー名<span class="attention">*</span></label>
-          <div class="user_loginid_result"></div>
-          <input type="text" name="user_loginid" id="yu-za-mei" size="30" value="<?= he($_SESSION["user_loginid"]) ?>">
+          <div class="registration_user-loginid-result error-msgbox-empty"></div>
+          <input class="validation-empty" type="text" name="user_loginid" id="yu-za-mei" size="30" value="<?= he($_SESSION["user_loginid"]) ?>">
         </div>
         <div>
           <label for="me-ruadoresu">メールアドレス<span class="attention">*</span></label>
-          <div class="user_email_result"></div>
+          <div class="registration_user-email-result"></div>
           <input type="text" name="user_email" id="me-ruadoresu" size="30" value="<?= he($_SESSION["user_email"]) ?>">
         </div>
         <div>

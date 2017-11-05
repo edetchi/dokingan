@@ -4,7 +4,7 @@
     変数をホワイトリスト化
 -----------------------------------------------------------------------------*/
 //$_REQUEST[]の取りうるキーを限定する
-$whitelists = array("mode", "frame_id","frame_poster_id", "frame_title", "frame_content","frame_price","frame_image","frame_link","frame_lens_width","frame_lens_height","frame_bridge_width","frame_temple_length","frame_frame_width", "send");
+$whitelists = array("mode", "frame_id","frame_poster_id","frame_price","frame_image","frame_link","frame_lens_width","frame_lens_height","frame_bridge_width","frame_temple_length","frame_frame_width", "send");
 $request = whitelist($whitelists);
 /*-----------------------------------------------------------------------------
     画像のアップロードがある時だけ変数に格納
@@ -39,8 +39,6 @@ if ($row_frame/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) {
     $form = array();
     $form["frame_id"] = $row_frame["frame_id"];
     $form["frame_poster_id"] = $row_frame["frame_poster_id"];
-    $form["frame_title"] = $row_frame["frame_title"];
-    $form["frame_content"] = $row_frame["frame_content"];
     $form["frame_price"] = $row_frame["frame_price"];
     $form["frame_image"] = $row_frame["frame_image"];
     $form["frame_link"] = $row_frame["frame_link"];
@@ -87,8 +85,6 @@ if ($mode == "delete"/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) 
 //送信ボタンが押された時の処理
 if (isset($request["send"])) {
   //空欄チェック
-  if ($request["frame_title"] == "") $error_message .= "フレーム名を入力してください\n";
-  //if ($request["frame_content"] == "") $error_message .= "コメントを入力してください\n";
   if ($request["frame_price"] == "") $error_message .= "価格を入力してください\n";
   //if ($request["frame_image"] == "") $error_message .= "画像をアップロードしてください\n";
   //ブラウザが判断するファイルタイプがjpegじゃなかったら、もしくは拡張子がjpegじゃなかったら
@@ -107,7 +103,6 @@ if (isset($request["send"])) {
 /*-----------------------------------------------------------------------------
     フォーム項目が空欄の場合、NULLに設定
 -----------------------------------------------------------------------------*/
-if ($request["frame_content"] == "") $request["frame_content"] = null;
 if ($request["frame_lens_height"] == "") $request["frame_lens_height"] = null;
 if ($request["frame_frame_width"] == "") $request["frame_frame_width"] = null;
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -147,13 +142,11 @@ if (isset($request["send"]) && $error_message == "") {
     修正モード
 -----------------------------------------------------------------------------*/
     if ($mode == "change"/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) {
-      $sql = "update frames set frame_poster_id = :frame_poster_id, frame_title = :frame_title, frame_content = :frame_content, frame_price = :frame_price, frame_image = :frame_image, frame_link = :frame_link, frame_lens_width = :frame_lens_width, frame_lens_height = :frame_lens_height, frame_bridge_width = :frame_bridge_width, frame_temple_length = :frame_temple_length, frame_frame_width = :frame_frame_width where frame_id = :frame_id";
+      $sql = "update frames set frame_poster_id = :frame_poster_id, frame_price = :frame_price, frame_image = :frame_image, frame_link = :frame_link, frame_lens_width = :frame_lens_width, frame_lens_height = :frame_lens_height, frame_bridge_width = :frame_bridge_width, frame_temple_length = :frame_temple_length, frame_frame_width = :frame_frame_width where frame_id = :frame_id";
       $stmt = $pdo->prepare($sql);
       $request["frame_poster_id"] = $_SESSION["user_id"];
       $stmt->bindValue(":frame_poster_id", $request["frame_poster_id"], PDO::PARAM_INT);
       $stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
-      $stmt->bindValue(":frame_title", $request["frame_title"], PDO::PARAM_STR);
-      $stmt->bindValue(":frame_content", $request["frame_content"], PDO::PARAM_STR);
       $stmt->bindValue(":frame_price", $request["frame_price"], PDO::PARAM_INT);
       //画像の更新があれば新しいのに、なければ古い画像のまま
       if ($image["error"] == 0) {
@@ -172,12 +165,10 @@ if (isset($request["send"]) && $error_message == "") {
     新規登録モード
 -----------------------------------------------------------------------------*/
     } else {
-      $sql = "insert into frames (frame_poster_id, frame_title, frame_content, frame_price, frame_image, frame_link, frame_lens_width, frame_lens_height, frame_bridge_width, frame_temple_length, frame_frame_width) values (:frame_poster_id, :frame_title, :frame_content, :frame_price, :frame_image, :frame_link, :frame_lens_width, :frame_lens_height, :frame_bridge_width, :frame_temple_length, :frame_frame_width)";
+      $sql = "insert into frames (frame_poster_id, frame_price, frame_image, frame_link, frame_lens_width, frame_lens_height, frame_bridge_width, frame_temple_length, frame_frame_width) values (:frame_poster_id, :frame_price, :frame_image, :frame_link, :frame_lens_width, :frame_lens_height, :frame_bridge_width, :frame_temple_length, :frame_frame_width)";
       $stmt = $pdo->prepare($sql);
       $request["frame_poster_id"] = $_SESSION["user_id"];
       $stmt->bindValue(":frame_poster_id", $request["frame_poster_id"], PDO::PARAM_INT);
-      $stmt->bindValue(":frame_title", $request["frame_title"], PDO::PARAM_STR);
-      $stmt->bindValue(":frame_content", $request["frame_content"], PDO::PARAM_STR);
       $stmt->bindValue(":frame_price", $request["frame_price"], PDO::PARAM_INT);
       $stmt->bindValue(":frame_image", $image_name, PDO::PARAM_STR);
       $stmt->bindValue(":frame_link", $request["frame_link"], PDO::PARAM_STR);
@@ -215,8 +206,6 @@ if (isset($request["send"]) && $error_message == "") {
       $stmt = null;
       if ($row_user) {
         $form["frame_id"] = $row_frame["frame_id"];
-        $form["frame_title"] = $row_frame["frame_title"];
-        $form["frame_content"] = $row_frame["frame_content"];
         $form["frame_price"] = $row_frame["frame_price"];
         $form["frame_image"] = $row_frame["frame_image"];
         $form["frame_link"] = $row_frame["frame_link"];
@@ -256,14 +245,6 @@ if (isset($request["send"]) && $error_message == "") {
     </p>
     <?php endif; ?>
     <form class="frame-edit" enctype="multipart/form-data" action="frame_edit.php" method="post">
-      <div>
-        <label for="hure-mumei">フレーム名<span class="attention">【必須】</span></label>
-        <input type="text" name="frame_title" id="hure-mumei" size="30" value="<?= he($form['frame_title']); ?>">
-      </div>
-      <div>
-        <label for="komento">コメント</label>
-        <textarea name="frame_content" id="komento" rows="5" cols="20"><?= he($form["frame_content"]); ?></textarea>
-      </div>
       <div>
         <label for="kakaku">価格(円)<span class="attention">【必須】</span></label>
         <input type="number" name="frame_price" id="kakaku" max="99999" value="<?= he($form['frame_price']); ?>">

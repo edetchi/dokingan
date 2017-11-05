@@ -87,7 +87,7 @@ $(function(){
 /*-----------------------------------------------------------------------------
     登録時に行うユーザー名とメアドの重複チェック
 -----------------------------------------------------------------------------*/
-  $(document).on('keyup', '#yu-za-mei, #me-ruadoresu', function() {
+  $(document).on('blur', '#yu-za-mei, #me-ruadoresu', function() {
     var user_loginid = $('#yu-za-mei').val();
     var user_email = $('#me-ruadoresu').val();
     console.log(user_loginid);
@@ -101,8 +101,8 @@ $(function(){
     })
     .done(function(data) {
       console.log(data);
-      $('.user_loginid_result').html(data.user_loginid);
-      $('.user_email_result').html(data.user_email);
+      $('.registration_user-loginid-result').html(data.user_loginid);
+      $('.registration_user-email-result').html(data.user_email);
     })
     .fail(function() {
       console.log('error');
@@ -112,6 +112,26 @@ console.log("errorThrown    : " + errorThrown.message);
 
     });
   });
+/*-----------------------------------------------------------------------------
+    新規登録時のバリデーション
+-----------------------------------------------------------------------------*/
+  $(document).on("blur", ".validation-empty", function(){
+    if ($(this).val() === "") {
+      console.log("ssss");
+      //エラーが表示されていない場合のみエラー表示
+      if (!$(".error-msgbox-empty .error-msg-empty").length) {
+        console.log("empty");
+        $(".error-msgbox-empty").after("<span class='error-msg-empty'>未入力です</span>");
+      }
+    } else {
+      //$(this).siblings(".error-msg-empty").remove();
+      $(".error-msg-empty").remove();
+    }
+
+  });
+
+
+
 /*-----------------------------------------------------------------------------
     .modal-login
 -----------------------------------------------------------------------------*/
@@ -225,5 +245,20 @@ $('.frame-detail__delete').on('click', function() {
   }
 });
 
+/*-----------------------------------------------------------------------------
+    登録時の値のバリデーションチェック
+-----------------------------------------------------------------------------*/
+  function validationEmpty(className) {
+    if ($(className).val() === "") {
+      console.log("ppp");
+      //エラーが表示されていない場合のみエラー表示
+      if (!$(className).prev(".error-empty").length) {
+        $(className).siblings("label").after("<span class='error-empty'>未入力です</span>");
+      }
+    } else {
+      $(className).siblings(".error-empty").remove();
+    }
+  }
+validationEmpty("validation-empty");
 
 });
