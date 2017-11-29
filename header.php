@@ -29,12 +29,12 @@
         <li class="nav-bar__filter">
           <a class="nav-bar__filter-link" href="#"><!--<span class="icon icon-filter">--><i class="fa fa-filter nav-bar__filter-icon" aria-hidden="true"></i></a>
         </li>
-      <?php else: ?>
+        <?php else: ?>
         <li class="nav-bar__back"></span>
           <a class="nav-bar__back-link" href="./"><!--<span class="icon icon-undo"></span>--><i class="fa fa-arrow-left nav-bar__back-icon" aria-hidden="true"></i>
-</a>
+          </a>
         </li>
-      <?php endif; ?>
+        <?php endif; ?>
       </ul>
     </div><!--.nav-bar-->
     <div class="modal-login">
