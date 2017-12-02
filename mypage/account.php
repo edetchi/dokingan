@@ -4,11 +4,15 @@ require_once("../system/common.php");
     変数をホワイトリスト化
 -----------------------------------------------------------------------------*/
 //$_REQUEST[]の取りうるキーを限定する
-$whitelists = array("user_id", "user_loginid", "user_password", "user_email", "user_sph", "user_pd", "send");
+$whitelists = array("user_id", "user_password", "user_email", "user_sph", "user_pd", "send");
 $request = whitelist($whitelists);
 /*-----------------------------------------------------------------------------
     プロフィール画像のアップロードがある時だけ変数に格納
 -----------------------------------------------------------------------------*/
+//プロフ画像のエラー避け
+$_FILES["user_icon"] = (!empty($_FILES["user_icon"])) ? $_FILES["user_icon"] : "";
+$user_icon = array();
+$user_icon["error"] = (!empty($user_icon["error"])) ? $user_icon["error"] : "";
 if ($_FILES["user_icon"]) {
     $user_icon = $_FILES["user_icon"];
     $user_icon_name = date("YmdHis") . $user_icon["name"];
@@ -16,8 +20,8 @@ if ($_FILES["user_icon"]) {
 /*-----------------------------------------------------------------------------
     メッセージの初期化
 -----------------------------------------------------------------------------*/
-$page_message = "";
-$error_message = "";
+$page_msgs = array();
+$error_msgs = array();
 /*=============================================================================
     ページ読み込み時に各値を取得
 =============================================================================*/
@@ -33,7 +37,6 @@ try {
 -----------------------------------------------------------------------------*/
     if ($row_user) {
       $form = array();
-      $form["user_loginid"] = $row_user["user_loginid"];
       $form["user_password"] = $row_user["user_password"];
       $form["user_icon"] = $row_user["user_icon"];
       $form["user_email"] = $row_user["user_email"];
@@ -55,38 +58,41 @@ try {
 -----------------------------------------------------------------------------*/
 if (isset($request["send"])) {
     //空欄チェック
+    /*
     if ($request["user_loginid"] == "") {
-        $error_message .= "ユーザーIDを入力してください\n";
+        $error_msgs[] = "ユーザーIDを入力してください\n";
     }
+    */
     /*
     if ($request["user_password"] == "") {
-        $error_message .= "パスワードを入力してください\n";
+        $error_msgs[] = "パスワードを入力してください\n";
     }
     */
     //ブラウザが判断するファイルタイプがjpegじゃなかったら、もしくは拡張子がjpegじゃなかったら
-    if (!$user_icon["error"]) {
+    //$_FILESがアップロードされた時
+    if ($user_icon["error"] == 0) {
       if (($user_icon["type"] != "image/jpeg"  && $user_icon["type"] != "image/pjpeg") || strtolower(mb_strrchr($user_icon["name"], ".", false)) != ".jpg") {
-          $error_message .= "画像(jpegファイル)をアップロードして下さい\n";
+          $error_msgs[] = "画像(jpegファイル)をアップロードして下さい\n";
       }
     }
     //画像サイズを制限
-    if ($image["size"] > 10*1024*1024) {
-        $error_message .= "画像サイズは10MB以下にして下さい\n";
+    if ($user_icon["size"] > 10*1024*1024) {
+        $error_msgs[] = "画像サイズは10MB以下にして下さい\n";
     }
     if ($request["user_email"] == "") {
-        $error_message .= "メールアドレスを入力してください\n";
+        $error_msgs[] = "メールアドレスを入力してください\n";
     }
     if ($request["user_sph"] == "") {
-        $error_message .= "SPH（度数）を入力してください\n";
+        $error_msgs[] = "SPH（度数）を入力してください\n";
     }
     if ($request["user_pd"] == "") {
-        $error_message .= "PD（瞳孔間距離）を入力してください\n";
+        $error_msgs[] = "PD（瞳孔間距離）を入力してください\n";
     }
 }
 /*=============================================================================
     <<エラーメッセージがない時
 =============================================================================*/
-if (isset($request["send"]) && $error_message == "") {
+if (isset($request["send"]) && empty($error_msgs)) {
 /*-----------------------------------------------------------------------------
     画像の投稿処理
 -----------------------------------------------------------------------------*/
@@ -99,7 +105,7 @@ if (isset($request["send"]) && $error_message == "") {
     list($original_w, $original_h) = getimagesize("../images/users/{$user_icon_name}");
     //ファイルサイズがない時はエラー表示、それ以外はサムネ作成
     if ($original_w == 0 || $original_h == 0) {
-        $error_message .= "画像ファイルではありません\n";
+        $error_msgs[] = "画像ファイルではありません\n";
         unlink("../images/users/{$user_icon_name}");
     } else {
         //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
@@ -118,10 +124,9 @@ if (isset($request["send"]) && $error_message == "") {
 -----------------------------------------------------------------------------*/
   try {
       $pdo->beginTransaction();
-      $sql = "update users set user_loginid = :user_loginid, user_password = :user_password, user_icon = :user_icon, user_email = :user_email, user_sph = :user_sph, user_pd = :user_pd where user_id = :user_id";
+      $sql = "update users set user_password = :user_password, user_icon = :user_icon, user_email = :user_email, user_sph = :user_sph, user_pd = :user_pd where user_id = :user_id";
       $stmt = $pdo->prepare($sql);
       $stmt->bindValue(":user_id", $_SESSION["user_id"], PDO::PARAM_INT);
-      $stmt->bindValue(":user_loginid", $request["user_loginid"], PDO::PARAM_STR);
       //パスワードの更新がある時とない時
       if ($request["user_password"] == "" ) {
         $stmt->bindValue(":user_password", $form["user_password"], PDO::PARAM_STR);
@@ -155,7 +160,6 @@ if (isset($request["send"]) && $error_message == "") {
       $row_user = $stmt->fetch(PDO::FETCH_ASSOC);
       $stmt = null;
       if ($row_user) {
-        $form["user_loginid"] = $row_user["user_loginid"];
         //$form["user_password"] = $row_user["user_password"];
         $form["user_icon"] = $row_user["user_icon"];
         $form["user_email"] = $row_user["user_email"];
@@ -168,7 +172,7 @@ if (isset($request["send"]) && $error_message == "") {
   } catch (PDOException $e) {
       die("エラー: " . $e->getMessage());
   }
-$page_message = "修正しました";
+$page_msgs[] = "更新しました";
 }
 /*=============================================================================
     エラーメッセージがない時>>
@@ -197,40 +201,39 @@ print "<br>";
   <main>
     <a href="frame_list.php">一覧へ戻る</a>
     <p>
-      <?= he($page_message) ?>
+      <?php foreach ($page_msgs as $page_msg): ?>
+      <p><?= he($page_msg) ?></p>
+      <?php endforeach; ?>
     </p>
     <p class="attention">
-      <?= nl2br(he($error_message)) ?>
+      <?php foreach ($error_msgs as $error_msg): ?>
+      <p><?= he($error_msg) ?></p>
+      <?php endforeach; ?>
     </p>
     <form enctype="multipart/form-data" action="account.php" method="post">
       <div>
-        <label for="yu-za-mei">ユーザー名<span class="attention">【必須】</span></label>
-        <input type="text" name="user_loginid" id="yu-za-mei" size="30" value="<?= he($form["user_loginid"]); ?>">
-      </div>
-      <div>
-      <label for="pasuwa-do">パスワード<span class="attention">【必須】</span></label>
+      <label for="pasuwa-do">パスワード</label>
         <input type="password" name="user_password" id="pasuwa-do" size="30" >
       </div>
       <div>
         <label for="aikon">アイコン<span class="attention"></span></label>
-        <?php if ($user_icon["error"] === 0 && $error_message === ""): ?>
+        <?php if ($user_icon["error"] === 0 && empty($error_msgs)): ?>
         <p><img src='<?= "../images/users/" . he($user_icon_name) ?>'></p>
-        <input type="file" name="user_icon" id="aikon">
         <?php else : ?>
         <p><img src="<?= '../images/users/' . he($form["user_icon"]) ?>"></p>
-        <input type="file" name="user_icon" id="aikon">
         <?php endif; ?>
+        <input type="file" name="user_icon" id="aikon">
       </div>
       <div>
-      <label for="meado">メールアドレス<span class="attention">【必須】</span></label>
+      <label for="meado">メールアドレス<span class="attention">*</span></label>
         <input type="text" name="user_email" id="meado" size="30" value="<?= he($form["user_email"]); ?>">
       </div>
       <div>
-      <label for="esupieichi">SPH（度数）<span class="attention">【必須】</span></label>
+      <label for="esupieichi">SPH（度数）<span class="attention">*</span></label>
         <input type="number" name="user_sph" id="esupieichi" size="30" value="<?= he($form["user_sph"]); ?>">
       </div>
       <div>
-      <label for="doukoukankyori">瞳孔間距離<span class="attention">【必須】</span></label>
+      <label for="doukoukankyori">瞳孔間距離<span class="attention">*</span></label>
         <input type="number" name="user_pd" id="doukoukankyori" size="30" value="<?= he($form["user_pd"]); ?>">
       </div>
       <div>
