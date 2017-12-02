@@ -121,11 +121,12 @@ console.log("errorThrown    : " + errorThrown.message);
 -----------------------------------------------------------------------------*/
   $(document).on("blur", ".validation-empty", function(){
     if ($(this).val() === "") {
-      console.log("ssss");
+      console.log("value empty");
       //エラーが表示されていない場合のみエラー表示
-      if (!$(".error-msgbox-empty .error-msg-empty").length) {
-        console.log("empty");
-        $(".error-msgbox-empty").after("<span class='error-msg-empty'>未入力です</span>");
+      if ($(".error-msg-empty").length == 0) {
+        console.log("no error msg");
+        console.log($(".error-msg-empty").length);
+        $(this).before("<span class='error-msg-empty'>未入力です</span>");
       }
     } else {
       //$(this).siblings(".error-msg-empty").remove();

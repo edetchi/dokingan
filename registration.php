@@ -1,4 +1,8 @@
 <?php require_once("system/common.php");
+if ($login_flag == true) {
+  header("Location: ./mypage/");
+  exit();
+}
 $_SESSION["token"] = md5(session_id());
 /*-----------------------------------------------------------------------------
     メッセージの初期化
@@ -29,14 +33,16 @@ $_SESSION["user_password"] = (!empty($_POST["user_password"])) ? $_POST["user_pa
 /*-----------------------------------------------------------------------------
     フォーム項目のエラーチェック
 -----------------------------------------------------------------------------*/
-if (empty($user_loginid)) $error_msgs[] =  "ユーザー名を入力してください\n";
-if (empty($user_email)) $error_msgs[] =  "メールアドレスを入力してください\n";
-if(!empty($user_email) && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $user_email)) $error_msgs[] =  "メールアドレスの形式が正しくありません。\n";
-if (empty($user_password)) $error_msgs[] =  "パスワードを入力してください\n";
-if ($_SESSION["msg_user_loginid"] == 1) $error_msgs[] =  "そのユーザーIDは使用されています\n";
-if ($_SESSION["msg_user_email"] == 1) $error_msgs[] =  "そのメールアドレスは登録済みです\n";
-//var_dump($_SESSION["msg_user_loginid"]);
-//var_dump($error_msgs);
+if (!empty($_POST["send"])) {
+  if (empty($user_loginid)) $error_msgs[] =  "ユーザー名を入力してください\n";
+  if (empty($user_email)) $error_msgs[] =  "メールアドレスを入力してください\n";
+  if(!empty($user_email) && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $user_email)) $error_msgs[] =  "メールアドレスの形式が正しくありません。\n";
+  if (empty($user_password)) $error_msgs[] =  "パスワードを入力してください\n";
+  if ($_SESSION["msg_user_loginid"] == 1) $error_msgs[] =  "そのユーザーIDは使用されています\n";
+  if ($_SESSION["msg_user_email"] == 1) $error_msgs[] =  "そのメールアドレスは登録済みです\n";
+  //var_dump($_SESSION["msg_user_loginid"]);
+  //var_dump($error_msgs);
+}
 /*-----------------------------------------------------------------------------
     エラーなしでメール送信、
 -----------------------------------------------------------------------------*/
@@ -112,17 +118,17 @@ EOM;
       <form class="frame-edit" action="registration.php" method="post">
         <div>
           <label for="yu-za-mei">ユーザー名<span class="attention">*</span></label>
-          <div class="user_loginid_result"></div>
-          <input type="text" name="user_loginid" id="yu-za-mei" size="30" value="<?= he($_SESSION["user_loginid"]) ?>">
+          <span class="user_loginid_result"></span>
+          <input class="validation-empty" type="text" name="user_loginid" id="yu-za-mei" size="30" value="<?= he($_SESSION["user_loginid"]) ?>">
         </div>
         <div>
           <label for="me-ruadoresu">メールアドレス<span class="attention">*</span></label>
-          <div class="user_email_result"></div>
-          <input type="text" name="user_email" id="me-ruadoresu" size="30" value="<?= he($_SESSION["user_email"]) ?>">
+          <span class="user_email_result"></span>
+          <input class="validation-empty" type="text" name="user_email" id="me-ruadoresu" size="30" value="<?= he($_SESSION["user_email"]) ?>">
         </div>
         <div>
           <label for="pasuwa-do">パスワード<span class="attention">*</span></label>
-          <input type="password" name="user_password" id="pasuwa-do" size="30" value="<?= he($_SESSION["user_password"]) ?>">
+          <input class="validation-empty" type="password" name="user_password" id="pasuwa-do" size="30" value="<?= he($_SESSION["user_password"]) ?>">
         </div>
         <div>
           <input type="hidden" name="token" value="<?= he($_SESSION['token']) ?>">
