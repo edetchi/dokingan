@@ -43,7 +43,6 @@ $(function(){
 /*-----------------------------------------------------------------------------
     ajaxでお気に入り登録改
 -----------------------------------------------------------------------------*/
-
   var fbtn = $("button[data-favorite]");
   if (fbtn.data("favorite")==0)  {
     //fbtn.css("color", "yellow");
@@ -83,42 +82,40 @@ $(function(){
       });
     }
   });
-
 /*-----------------------------------------------------------------------------
     登録時に行うユーザー名とメアドの重複チェック
 -----------------------------------------------------------------------------*/
-  $(document).on('blur', '#yu-za-mei, #me-ruadoresu', function() {
+  $(document).on('blur', '#yu-za-mei, #me-ruadoresu, #pasuwa-do', function() {
     var user_loginid = $('#yu-za-mei').val();
     var user_email = $('#me-ruadoresu').val();
-    console.log(user_loginid);
+    var user_password = $('#pasuwa-do').val();
+    console.log(user_password);
     $.ajax({
       url: 'registration_validator.php',
       type: 'post',
       data: {
         user_loginid: user_loginid,
-        user_email: user_email
+        user_email: user_email,
+        user_password: user_password
         }
     })
     .done(function(data) {
-      console.log(data);
-      /*
-      $('.registration_user-loginid-result').html(data.user_loginid);
-      $('.registration_user-email-result').html(data.user_email);
-      */
+      //console.log(data);
       $('.user_loginid_result').html(data.user_loginid);
       $('.user_email_result').html(data.user_email);
+      $('.user_password_result').html(data.user_password);
     })
     .fail(function() {
       console.log('error');
       console.log("XMLHttpRequest : " + XMLHttpRequest.status);
-console.log("textStatus     : " + textStatus);
-console.log("errorThrown    : " + errorThrown.message);
-
+      console.log("textStatus     : " + textStatus);
+      console.log("errorThrown    : " + errorThrown.message);
     });
   });
 /*-----------------------------------------------------------------------------
     新規登録時のバリデーション
 -----------------------------------------------------------------------------*/
+/*
   $(document).on("blur", ".validation-empty", function(){
     if ($(this).val() === "") {
       console.log("value empty");
@@ -132,11 +129,8 @@ console.log("errorThrown    : " + errorThrown.message);
       //$(this).siblings(".error-msg-empty").remove();
       $(".error-msg-empty").remove();
     }
-
   });
-
-
-
+*/
 /*-----------------------------------------------------------------------------
     .modal-login
 -----------------------------------------------------------------------------*/
@@ -164,9 +158,6 @@ console.log("errorThrown    : " + errorThrown.message);
 	  console.log(x, y);
     }
   });
-
-
-
 /*-----------------------------------------------------------------------------
     .modal-register
 -----------------------------------------------------------------------------*/
@@ -194,8 +185,6 @@ console.log("errorThrown    : " + errorThrown.message);
 	  console.log(x, y);
     }
   });
-
-
 /*-----------------------------------------------------------------------------
     .modal-mymenu
 -----------------------------------------------------------------------------*/
@@ -223,7 +212,6 @@ console.log("errorThrown    : " + errorThrown.message);
 	  console.log(x, y);
     }
   });
-
 /*-----------------------------------------------------------------------------
     .nav-bar
 -----------------------------------------------------------------------------*/
@@ -236,7 +224,6 @@ $(window).scroll(function() {
     nav.removeClass('fixed');
   }
 });
-
 /*-----------------------------------------------------------------------------
     .frame-detail__delete
 -----------------------------------------------------------------------------*/
@@ -249,7 +236,6 @@ $('.frame-detail__delete').on('click', function() {
     return false;
   }
 });
-
 /*-----------------------------------------------------------------------------
     登録時の値のバリデーションチェック
 -----------------------------------------------------------------------------*/
@@ -265,5 +251,4 @@ $('.frame-detail__delete').on('click', function() {
     }
   }
 validationEmpty("validation-empty");
-
 });

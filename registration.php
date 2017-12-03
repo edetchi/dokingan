@@ -119,16 +119,17 @@ EOM;
         <div>
           <label for="yu-za-mei">ユーザー名<span class="attention">*</span></label>
           <span class="user_loginid_result"></span>
-          <input class="validation-empty" type="text" name="user_loginid" id="yu-za-mei" size="30" value="<?= he($_SESSION["user_loginid"]) ?>">
+          <input type="text" name="user_loginid" id="yu-za-mei" size="10" value="<?= he($_SESSION["user_loginid"]) ?>">
         </div>
         <div>
           <label for="me-ruadoresu">メールアドレス<span class="attention">*</span></label>
           <span class="user_email_result"></span>
-          <input class="validation-empty" type="text" name="user_email" id="me-ruadoresu" size="30" value="<?= he($_SESSION["user_email"]) ?>">
+          <input type="text" name="user_email" id="me-ruadoresu" size="50" value="<?= he($_SESSION["user_email"]) ?>">
         </div>
         <div>
           <label for="pasuwa-do">パスワード<span class="attention">*</span></label>
-          <input class="validation-empty" type="password" name="user_password" id="pasuwa-do" size="30" value="<?= he($_SESSION["user_password"]) ?>">
+          <span class="user_password_result"></span>
+          <input type="password" name="user_password" id="pasuwa-do" size="32" value="<?= he($_SESSION["user_password"]) ?>">
         </div>
         <div>
           <input type="hidden" name="token" value="<?= he($_SESSION['token']) ?>">

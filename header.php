@@ -42,11 +42,11 @@
       <form action="mypage/login.php" method="post">
         <div>
           <label for="roguin"><span class="attention"></span></label>
-          <input type="text" name="user_loginid" class="modal-login__email-input" id="roguin" size="30" value="ユーザー名→メールアドレスに変更したい">
+          <input type="text" name="user_loginid" class="modal-login__email-input" id="roguin" size="10" value="ユーザー名→メールアドレスに変更したい">
         </div>
         <div>
-          <label for="pasuwa-do"><span class="attention"></span></label>
-          <input type="password" name="user_password" class="modal-login__password-input" id="pasuwa-do" size="30" value="パスワード">
+          <label for="pasuwa-do-header"><span class="attention"></span></label>
+          <input type="password" name="user_password" class="modal-login__password-input" id="pasuwa-do-header" size="32" value="パスワード">
         </div>
         <div>
           <input type="submit" name="send" class="modal-login__btn-input" value="ログイン">
