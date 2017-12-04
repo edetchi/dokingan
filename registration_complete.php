@@ -4,8 +4,8 @@ require_once("system/common.php");
 /*-----------------------------------------------------------------------------
     メッセージの初期化
 -----------------------------------------------------------------------------*/
-$page_message = "";
-$error_message = "";
+$page_msgs = array();
+$error_msgs = array();
 
 if (empty($_GET)) {
   header("Location: registration.php");
@@ -36,7 +36,7 @@ if (empty($_GET)) {
       $stmt->execute();
       $row_user_loginid = $stmt->fetch(PDO::FETCH_ASSOC);
       $stmt = null;
-      if ($row_user_loginid["user_loginid"]) $error_message .= "ご希望のユーザーIDは既に取得されています。他のユーザーIDをご使用ください。\n";
+      if ($row_user_loginid["user_loginid"]) $error_msgs[] = "ご希望のユーザーIDは既に取得されています。他のユーザーIDをご使用ください。\n";
       //user_emailが被ってないかチェック
       $sql = "select * from users where user_email = :user_email";
       $stmt = $pdo->prepare($sql);
@@ -44,7 +44,7 @@ if (empty($_GET)) {
       $stmt->execute();
       $row_user_email = $stmt->fetch(PDO::FETCH_ASSOC);
       $stmt = null;
-      if ($row_user_email["user_email"]) $error_message .= "ご希望のメールアドレスは既に取得されています。他のメールアドレスをご使用ください。\n";
+      if ($row_user_email["user_email"]) $error_msgs[] = "ご希望のメールアドレスは既に取得されています。他のメールアドレスをご使用ください。\n";
       //被りがなかったら登録
       if (empty($row_user_loginid["user_loginid"]) && empty($row_user_email["user_email"])) {
         $sql = "insert into users (user_loginid, user_password, user_email) values(:user_loginid, :user_password, :user_email)";
@@ -62,17 +62,23 @@ if (empty($_GET)) {
       }
     } else {
     $page_title = "登録エラー";
-    $error_message = "このURLはご利用になれません。有効期限が切れた等の問題がありません。登録をもう一度やり直して下さい。";
+    $error_msgs[] = "このURLはご利用になれません。有効期限が切れた等の問題があります。登録をもう一度やり直して下さい。";
     }
     require("header.php");?>
       <div class="main-wrap">
         <main>
-          <p>
-            <?= he($page_message) ?>
-          </p>
-          <p class="attention">
-            <?= nl2br(he($error_message)) ?>
-          </p>
+          <div class="registration-message">
+            <p>
+              <?php foreach ($page_msgs as $page_msg): ?>
+              <p><?= he($page_msg) ?></p>
+              <?php endforeach; ?>
+            </p>
+            <p class="attention">
+              <?php foreach ($error_msgs as $error_msg): ?>
+              <p><?= he($error_msg) ?></p>
+              <?php endforeach; ?>
+            </p>
+          </div>
         </main>
         <aside>
         </aside>

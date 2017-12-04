@@ -41,7 +41,7 @@ if (!empty($_POST["send"])) {
     エラーなしでメール送信、
 -----------------------------------------------------------------------------*/
 if (!empty($_POST["send"]) && empty($error_msgs)) {
-  $url = "http://192.168.33.10/framerefugee/registration_complete.php?urltoken=" . $_SESSION["token"];
+  $url = "http://192.168.33.10/dokingan/registration_complete.php?urltoken=" . $_SESSION["token"];
   try {
     $pdo->beginTransaction();
     $sql = "insert into pre_users (pre_urltoken, pre_userid, pre_email, pre_password) values (:pre_urltoken, :pre_userid, :pre_email, :pre_password)";
