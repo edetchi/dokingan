@@ -60,33 +60,33 @@ if (isset($request["send"])) {
     //空欄チェック
     /*
     if ($request["user_loginid"] == "") {
-        $error_msgs[] = "ユーザーIDを入力してください\n";
+        $error_msgs[] = "ユーザーIDを入力してください";
     }
     */
     /*
     if ($request["user_password"] == "") {
-        $error_msgs[] = "パスワードを入力してください\n";
+        $error_msgs[] = "パスワードを入力してください";
     }
     */
     //ブラウザが判断するファイルタイプがjpegじゃなかったら、もしくは拡張子がjpegじゃなかったら
     //$_FILESがアップロードされた時
     if ($user_icon["error"] == 0) {
       if (($user_icon["type"] != "image/jpeg"  && $user_icon["type"] != "image/pjpeg") || strtolower(mb_strrchr($user_icon["name"], ".", false)) != ".jpg") {
-          $error_msgs[] = "画像(jpegファイル)をアップロードして下さい\n";
+          $error_msgs[] = "画像(jpegファイル)をアップロードして下さい";
       }
     }
     //画像サイズを制限
     if ($user_icon["size"] > 10*1024*1024) {
-        $error_msgs[] = "画像サイズは10MB以下にして下さい\n";
+        $error_msgs[] = "画像サイズは10MB以下にして下さい";
     }
     if ($request["user_email"] == "") {
-        $error_msgs[] = "メールアドレスを入力してください\n";
+        $error_msgs[] = "メールアドレスを入力してください";
     }
     if ($request["user_sph"] == "") {
-        $error_msgs[] = "SPH（度数）を入力してください\n";
+        $error_msgs[] = "SPH（度数）を入力してください";
     }
     if ($request["user_pd"] == "") {
-        $error_msgs[] = "PD（瞳孔間距離）を入力してください\n";
+        $error_msgs[] = "PD（瞳孔間距離）を入力してください";
     }
 }
 /*=============================================================================
@@ -105,7 +105,7 @@ if (isset($request["send"]) && empty($error_msgs)) {
     list($original_w, $original_h) = getimagesize("../images/users/{$user_icon_name}");
     //ファイルサイズがない時はエラー表示、それ以外はサムネ作成
     if ($original_w == 0 || $original_h == 0) {
-        $error_msgs[] = "画像ファイルではありません\n";
+        $error_msgs[] = "画像ファイルではありません";
         unlink("../images/users/{$user_icon_name}");
     } else {
         //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h

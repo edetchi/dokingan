@@ -576,6 +576,55 @@ main {
   margin: 2vw auto 0;
   width: 80vw;
 }
+/*-----------------------------------------------------------------------------
+    .message(mypage/index.php)
+-----------------------------------------------------------------------------*/
+.message {
+  margin: 2vw auto 0;
+  width: 80vw;
+}
+/*-----------------------------------------------------------------------------
+    .mypage-menu(mypage/index.php)
+-----------------------------------------------------------------------------*/
+.mypage-menu {
+  margin: 3vw auto 0;
+  width: 80vw;
+  font-size: 3vw;
+  text-align: center;
+}
+/*-----------------------------------------------------------------------------
+    .login-page
+-----------------------------------------------------------------------------*/
+.login-page {
+  margin: 0 auto;
+  width: 80vw;
+}
+.login-page div {
+  margin-top: 2vw;
+}
+.login-page label {
+  display: left;
+}
+.login-page input, .login-page textarea {
+  box-sizing: border-box;
+  width: 80vw;
+  padding: 2vw;
+  font-size: 2vw;
+  /*ボーダー初期化*/
+  border:0;
+  border:solid 1px #ccc;
+  /*丸角*/
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  /*シャドー*/
+  -moz-box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+  box-shadow: inner 0 0 4px rgba(0, 0, 0, 0.2);
+}
+.login-page input[type="submit"], .login-page input[type="file"] {
+  margin-top: 2vw;
+}
 /*=============================================================================
     .wrapper>>
 =============================================================================*/

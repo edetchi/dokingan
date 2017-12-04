@@ -4,9 +4,7 @@
 -----------------------------------------------------------------------------*/
 //ログイン判別を行うadmin_common.phpより先に読み込む
 $is_login_page = true;
-?>
-<?php require_once("../system/common.php"); ?>
-<?php
+require_once("../system/common.php");
 /*-----------------------------------------------------------------------------
     変数をホワイトリスト化
 -----------------------------------------------------------------------------*/
@@ -14,22 +12,22 @@ $is_login_page = true;
 $whitelists = array("user_loginid", "user_password", "send");
 $request = whitelist($whitelists);
 //ページメッセージ初期化
-$page_message = "";
+$page_msgs = array();
 //エラーメッセージの初期化
-$error_message = "";
+$error_msgs = array();
 /*-----------------------------------------------------------------------------
     フォーム項目のエラーチェック
 -----------------------------------------------------------------------------*/
 //送信ボタンが押された時の処理
 if (isset($request["send"])) {
     //空欄チェック
-    if ($request["user_loginid"] == "") $error_message .= "ログインIDを入力してください\n";
-    if ($request["user_password"] == "") $error_message .= "パスワードを入力してください\n";
+    if ($request["user_loginid"] == "") $error_msgs[] = "ログインIDを入力してください";
+    if ($request["user_password"] == "") $error_msgs[] = "パスワードを入力してください";
 }
 /*=============================================================================
     送信ボタンが押されて、エラーメッセージがない時、ログイン実行開始
 =============================================================================*/
-if (isset($request["send"]) && $error_message == "") {
+if (isset($request["send"]) && empty($error_msgs)) {
 /*-----------------------------------------------------------------------------
     ログインIDとパスが一致したら、セッション名user_idにデーターベースの一意なuser_idの値を代入する（ログイン実行）
 -----------------------------------------------------------------------------*/
@@ -49,7 +47,7 @@ if (isset($request["send"]) && $error_message == "") {
                 exit;
             }
         }
-        $error_message .= "入力内容をご確認ください\n";
+        $error_msgs[] = "入力内容をご確認ください";
     } catch (PDOException $e) {
         // エラー発生時
         exit("ログイン処理に失敗しました");
@@ -61,23 +59,25 @@ if (isset($request["send"]) && $error_message == "") {
 ?>
 <?php $page_title = "ログイン";?>
 <?php require("header.php"); ?>
-    <!-- サンキューメッセージ表示 -->
-    <!--サニタイズ化-->
-    <p>
-      <?= he($page_message) ?>
-    </p>
-    <!--エラーメッセージの表示-->
-    <p class="attention">
-      <!--$error_messageはユーザーから受け取る値は入っていないが、変数を表示するときはサニタイズするのがベター-->
-      <?= nl2br(he($error_message)) ?>
-    </p>
-    <form action="login.php" method="post">
+    <div class="message">
+      <p>
+        <?php foreach ($page_msgs as $page_msg): ?>
+        <p><?= he($page_msg) ?></p>
+        <?php endforeach; ?>
+      </p>
+      <p class="attention">
+        <?php foreach ($error_msgs as $error_msg): ?>
+        <p><?= he($error_msg) ?></p>
+        <?php endforeach; ?>
+      </p>
+    </div>
+    <form class="login-page" action="login.php" method="post">
       <div>
-	<label for="roguin">ログインID<span class="attention">【必須】</span></label>
+        <label for="roguin">ログインID<span class="attention">*</span></label>
         <input type="text" name="user_loginid" id="roguin" size="30" value="">
       </div>
       <div>
-	<label for="pasuwa-do">パスワード<span class="attention">【必須】</span></label>
+        <label for="pasuwa-do">パスワード<span class="attention">*</span></label>
         <input type="password" name="user_password" id="pasuwa-do" size="30" value="">
       </div>
       <div>
