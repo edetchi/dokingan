@@ -10,18 +10,12 @@ $_SESSION["token"] = md5(session_id());
 $page_msgs = array();
 $error_msgs = array();
 /*-----------------------------------------------------------------------------
-    $_POSTの値を格納
------------------------------------------------------------------------------*/
-$user_loginid = (!empty($_POST["user_loginid"])) ? $_POST["user_loginid"] : "";
-$user_email = (!empty($_POST["user_email"])) ? $_POST["user_email"] : "";
-$user_password = (!empty($_POST["user_password"])) ? md5($_POST["user_password"]) : "";
-/*-----------------------------------------------------------------------------
-    セッション未定義インデックスのエラー避け
+    未定義インデックスのエラー避け
 -----------------------------------------------------------------------------*/
 //セッション初期化でエラーが入力欄に表示されるのでそれ避け
-$_SESSION["user_loginid"] = (!empty($_SESSION["user_loginid"])) ? $_SESSION["user_loginid"] : "";
-$_SESSION["user_email"] = (!empty($_SESSION["user_email"])) ? $_SESSION["user_email"] : "";
-$_SESSION["user_password"] = (!empty($_SESSION["user_password"])) ? $_SESSION["user_password"] : "";
+$_POST["user_loginid"] = (!empty($_POST["user_loginid"])) ? $_POST["user_loginid"] : "";
+$_POST["user_email"] = (!empty($_POST["user_email"])) ? $_POST["user_email"] : "";
+$_POST["user_password"] = (!empty($_POST["user_password"])) ? md5($_POST["user_password"]) : "";
 $_SESSION["msg_user_loginid"] = (!empty($_SESSION["msg_user_loginid"])) ? $_SESSION["msg_user_loginid"] : "";
 $_SESSION["msg_user_email"] = (!empty($_SESSION["msg_user_email"])) ? $_SESSION["msg_user_email"] : "";
 /*-----------------------------------------------------------------------------
@@ -34,10 +28,10 @@ $_SESSION["user_password"] = (!empty($_POST["user_password"])) ? $_POST["user_pa
     フォーム項目のエラーチェック
 -----------------------------------------------------------------------------*/
 if (!empty($_POST["send"])) {
-  if (empty($user_loginid)) $error_msgs[] =  "ユーザー名を入力してください\n";
-  if (empty($user_email)) $error_msgs[] =  "メールアドレスを入力してください\n";
-  if(!empty($user_email) && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $user_email)) $error_msgs[] =  "メールアドレスの形式が正しくありません。\n";
-  if (empty($user_password)) $error_msgs[] =  "パスワードを入力してください\n";
+  if (empty($_POST["user_loginid"])) $error_msgs[] =  "ユーザー名を入力してください\n";
+  if (empty($_POST["user_email"])) $error_msgs[] =  "メールアドレスを入力してください\n";
+  if(!empty($_POST["user_email"]) && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $_POST["user_email"])) $error_msgs[] =  "メールアドレスの形式が正しくありません。\n";
+  if (empty($_POST["user_password"])) $error_msgs[] =  "パスワードを入力してください\n";
   if ($_SESSION["msg_user_loginid"] == 1) $error_msgs[] =  "そのユーザーIDは使用されています\n";
   if ($_SESSION["msg_user_email"] == 1) $error_msgs[] =  "そのメールアドレスは登録済みです\n";
   //var_dump($_SESSION["msg_user_loginid"]);
@@ -53,9 +47,9 @@ if (!empty($_POST["send"]) && empty($error_msgs)) {
     $sql = "insert into pre_users (pre_urltoken, pre_userid, pre_email, pre_password) values (:pre_urltoken, :pre_userid, :pre_email, :pre_password)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(":pre_urltoken", $_SESSION["token"], PDO::PARAM_STR);
-    $stmt->bindValue(":pre_userid", $user_loginid, PDO::PARAM_STR);
-    $stmt->bindValue(":pre_email", $user_email, PDO::PARAM_STR);
-    $stmt->bindValue(":pre_password", $user_password, PDO::PARAM_STR);
+    $stmt->bindValue(":pre_userid", $_POST["user_loginid"], PDO::PARAM_STR);
+    $stmt->bindValue(":pre_email", $_POST["user_email"], PDO::PARAM_STR);
+    $stmt->bindValue(":pre_password", $_POST["user_password"], PDO::PARAM_STR);
     $stmt->execute();
     //$row_pre_users = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt = null;
@@ -94,6 +88,10 @@ EOM;
       setcookie("PHPSESSID", '', time() - 1800, '/');
     }
     session_destroy();
+    //入力欄に表示する値を削除
+    $_POST["user_loginid"] = "";
+    $_POST["user_email"] = "";
+    $_POST["user_password"] = "";
     //メッセージ作成
     $page_msgs[] = "メールを送信致しました。24時間以内にメールに記載されたURLから登録を完了させて下さい。";
   } else {
@@ -105,31 +103,33 @@ EOM;
 <?php require("header.php"); ?>
   <div class="main-wrap">
     <main>
-      <p>
-        <?php foreach ($page_msgs as $page_msg): ?>
-        <p><?= he($page_msg) ?></p>
-        <?php endforeach; ?>
-      </p>
-      <p class="attention">
-        <?php foreach ($error_msgs as $error_msg): ?>
-        <p><?= he($error_msg) ?></p>
-        <?php endforeach; ?>
-      </p>
+      <div class="registration-message">
+        <p>
+          <?php foreach ($page_msgs as $page_msg): ?>
+          <p><?= he($page_msg) ?></p>
+          <?php endforeach; ?>
+        </p>
+        <p class="attention">
+          <?php foreach ($error_msgs as $error_msg): ?>
+          <p><?= he($error_msg) ?></p>
+          <?php endforeach; ?>
+        </p>
+      </div>
       <form class="registration-form" action="registration.php" method="post">
         <div class="user_loginid">
           <label for="yu-za-mei">ユーザー名<span class="attention">*</span></label>
           <span class="user_loginid_result"></span>
-          <input type="text" name="user_loginid" id="yu-za-mei" size="10" value="<?= he($_SESSION["user_loginid"]) ?>">
+          <input type="text" name="user_loginid" id="yu-za-mei" size="10" value="<?= he($_POST["user_loginid"]) ?>">
         </div>
         <div class="user_email">
           <label for="me-ruadoresu">メールアドレス<span class="attention">*</span></label>
           <span class="user_email_result"></span>
-          <input type="text" name="user_email" id="me-ruadoresu" size="50" value="<?= he($_SESSION["user_email"]) ?>">
+          <input type="text" name="user_email" id="me-ruadoresu" size="50" value="<?= he($_POST["user_email"]) ?>">
         </div>
         <div class="user_password">
           <label for="pasuwa-do">パスワード<span class="attention">*</span></label>
           <span class="user_password_result"></span>
-          <input type="password" name="user_password" id="pasuwa-do" size="32" value="<?= he($_SESSION["user_password"]) ?>">
+          <input type="password" name="user_password" id="pasuwa-do" size="32" value="<?= he($_POST["user_password"]) ?>">
         </div>
         <div>
           <input type="hidden" name="token" value="<?= he($_SESSION['token']) ?>">
