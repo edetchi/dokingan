@@ -50,9 +50,9 @@ if (empty($msg_user_email)) {
   $msg_user_email[] = "OK";
   $_SESSION["msg_user_email"] = 0;
 }
-//パスワードのバリデーション
+//パスワードのバリデーション(使える記号はヤフーのものを参考)
 if (!empty($_POST["user_password"])) {
-  if (!preg_match("/^[a-zA-Z0-9!@#$%^&*]{6,32}$/", $_POST["user_password"])) $msg_user_password[] = "パスワードは半角英数で6文字以上32文字以下にしてください";
+  if (!preg_match("/^[a-zA-Z0-9\\\*\+\.\?\{\}\(\)\[\]\^\$\-\|\/!\"#%&'=~@;:,`_]{6,32}$/", $_POST["user_password"])) $msg_user_password[] = "パスワードは半角英数記号で6文字以上32文字以下にしてください";
 } else {
   $msg_user_password[] = "未入力です";
 }
