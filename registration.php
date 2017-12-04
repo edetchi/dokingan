@@ -28,12 +28,12 @@ $_SESSION["user_password"] = (!empty($_POST["user_password"])) ? $_POST["user_pa
     フォーム項目のエラーチェック
 -----------------------------------------------------------------------------*/
 if (!empty($_POST["send"])) {
-  if (empty($_POST["user_loginid"])) $error_msgs[] =  "ユーザー名を入力してください\n";
-  if (empty($_POST["user_email"])) $error_msgs[] =  "メールアドレスを入力してください\n";
-  if(!empty($_POST["user_email"]) && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $_POST["user_email"])) $error_msgs[] =  "メールアドレスの形式が正しくありません。\n";
-  if (empty($_POST["user_password"])) $error_msgs[] =  "パスワードを入力してください\n";
-  if ($_SESSION["msg_user_loginid"] == 1) $error_msgs[] =  "そのユーザーIDは使用されています\n";
-  if ($_SESSION["msg_user_email"] == 1) $error_msgs[] =  "そのメールアドレスは登録済みです\n";
+  if (empty($_POST["user_loginid"])) $error_msgs[] =  "ユーザー名を入力してください";
+  if (empty($_POST["user_email"])) $error_msgs[] =  "メールアドレスを入力してください";
+  if(!empty($_POST["user_email"]) && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $_POST["user_email"])) $error_msgs[] =  "メールアドレスの形式が正しくありません。";
+  if (empty($_POST["user_password"])) $error_msgs[] =  "パスワードを入力してください";
+  if ($_SESSION["msg_user_loginid"] == 1) $error_msgs[] =  "そのユーザーIDは使用されています";
+  if ($_SESSION["msg_user_email"] == 1) $error_msgs[] =  "そのメールアドレスは登録済みです";
   //var_dump($_SESSION["msg_user_loginid"]);
   //var_dump($error_msgs);
 }
