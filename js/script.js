@@ -83,7 +83,7 @@ $(function(){
     }
   });
 /*-----------------------------------------------------------------------------
-    登録時に行うユーザー名とメアドの重複チェック
+    ajaxで登録時にバリデーションチェック
 -----------------------------------------------------------------------------*/
   $(document).on('blur', '#yu-za-mei, #me-ruadoresu, #pasuwa-do', function() {
     var user_loginid = $('#yu-za-mei').val();
@@ -104,6 +104,10 @@ $(function(){
       $('.user_loginid_result').html(data.user_loginid);
       $('.user_email_result').html(data.user_email);
       $('.user_password_result').html(data.user_password);
+      //入力欄のcssを状態に応じて変化
+      errorToggle(".user_loginid_result");
+      errorToggle(".user_email_result");
+      errorToggle(".user_password_result");
     })
     .fail(function() {
       console.log('error');
@@ -112,25 +116,6 @@ $(function(){
       console.log("errorThrown    : " + errorThrown.message);
     });
   });
-/*-----------------------------------------------------------------------------
-    新規登録時のバリデーション
------------------------------------------------------------------------------*/
-/*
-  $(document).on("blur", ".validation-empty", function(){
-    if ($(this).val() === "") {
-      console.log("value empty");
-      //エラーが表示されていない場合のみエラー表示
-      if ($(".error-msg-empty").length == 0) {
-        console.log("no error msg");
-        console.log($(".error-msg-empty").length);
-        $(this).before("<span class='error-msg-empty'>未入力です</span>");
-      }
-    } else {
-      //$(this).siblings(".error-msg-empty").remove();
-      $(".error-msg-empty").remove();
-    }
-  });
-*/
 /*-----------------------------------------------------------------------------
     .modal-login
 -----------------------------------------------------------------------------*/
@@ -236,19 +221,22 @@ $('.frame-detail__delete').on('click', function() {
     return false;
   }
 });
+/*=============================================================================
+    <<関数
+=============================================================================*/
 /*-----------------------------------------------------------------------------
-    登録時の値のバリデーションチェック
+    入力欄に応じてクラスをtoggleさせる関数（会員登録ページ）
 -----------------------------------------------------------------------------*/
-  function validationEmpty(className) {
-    if ($(className).val() === "") {
-      console.log("ppp");
-      //エラーが表示されていない場合のみエラー表示
-      if (!$(className).prev(".error-empty").length) {
-        $(className).siblings("label").after("<span class='error-empty'>未入力です</span>");
-      }
+  function errorToggle(className) {
+    if ($(className).text() == "OK") {
+      $(className).next().addClass("input-no-error");
+      $(className).next().removeClass("input-error");
     } else {
-      $(className).siblings(".error-empty").remove();
+      $(className).next().removeClass("input-no-error");
+      $(className).next().addClass("input-error");
     }
   }
-validationEmpty("validation-empty");
+/*=============================================================================
+    関数>>
+=============================================================================*/
 });

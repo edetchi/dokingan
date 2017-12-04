@@ -115,18 +115,18 @@ EOM;
         <p><?= he($error_msg) ?></p>
         <?php endforeach; ?>
       </p>
-      <form class="frame-edit" action="registration.php" method="post">
-        <div>
+      <form class="registration-form" action="registration.php" method="post">
+        <div class="user_loginid">
           <label for="yu-za-mei">ユーザー名<span class="attention">*</span></label>
           <span class="user_loginid_result"></span>
           <input type="text" name="user_loginid" id="yu-za-mei" size="10" value="<?= he($_SESSION["user_loginid"]) ?>">
         </div>
-        <div>
+        <div class="user_email">
           <label for="me-ruadoresu">メールアドレス<span class="attention">*</span></label>
           <span class="user_email_result"></span>
           <input type="text" name="user_email" id="me-ruadoresu" size="50" value="<?= he($_SESSION["user_email"]) ?>">
         </div>
-        <div>
+        <div class="user_password">
           <label for="pasuwa-do">パスワード<span class="attention">*</span></label>
           <span class="user_password_result"></span>
           <input type="password" name="user_password" id="pasuwa-do" size="32" value="<?= he($_SESSION["user_password"]) ?>">
