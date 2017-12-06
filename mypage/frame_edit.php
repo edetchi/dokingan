@@ -1,5 +1,5 @@
-<?php require_once("../system/common.php"); ?>
 <?php
+require_once("../system/common.php");
 /*-----------------------------------------------------------------------------
     変数をホワイトリスト化
 -----------------------------------------------------------------------------*/
@@ -22,11 +22,11 @@ if ($_FILES["frame_image"]) {
 $page_msgs = array();
 $error_msgs = array();
 /*-----------------------------------------------------------------------------
-    動作モードを$modeに格納（空白→新規、chnage→修正）
+    動作モードをgetで受けて$modeに格納（空白→新規、chnage→修正、delete→削除）
 -----------------------------------------------------------------------------*/
 $mode = $request["mode"];
 /*=============================================================================
-    <<ページ読み込み時に各値を取得
+    <<getでframe_idの値が与えられている時、各値を取得
 =============================================================================*/
 try {
   $sql = "select * from frames where frame_id = :frame_id";
@@ -44,10 +44,18 @@ try {
 if ($row_frame/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) {
   //古い画像削除用にファイル名をセッションに取得しておく
   $_SESSION["old_image"] = $row_frame["frame_image"];
+  //フレーム編集の初見時のコメントセット
+  if (empty($request["send"])) $page_msgs[] = "フレームID【{$request['frame_id']}】を修正しています";
 }
+/*-----------------------------------------------------------------------------
+    投稿者以外がフレームデータを編集、削除できないようにする
+-----------------------------------------------------------------------------*/
+if (!empty($mode) && $row_frame["frame_poster_id"] !== $_SESSION["user_id"]) {
+  header("Location: frame_list.php");
+  exit;
 }
 /*=============================================================================
-    ページ読み込み時に各値を取得>>
+    getでframe_idの値が与えられている時、各値を取得>>
 =============================================================================*/
 /*-----------------------------------------------------------------------------
     削除モード時
@@ -99,7 +107,7 @@ if (isset($request["send"])) {
   //if ($request["frame_frame_width"] == "") $error_msgs .= "フレーム幅を入力してください";
 }
 /*-----------------------------------------------------------------------------
-    フォーム項目が空欄の場合、NULLに設定
+    フォーム項目が空欄の場合、NULLに設定(SQLのinteger型は""だとエラーがでるので)
 -----------------------------------------------------------------------------*/
 if ($request["frame_lens_height"] == "") $request["frame_lens_height"] = null;
 if ($request["frame_frame_width"] == "") $request["frame_frame_width"] = null;
@@ -139,7 +147,7 @@ if (isset($request["send"]) && empty($error_msgs)) {
 /*-----------------------------------------------------------------------------
     修正モード
 -----------------------------------------------------------------------------*/
-    if ($mode == "change"/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) {
+    if ($mode == "change" && $row_frame["frame_poster_id"] === $_SESSION["user_id"]) {
       $sql = "update frames set frame_poster_id = :frame_poster_id, frame_price = :frame_price, frame_image = :frame_image, frame_link = :frame_link, frame_lens_width = :frame_lens_width, frame_lens_height = :frame_lens_height, frame_bridge_width = :frame_bridge_width, frame_temple_length = :frame_temple_length, frame_frame_width = :frame_frame_width where frame_id = :frame_id";
       $stmt = $pdo->prepare($sql);
       $request["frame_poster_id"] = $_SESSION["user_id"];
@@ -185,6 +193,15 @@ if (isset($request["send"]) && empty($error_msgs)) {
       $page_msgs[] = "フレームID【{$request['frame_id']}】を修正しています";
     }
     $stmt = null;
+/*-----------------------------------------------------------------------------
+    アップデート後の各値を取得
+-----------------------------------------------------------------------------*/
+    $sql = "select * from frames where frame_id = :frame_id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
+    $stmt->execute();
+    $row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = null;
     $pdo->commit();
   } catch (PDOException $e) {
     // エラー発生時
@@ -195,32 +212,23 @@ if (isset($request["send"]) && empty($error_msgs)) {
     データベース更新>>
 =============================================================================*/
 /*-----------------------------------------------------------------------------
-    アップデート後の各値を取得
+    アップデート後の各値を取得(エラー時の各値を取得)
 -----------------------------------------------------------------------------*/
-//  if ($form["frame_poster_id"] === $_SESSION["user_id"]) {
-    try {
-      $sql = "select * from frames where frame_id = :frame_id";
-      $stmt = $pdo->prepare($sql);
-      $stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
-      $stmt->execute();
-      $row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
-      $stmt = null;
-      if ($row_user) {
-        $_SESSION["old_image"] = $row_frame["user_icon"];
-      } else {
-        die("異常なアクセスです");
-      }
-    } catch (PDOException $e) {
-      die("エラー: " . $e->getMessage());
-    }
-  }
-//}
+} else if (!empty($error_msgs)) {
+  $row_frame['frame_price'] = $request["frame_price"];
+  $row_frame["frame_link"] = $request["frame_link"];
+  $row_frame["frame_lens_width"] = $request["frame_lens_width"];
+  $row_frame["frame_lens_height"] = $request["frame_lens_height"];
+  $row_frame["frame_bridge_width"] = $request["frame_bridge_width"];
+  $row_frame["frame_temple_length"] = $request["frame_temple_length"];
+  $row_frame["frame_frame_width"] = $request["frame_frame_width"];
+}
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     送信ボタンが押されて、エラーメッセージがない時、新規登録or修正終了>>
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+$page_title = "フレーム編集";
+require("header.php");
 ?>
-<?php $page_title = "フレーム編集";?>
-<?php require("header.php"); ?>
 <div class="main-wrap">
   <main>
     <a class="frame-list-list-btn" href="frame_list.php">フレーム一覧へ戻る</a>
