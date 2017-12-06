@@ -9,6 +9,9 @@ $request = whitelist($whitelists);
 /*-----------------------------------------------------------------------------
     画像のアップロードがある時だけ変数に格納
 -----------------------------------------------------------------------------*/
+//エラー避け
+$_FILES["frame_image"] = (!empty($_FILES["frame_image"])) ? $_FILES["frame_image"] : "";
+//画像アップ時に変数に格納
 if ($_FILES["frame_image"]) {
   $image = $_FILES["frame_image"];
   $image_name = date("YmdHis") . $image["name"];
@@ -63,6 +66,9 @@ if ($mode == "delete"/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) 
     $pdo->rollBack();
     die("エラー; " . $e->getMessage());
   }
+  //古い画像削除
+  unlink("../images/frames/{$_SESSION["old_image"]}");
+  unlink("../images/frames/thumb_{$_SESSION["old_image"]}");
   header("Location: frame_list.php");
   exit;
 }
@@ -83,6 +89,8 @@ if (isset($request["send"])) {
     //画像サイズを制限
     if ($image["size"] > 10*1024*1024) $error_msgs[] = "画像サイズは10MB以下にして下さい";
   }
+  //新規登録時のみ画像必須
+  if (empty($mode) && $image["error"] != 0) $error_msgs[] = "画像を選択してください";
   if ($request["frame_link"] == "") $error_msgs[] = "商品リンクを入力してください";
   if ($request["frame_lens_width"] == "") $error_msgs[] = "レンズ幅を入力してください";
   //if ($request["frame_lens_height"] == "") $error_msgs[] = "レンズの高さを入力してください";
@@ -102,7 +110,7 @@ if (isset($request["send"]) && empty($error_msgs)) {
 /*-----------------------------------------------------------------------------
     画像の投稿処理
 -----------------------------------------------------------------------------*/
-  if ($image["error"] == 0 && $mode == "change"){
+  if ($image["error"] == 0/* && $mode == "change"*/){
     //古い画像削除
     unlink("../images/frames/{$_SESSION["old_image"]}");
     unlink("../images/frames/thumb_{$_SESSION["old_image"]}");
