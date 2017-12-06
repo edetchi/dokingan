@@ -16,8 +16,8 @@ if ($_FILES["frame_image"]) {
 /*-----------------------------------------------------------------------------
     メッセージの初期化
 -----------------------------------------------------------------------------*/
-$page_message = "";
-$error_message = "";
+$page_msgs = array();
+$error_msgs = array();
 /*-----------------------------------------------------------------------------
     動作モードを$modeに格納（空白→新規、chnage→修正）
 -----------------------------------------------------------------------------*/
@@ -85,20 +85,20 @@ if ($mode == "delete"/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) 
 //送信ボタンが押された時の処理
 if (isset($request["send"])) {
   //空欄チェック
-  if ($request["frame_price"] == "") $error_message .= "価格を入力してください\n";
-  //if ($request["frame_image"] == "") $error_message .= "画像をアップロードしてください\n";
+  if ($request["frame_price"] == "") $error_msgs[] = "価格を入力してください";
+  //if ($request["frame_image"] == "") $error_msgs[] = "画像をアップロードしてください";
   //ブラウザが判断するファイルタイプがjpegじゃなかったら、もしくは拡張子がjpegじゃなかったら
   if (!$image["error"]) {
-    if (($image["type"] != "image/jpeg"  && $image["type"] != "image/pjpeg") || strtolower(mb_strrchr($image["name"], ".", false)) != ".jpg") $error_message .= "画像(jpegファイル)をアップロードして下さい\n";
+    if (($image["type"] != "image/jpeg"  && $image["type"] != "image/pjpeg") || strtolower(mb_strrchr($image["name"], ".", false)) != ".jpg") $error_msgs[] = "画像(jpegファイル)をアップロードして下さい";
     //画像サイズを制限
-    if ($image["size"] > 10*1024*1024) $error_message .= "画像サイズは10MB以下にして下さい\n";
+    if ($image["size"] > 10*1024*1024) $error_msgs[] = "画像サイズは10MB以下にして下さい";
   }
-  if ($request["frame_link"] == "") $error_message .= "商品リンクを入力してください\n";
-  if ($request["frame_lens_width"] == "") $error_message .= "レンズ幅を入力してください\n";
-  //if ($request["frame_lens_height"] == "") $error_message .= "レンズの高さを入力してください\n";
-  if ($request["frame_bridge_width"] == "") $error_message .= "ブリッジ幅を入力してください\n";
-  if ($request["frame_temple_length"] == "") $error_message .= "テンプルの長さを入力してください\n";
-  //if ($request["frame_frame_width"] == "") $error_message .= "フレーム幅を入力してください\n";
+  if ($request["frame_link"] == "") $error_msgs[] = "商品リンクを入力してください";
+  if ($request["frame_lens_width"] == "") $error_msgs[] = "レンズ幅を入力してください";
+  //if ($request["frame_lens_height"] == "") $error_msgs[] = "レンズの高さを入力してください";
+  if ($request["frame_bridge_width"] == "") $error_msgs[] = "ブリッジ幅を入力してください";
+  if ($request["frame_temple_length"] == "") $error_msgs[] = "テンプルの長さを入力してください";
+  //if ($request["frame_frame_width"] == "") $error_msgs .= "フレーム幅を入力してください";
 }
 /*-----------------------------------------------------------------------------
     フォーム項目が空欄の場合、NULLに設定
@@ -108,7 +108,7 @@ if ($request["frame_frame_width"] == "") $request["frame_frame_width"] = null;
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     <<送信ボタンが押されて、エラーメッセージがない時、新規登録or修正開始
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-if (isset($request["send"]) && $error_message == "") {
+if (isset($request["send"]) && empty($error_msgs)) {
 /*-----------------------------------------------------------------------------
     画像の投稿処理
 -----------------------------------------------------------------------------*/
@@ -122,7 +122,7 @@ if (isset($request["send"]) && $error_message == "") {
     list($original_w, $original_h) = getimagesize("../images/frames/{$image_name}");
     //ファイルサイズがない時はエラー表示、それ以外はサムネ作成
     if ($original_w == 0 || $original_h == 0) {
-      $error_message .= "画像ファイルではありません\n";
+      $error_msgs[] = "画像ファイルではありません";
       unlink("../images/frames/{$image_name}");
     } else {
       //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
@@ -161,6 +161,7 @@ if (isset($request["send"]) && $error_message == "") {
       $stmt->bindValue(":frame_temple_length", $request["frame_temple_length"], PDO::PARAM_INT);
       $stmt->bindValue(":frame_frame_width", $request["frame_frame_width"], PDO::PARAM_INT);
       $stmt->execute();
+      $page_msgs[] = "フレームID【{$request['frame_id']}】を修正しました";
 /*-----------------------------------------------------------------------------
     新規登録モード
 -----------------------------------------------------------------------------*/
@@ -182,6 +183,8 @@ if (isset($request["send"]) && $error_message == "") {
       $form["frame_id"] = $pdo->lastInsertId("frame_id");
       // 新規作成が成功したら、修正モードにして直近のデータを修正できるようにする
       $mode = "change";
+      $page_msgs[] = "登録が完了しました";
+      $page_msgs[] = "フレームID【{$request['frame_id']}】を修正しています";
     }
     $stmt = null;
     $pdo->commit();
@@ -221,7 +224,6 @@ if (isset($request["send"]) && $error_message == "") {
     } catch (PDOException $e) {
       die("エラー: " . $e->getMessage());
     }
-  $page_message = "登録が完了しました";
   }
 //}
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -233,60 +235,56 @@ if (isset($request["send"]) && $error_message == "") {
 <div class="main-wrap">
   <main>
     <a class="frame-list-list-btn" href="frame_list.php">フレーム一覧へ戻る</a>
-    <p>
-      <?= he($page_message) ?>
-    </p>
-    <p class="attention">
-      <?= nl2br(he($error_message)) ?>
-    </p>
-    <?php if ($mode == "change"): ?>
-    <p>
-      フレームID【<?= he($form["frame_id"]) ?>】を修正しています
-    </p>
-    <?php endif; ?>
+    <div class="message">
+      <p>
+        <?php foreach ($page_msgs as $page_msg): ?>
+        <p><?= he($page_msg) ?></p>
+        <?php endforeach; ?>
+      </p>
+      <p class="attention">
+        <?php foreach ($error_msgs as $error_msg): ?>
+        <p><?= he($error_msg) ?></p>
+        <?php endforeach; ?>
+      </p>
+    </div>
     <form class="frame-edit" enctype="multipart/form-data" action="frame_edit.php" method="post">
       <div>
-        <label for="kakaku">価格(円)<span class="attention">【必須】</span></label>
-        <input type="number" name="frame_price" id="kakaku" max="99999" value="<?= he($form['frame_price']); ?>">
+        <label for="kakaku">価格(円)<span class="attention">*</span></label>
+        <input type="number" name="frame_price" id="kakaku" max="99999" value="<?= he($row_frame['frame_price']); ?>">
       </div>
       <div>
-        <label for="gazou">画像<span class="attention">【必須】</span></label>
-        <?php if ($image["error"] === 0 && $error_message === ""): ?>
-        <p><img src='<?= "../images/frames/" . he($image_name) ?>'></p>
+        <label for="gazou">画像<span class="attention">*</span></label>
+        <p><img src="<?= '../images/frames/' . he($row_frame["frame_image"]) ?>"></p>
         <input type="file" name="frame_image" id="aikon">
-        <?php else : ?>
-        <p><img src="<?= '../images/frames/' . he($form["frame_image"]) ?>"></p>
-        <input type="file" name="frame_image" id="aikon">
-        <?php endif; ?>
       </div>
       <div>
-        <label for="shohinrinku">商品リンク<span class="attention">【必須】</span></label>
-        <input type="text" name="frame_link" id="shohinrinku" size="100" value="<?= he($form['frame_link']); ?>">
+        <label for="shohinrinku">商品リンク<span class="attention">*</span></label>
+        <input type="text" name="frame_link" id="shohinrinku" size="100" value="<?= he($row_frame['frame_link']); ?>">
       </div>
       <div>
-        <label for="renzuhaba">レンズ幅(mm)<span class="attention">【必須】</span></label>
-        <input type="number" name="frame_lens_width" id="renzuhaba" max="999" value="<?= he($form['frame_lens_width']); ?>">
+        <label for="renzuhaba">レンズ幅(mm)<span class="attention">*</span></label>
+        <input type="number" name="frame_lens_width" id="renzuhaba" max="999" value="<?= he($row_frame['frame_lens_width']); ?>">
       </div>
       <div>
         <label for="renzunotakasa">レンズの高さ(mm)</label>
-        <input type="number" name="frame_lens_height" id="renzunotakasa" max="999" value="<?= he($form['frame_lens_height']); ?>">
+        <input type="number" name="frame_lens_height" id="renzunotakasa" max="999" value="<?= he($row_frame['frame_lens_height']); ?>">
       </div>
       <div>
-        <label for="burijjihaba">ブリッジ幅(mm)<span class="attention">【必須】</span></label>
-        <input type="number" name="frame_bridge_width" id="burijjihaba" max="999" value="<?= he($form['frame_bridge_width']); ?>">
+        <label for="burijjihaba">ブリッジ幅(mm)<span class="attention">*</span></label>
+        <input type="number" name="frame_bridge_width" id="burijjihaba" max="999" value="<?= he($row_frame['frame_bridge_width']); ?>">
       </div>
       <div>
-        <label for="tenpurunonagasa">テンプルの長さ(mm)<span class="attention">【必須】</span></label>
-        <input type="number" name="frame_temple_length" id="tenpurunonagasa" max="999" value="<?= he($form['frame_temple_length']); ?>">
+        <label for="tenpurunonagasa">テンプルの長さ(mm)<span class="attention">*</span></label>
+        <input type="number" name="frame_temple_length" id="tenpurunonagasa" max="999" value="<?= he($row_frame['frame_temple_length']); ?>">
       </div>
       <div>
         <label for="hure-muhaba">フレーム幅(mm)</label>
-        <input type="number" name="frame_frame_width" id="hure-muhaba" max="999" value="<?= he($form['frame_frame_width']); ?>">
+        <input type="number" name="frame_frame_width" id="hure-muhaba" max="999" value="<?= he($row_frame['frame_frame_width']); ?>">
       </div>
       <div>
         <input type="submit" name="send" value="送信する">
         <input type="hidden" name="mode" value="<?= he($mode); ?>">
-        <input type="hidden" name="frame_id" value="<?= he($form['frame_id']); ?>">
+        <input type="hidden" name="frame_id" value="<?= he($request['frame_id']); ?>">
       </div>
     </form>
   </main>
