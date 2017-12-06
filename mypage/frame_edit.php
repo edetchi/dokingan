@@ -32,26 +32,16 @@ try {
   $stmt->execute();
   $row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
   $stmt = null;
-if ($row_frame/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) {
+} catch (PDOException $e) {
+  die("エラー: " . $e->getMessage());
+}
 /*-----------------------------------------------------------------------------
     フォームの初期化
 -----------------------------------------------------------------------------*/
-    $form = array();
-    $form["frame_id"] = $row_frame["frame_id"];
-    $form["frame_poster_id"] = $row_frame["frame_poster_id"];
-    $form["frame_price"] = $row_frame["frame_price"];
-    $form["frame_image"] = $row_frame["frame_image"];
-    $form["frame_link"] = $row_frame["frame_link"];
-    $form["frame_lens_width"] = $row_frame["frame_lens_width"];
-    $form["frame_lens_height"] = $row_frame["frame_lens_height"];
-    $form["frame_bridge_width"] = $row_frame["frame_bridge_width"];
-    $form["frame_temple_length"] = $row_frame["frame_temple_length"];
-    $form["frame_frame_width"] = $row_frame["frame_frame_width"];
-    //古い画像削除用にファイル名をセッションに取得しておく
-    $_SESSION["old_image"] = $row_frame["frame_image"];
-  }
-} catch (PDOException $e) {
-  die("エラー: " . $e->getMessage());
+if ($row_frame/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) {
+  //古い画像削除用にファイル名をセッションに取得しておく
+  $_SESSION["old_image"] = $row_frame["frame_image"];
+}
 }
 /*=============================================================================
     ページ読み込み時に各値を取得>>
@@ -180,7 +170,7 @@ if (isset($request["send"]) && empty($error_msgs)) {
       $stmt->bindValue(":frame_frame_width", $request["frame_frame_width"], PDO::PARAM_INT);
       $stmt->execute();
       //新規登録後にframe_idをゲット
-      $form["frame_id"] = $pdo->lastInsertId("frame_id");
+      $request["frame_id"] = $pdo->lastInsertId("frame_id");
       // 新規作成が成功したら、修正モードにして直近のデータを修正できるようにする
       $mode = "change";
       $page_msgs[] = "登録が完了しました";
@@ -208,15 +198,6 @@ if (isset($request["send"]) && empty($error_msgs)) {
       $row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
       $stmt = null;
       if ($row_user) {
-        $form["frame_id"] = $row_frame["frame_id"];
-        $form["frame_price"] = $row_frame["frame_price"];
-        $form["frame_image"] = $row_frame["frame_image"];
-        $form["frame_link"] = $row_frame["frame_link"];
-        $form["frame_lens_width"] = $row_frame["frame_lens_width"];
-        $form["frame_lens_height"] = $row_frame["frame_lens_height"];
-        $form["frame_bridge_width"] = $row_frame["frame_bridge_width"];
-        $form["frame_temple_length"] = $row_frame["frame_temple_length"];
-        $form["frame_frame_width"] = $row_frame["frame_frame_width"];
         $_SESSION["old_image"] = $row_frame["user_icon"];
       } else {
         die("異常なアクセスです");
