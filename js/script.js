@@ -206,4 +206,63 @@ $('.frame-list__admin-action__delete').on('click', function() {
 /*=============================================================================
     関数>>
 =============================================================================*/
+/*-----------------------------------------------------------------------------
+    .tooltip
+-----------------------------------------------------------------------------*/
+  var $body = $("body");
+  //ログインしているかどうかをチェックする要素
+  var login = $("[data-favorite]").attr("disabled");
+  console.log(login);
+  //tooltipのメッセージ
+  var tooltipMsg = "お気に入り登録をするにはログインしてください"
+  //ログイン時にお気に入りボタンの親(li)に
+  if (login == "disabled") {
+    $("[data-favorite]").parent().addClass("my-tooltip");
+    $("[data-favorite]").parent().attr("title", tooltipMsg);
+  }
+  // 各 `.my-tooltip` 要素に対して処理をしていきます
+  $(".my-tooltip").each(function(){
+    //何度も使うので変数に格納
+    var $this = $(this);
+    //ターゲトのタイトルを格納
+    var title = $this.attr("title");
+    // ツールチップ本体(配列のタグをjoin()で連結)
+    var $tooltip = $([
+      "<span class='tooltip'>",
+        "<span class='tooltip__body'>",
+          title,
+        "</span>",
+      "</span>"
+    ].join(""));
+    //本来のツールチップを削除
+    $this.attr("title", "");
+    //イベントの設定(mouseoverだと子要素でイベントが発生するのでこっちを使う)
+    $this.on("mouseenter", function(){
+      //alert("mouseover");
+      //ツールチップ追加
+      $body.append($tooltip);
+      //要素の表示位置
+      var offset = $this.offset();
+      //ターゲット要素のサイズ
+      var size = {
+        width: $this.outerWidth(),
+        height: $this.outerHeight()
+      };
+      //ツールチップのサイズ
+      var ttSize = {
+        width: $tooltip.outerWidth(),
+        height: $tooltip.outerHeight()
+      };
+      //要素の上に横中央で配置
+      $tooltip.css({
+        top: offset.top - ttSize.height,
+        left: offset.left + size.width / 2 - ttSize.width / 2
+      });
+    })
+    //マウスが離れた時発生
+    .on("mouseleave", function(){
+      //ツールチップを削除
+      $tooltip.remove();
+    });
+  });
 });

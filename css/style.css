@@ -511,10 +511,45 @@ main {
   font-size: 4vw;
 }
 /*-----------------------------------------------------------------------------
-    .frame-detail__mymenu(frmae-list.php)
+    .tooltip-favorite
 -----------------------------------------------------------------------------*/
-.frame-list__layout_mymenu_on {
-  border-bottom: 0;
+/* ツールチップ本体 */
+.tooltip {
+  position:absolute;
+  z-index:9999;
+  display:block;
+  color:#fff;
+  font-size:14px;
+  line-height:1.2;
+}
+/* ツールチップの内容 */
+.tooltip__body {
+  position:relative;
+  top:-15px;
+  padding:10px;
+  background:#5f5f5f;
+  -webkit-border-radius:5px;
+     -moz-border-radius:5px;
+      -ms-border-radius:5px;
+          border-radius:5px;
+  -webkit-box-shadow:0 2px 4px rgba(0, 0, 0, .4);
+     -moz-box-shadow:0 2px 4px rgba(0, 0, 0, .4);
+      -ms-box-shadow:0 2px 4px rgba(0, 0, 0, .4);
+          box-shadow:0 2px 4px rgba(0, 0, 0, .4);
+}
+/* ツールチップらしく矢印をつける */
+.tooltip__body:after {
+  content:"";
+  position:absolute;
+  bottom:-5px;
+  left:50%;
+  display:block;
+  width:0;
+  height:0;
+  margin-left:-5px;
+  border-width:5px 5px 0 5px;
+  border-style:solid;
+  border-color:#5f5f5f transparent transparent transparent;
 }
 /*=============================================================================
     .frame-detail>>
@@ -698,8 +733,6 @@ main {
 /*=============================================================================
     .wrapper>>
 =============================================================================*/
-
-
 /*=============================================================================
     <<.footer
 =============================================================================*/
@@ -737,7 +770,6 @@ main {
 /*=============================================================================
     .footer>>
 =============================================================================*/
-
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     共通>>
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
