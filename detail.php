@@ -43,6 +43,8 @@ try {
   $stmt = null;
   //フレームのお気に入りがない時、数を0にセットする
   $row_frame["favorite_cnt"] = empty($row_frame["favorite_cnt"]) ? 0 : $row_frame["favorite_cnt"];
+  //価格にカンマ追加
+  $row_frame["frame_price"] = number_format($row_frame["frame_price"]);
 /*=============================================================================
     フレーム一覧用データ取得>>
 =============================================================================*/
@@ -120,45 +122,43 @@ try {
       <p class="attention">
         <?= nl2br(he($error_message)) ?>
       </p>
-      <div class="frame-list__layout frame-list__layout_desc_true">
-        <div class="frame-list frame-list_desc_true">
-          <a href="detail.php?frame_id=<?= he($row_frame["frame_id"]) ?>">
-            <img class="frame-list__image" src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
-          </a>
-          <ul class="frame-list__info">
-            <li class="frame-list__userid"><i class="fa fa-user-o" aria-hidden="true"></i><?= he($row_frame["user_loginid"]) ?></li>
-            <li class="frame-list__size">
+      <div class="frame-detail__layout frame-detail__layout_desc_true">
+        <div class="frame-detail frame-detail_desc_true">
+          <img class="frame-detail__image" src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
+          <ul class="frame-detail__info">
+            <li class="frame-detail__userid"><i class="fa fa-user-o" aria-hidden="true"></i><?= he($row_frame["user_loginid"]) ?></li>
+            <li class="frame-detail__size">
               <?= he($row_frame["frame_lens_width"]) ?>□<?= he($row_frame["frame_bridge_width"]) ?>-<?= he($row_frame["frame_temple_length"]) ?>
             </li>
-            <li class="frame-list_desc_true__optional">
+            <li class="frame-detail_desc_true__optional">
             <?php if($row_frame["frame_frame_width"]) echo "フレーム幅" . he($row_frame["frame_frame_width"]); ?>
             </li>
-            <li class="frame-list_desc_true__optional">
-            <?php if($row_frame["frame_lens_height"]) echo "レンズ高" . he($row_frame["frame_frame_width"]); ?>
+            <li class="frame-detail_desc_true__optional">
+            <?php if($row_frame["frame_lens_height"]) echo "レンズ高" . he($row_frame["frame_lens_height"]); ?>
             </li>
             <?php if ($_SESSION["user_id"]):?>
               <?php if($edge1_thick == $max_edge): ?>
-            <li class="frame-list__thickness frame-list_desc_true__thickness">中心: <span class="frame-list__max"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-list__min"><?= round($edge2_thick, 1); ?></span>
+            <li class="frame-detail__thickness frame-detail_desc_true__thickness">中心: <span class="frame-detail__max"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-detail__min"><?= round($edge2_thick, 1); ?></span>
               <?php else: ?>
-            <li class="frame-list__thickness frame-list_desc_true__thickness">中心: <span class="frame-list__min"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-list__max"><?= round($edge2_thick, 1); ?></span>
+            <li class="frame-detail__thickness frame-detail_desc_true__thickness">中心: <span class="frame-detail__min"><?= round($edge1_thick, 1); ?></span>端: <span class="frame-detail__max"><?= round($edge2_thick, 1); ?></span>
               <?php endif; ?>
-            </li><!--.frame-list__thickness-->
+            </li><!--.frame-detail__thickness-->
             <?php endif; ?>
-          </ul><!--.frame-list__info-->
-        </div><!--.frame-list-->
-      </div><!--.frame-list__layout-->
-        <li class="frame-detail__price">
+          </ul><!--.frame-detail__info-->
+        </div><!--.frame-detail-->
+      </div><!--.frame-detail__layout-->
       <ul class="frame-detail__action">
+        <li class="frame-detail__action__price">
           <span><i class="fa fa-jpy" aria-hidden="true"></i><?= he($row_frame["frame_price"]) ?></span>
         </li>
-        <li class="frame-detail__seller">
-          <a class="frame-detail__seller-link" href="<?= he($row_frame['frame_link']) ?>">
+        <li class="frame-detail__action__seller">
+          <a class="frame-detail__action__seller-link" href="<?= he($row_frame['frame_link']) ?>" target="_blank">
             <i class="fa fa-external-link" aria-hidden="true"></i>Buy
           </a>
         </li>
-        <li clas="frame-detail__report">
+        <li class="frame-detail__action__report">
           <button data-report=<?= $report_removed_flag ?>>
-            <i class="fa fa-flag-o frame-detail__report-icon" aria-hidden="true"></i>
+            <i class="fa fa-flag-o frame-detail__action__report-icon" aria-hidden="true"></i>
           </button>
         </li>
         <li class="frame-detail__action__favorite">
