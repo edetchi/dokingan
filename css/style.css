@@ -415,11 +415,33 @@ main {
   -webkit-box-shadow: inset 0 5px 5px rgba(0, 0, 0, 0.3);
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
 }
-/*-----------------------------------------------------------------------------
-    .frame-detail
------------------------------------------------------------------------------*/
-.frame-list__layout_desc_true {
-  padding-bottom: 2vw;
+.frame-list__seller {
+  margin: 1vw auto;
+  width: 15vw;
+  background: #f5f5f5;
+  border-radius: 2vw;
+}
+.frame-list__seller-link {
+  display: block;
+}
+.frame-list__admin-action {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 2vw;
+  padding: 1vw;
+  height: 8vw;
+  border-radius: 2vw;;
+  background: #fff;
+  font-size: 4vw;
+}
+.frame-list__admin-action__edit, .frame-list__admin-action__delete {
+  width: 45vw;
+}
+.frame-list__admin-action__edit a, .frame-list__admin-action__delete a {
+  display: block;
+  text-align: center;
+}
 /*=============================================================================
     <<.frame-detail
 =============================================================================*/
@@ -582,19 +604,25 @@ main {
   -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
   box-shadow: inner 0 0 4px rgba(0, 0, 0, 0.2);
 }
-.frame-edit input[type="submit"], .frame-edit input[type="file"] {
+.frame-edit input[type="submit"] {
   margin-top: 2vw;
-
 }
-.frame-list-list-btn {
+.frame-edit-list-btn {
   display: block;
-  width: 30%;
-  margin-top: 1vw 0;
-  padding: 8px 16px;
+  width: 38vw;
+  margin-top: 2vw;
+  margin-left: 5vw;
+  padding: 1vw 2vw;
   background: #4CAF50;
-  border-radius: 3px;
+  border-radius: 2vw;
   color: #fff;
-  font-size: 2vw;
+  font-size: 4vw;
+}
+.frame-edit-list-btn:hover {
+  color: #fff;
+  -moz-box-shadow: inset 0 5px 5px rgba(0,0,0,0.3);
+  -webkit-box-shadow: inset 0 5px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
 }
 /*-----------------------------------------------------------------------------
     .registration-form

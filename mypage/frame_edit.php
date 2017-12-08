@@ -118,10 +118,13 @@ if (isset($request["send"]) && empty($error_msgs)) {
 /*-----------------------------------------------------------------------------
     画像の投稿処理
 -----------------------------------------------------------------------------*/
-  if ($image["error"] == 0/* && $mode == "change"*/){
-    //古い画像削除
-    unlink("../images/frames/{$_SESSION["old_image"]}");
-    unlink("../images/frames/thumb_{$_SESSION["old_image"]}");
+  if ($image["error"] == 0){
+    //フレーム時のみ古い画像を削除
+    if ($mode == "change") {
+      //古い画像削除
+      unlink("../images/frames/{$_SESSION["old_image"]}");
+      unlink("../images/frames/thumb_{$_SESSION["old_image"]}");
+    }
     move_uploaded_file($image["tmp_name"], "../images/frames/{$image_name}");
     //サムネ作成
     $original_image = imagecreatefromjpeg("../images/frames/{$image_name}");
@@ -216,6 +219,7 @@ if (isset($request["send"]) && empty($error_msgs)) {
 -----------------------------------------------------------------------------*/
 } else if (!empty($error_msgs)) {
   $row_frame['frame_price'] = $request["frame_price"];
+  $row_frame["frame_image"] = $request["frame_image"];
   $row_frame["frame_link"] = $request["frame_link"];
   $row_frame["frame_lens_width"] = $request["frame_lens_width"];
   $row_frame["frame_lens_height"] = $request["frame_lens_height"];
@@ -231,7 +235,7 @@ require("header.php");
 ?>
 <div class="main-wrap">
   <main>
-    <a class="frame-list-list-btn" href="frame_list.php">フレーム一覧へ戻る</a>
+    <a class="frame-edit-list-btn" href="frame_list.php">フレーム一覧へ戻る</a>
     <div class="message">
       <p>
         <?php foreach ($page_msgs as $page_msg): ?>
@@ -251,7 +255,9 @@ require("header.php");
       </div>
       <div>
         <label for="gazou">画像<span class="attention">*</span></label>
+        <?php if ($row_frame["frame_image"]): ?>
         <p><img src="<?= '../images/frames/' . he($row_frame["frame_image"]) ?>"></p>
+      <?php endif; ?>
         <input type="file" name="frame_image" id="aikon">
       </div>
       <div>
@@ -263,16 +269,16 @@ require("header.php");
         <input type="number" name="frame_lens_width" id="renzuhaba" max="999" value="<?= he($row_frame['frame_lens_width']); ?>">
       </div>
       <div>
-        <label for="renzunotakasa">レンズの高さ(mm)</label>
-        <input type="number" name="frame_lens_height" id="renzunotakasa" max="999" value="<?= he($row_frame['frame_lens_height']); ?>">
-      </div>
-      <div>
         <label for="burijjihaba">ブリッジ幅(mm)<span class="attention">*</span></label>
         <input type="number" name="frame_bridge_width" id="burijjihaba" max="999" value="<?= he($row_frame['frame_bridge_width']); ?>">
       </div>
       <div>
         <label for="tenpurunonagasa">テンプルの長さ(mm)<span class="attention">*</span></label>
         <input type="number" name="frame_temple_length" id="tenpurunonagasa" max="999" value="<?= he($row_frame['frame_temple_length']); ?>">
+      </div>
+      <div>
+        <label for="renzunotakasa">レンズの高さ(mm)</label>
+        <input type="number" name="frame_lens_height" id="renzunotakasa" max="999" value="<?= he($row_frame['frame_lens_height']); ?>">
       </div>
       <div>
         <label for="hure-muhaba">フレーム幅(mm)</label>
