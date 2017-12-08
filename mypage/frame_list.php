@@ -18,44 +18,48 @@ try {
   <main>
     <a class="frame-list__add-btn" href="frame_edit.php">フレームを追加する</a>
     <?php while ($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-    <div class="frame-list__layout frame-list__layout_desc_true frame-list__layout_mymenu_on">
+    <div class="frame-list__layout">
       <div class="frame-list frame-list_desc_true">
         <a href="../detail.php?frame_id=<?= he($row_frame["frame_id"]) ?>">
           <img class="frame-list__image" src='<?= "../images/frames/" . he($row_frame["frame_image"]) ?>'>
         </a>
         <ul class="frame-list__info">
-          <li class="frame-detail__price">
-            <span><i class="fa fa-jpy" aria-hidden="true"></i><?= he($row_frame["frame_price"]) ?></span>
+          <li class="frame-list__price">
+            <span><i class="fa fa-jpy" aria-hidden="true"></i><?= he(number_format($row_frame["frame_price"])) ?></span>
           </li>
           <li class="frame-list__size">
             <?= he($row_frame["frame_lens_width"]) ?>□<?= he($row_frame["frame_bridge_width"]) ?>-<?= he($row_frame["frame_temple_length"]) ?>
           </li>
+          <?php if($row_frame["frame_frame_width"]): ?>
           <li class="frame-list_desc_true__optional">
-          <?php if($row_frame["frame_frame_width"]) echo "フレーム幅" . he($row_frame["frame_frame_width"]); ?>
+            フレーム幅<?= he($row_frame["frame_frame_width"]) ?>
           </li>
+          <?php endif; ?>
+          <?php if($row_frame["frame_lens_height"]): ?>
           <li class="frame-list_desc_true__optional">
-          <?php if($row_frame["frame_lens_height"]) echo "レンズ高" . he($row_frame["frame_frame_width"]); ?>
+            レンズ高<?= he($row_frame["frame_lens_height"]) ?>
           </li>
-          <li class="frame-detail__seller">
-            <a class="frame-detail__seller-link" href="<?= he($row_frame['frame_link']) ?>">
-              <i class="fa fa-external-link" aria-hidden="true"></i>Link
+          <?php endif; ?>
+          <li class="frame-list__seller">
+            <a class="frame-list__seller-link" href="<?= he($row_frame['frame_link']) ?>" target="_blank">
+              <i class="fa fa-external-link" aria-hidden="true"></i>Buy
             </a>
           </li>
         </ul><!--.frame-list__info-->
       </div><!--.frame-list-->
     </div><!--.frame-list__layout-->
-    <ul class="frame-detail">
-      <li clas="frame-detail__edit">
+    <ul class="frame-list__admin-action">
+      <li class="frame-list__admin-action__edit">
         <a href="frame_edit.php?mode=change&frame_id=<?= he($row_frame["frame_id"]) ?>">
           編集
         </a>
       </li>
-      <li class="frame-detail__delete">
+      <li class="frame-list__admin-action__delete">
         <a href="frame_edit.php?mode=delete&frame_id=<?= he($row_frame["frame_id"]) ?>">
           削除
         </a>
       </li>
-    </ul><!--.frame-detail-->
+    </ul><!--.frame-list__admin-action-->
     <!--<div id="result"></div>-->
   <?php endwhile; ?>
   </main>
