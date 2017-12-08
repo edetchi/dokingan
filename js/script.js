@@ -210,9 +210,9 @@ $(window).scroll(function() {
   }
 });
 /*-----------------------------------------------------------------------------
-    .frame-detail__delete
+    .frame-list__admin-action__delete
 -----------------------------------------------------------------------------*/
-$('.frame-detail__delete').on('click', function() {
+$('.frame-list__admin-action__delete').on('click', function() {
   $answer = confirm("本当に削除してよろしいですか？");
   if ($answer) {
     alert('削除しました');
