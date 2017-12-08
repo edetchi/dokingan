@@ -19,7 +19,7 @@ try {
 /*-----------------------------------------------------------------------------
     フレームデータ取得
 -----------------------------------------------------------------------------*/
-  $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id left join (select frame_id, count(removed_flag) as favorite_cnt from favorites where removed_flag = 0 group by frame_id) as t_favorite_cnt on t_favorite_cnt.frame_id = frames.frame_id order by frame_updated desc";
+  $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id left join (select frame_id as betsu_frame_id, count(removed_flag) as favorite_cnt from favorites where removed_flag = 0 group by frame_id) as t_favorite_cnt on t_favorite_cnt.betsu_frame_id = frames.frame_id order by frame_updated desc";
   $stmt = $pdo->query($sql);
   $frames = array();
   while($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)) {
