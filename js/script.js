@@ -1,55 +1,15 @@
 $(function(){
 /*-----------------------------------------------------------------------------
-    ajaxでお気に入り登録
------------------------------------------------------------------------------*/
-/*
-  var fbtn = $('button[data-favorite]');
-  if (fbtn.data('favorite')==0)  {
-    fbtn.css('color', 'yellow');
-  }
-  fbtn.click(function() {
-    if (fbtn.data('favorite')==0) {
-      $.ajax({
-        url: 'favorite.php',
-        type: 'post',
-        data: {favorite: 1}
-      })
-      .done(function(data) {
-        fbtn.data('favorite', 1);
-        fbtn.css('color', '');
-        $('#result').html(data);
-      })
-      .fail(function() {
-        console.log('error');
-      });
-    }
-    if (fbtn.data('favorite')==1) {
-      $.ajax({
-        url: 'favorite.php',
-        type: 'post',
-        data: {favorite: 0}
-      })
-      .done(function(data) {
-        fbtn.data('favorite', 0);
-        fbtn.css('color', 'yellow');
-        $('#result').html(data);
-      })
-      .fail(function() {
-        console.log('error');
-      });
-    }
-  });
-*/
-/*-----------------------------------------------------------------------------
     ajaxでお気に入り登録改
 -----------------------------------------------------------------------------*/
   var fbtn = $("button[data-favorite]");
+  //お気に入り登録されているかどうかでボタンの見た目を変更
   if (fbtn.data("favorite")==0)  {
-    //fbtn.css("color", "yellow");
-    $("button[data-favorite] i").addClass("fa-star").css("color", "yellow");
+    $("button[data-favorite] i").css("color", "yellow");
   } else {
-    $("button[data-favorite] i").addClass("fa-star-o");
+    $("button[data-favorite] i").css("color", "white");
   }
+  //data-favorite=0はお気に入り登録されている状態
   fbtn.click(function() {
     if (fbtn.data("favorite")==0) {
       $.ajax({
@@ -59,13 +19,17 @@ $(function(){
       })
       .done(function(data) {
         fbtn.data("favorite", 1);
-        $("button[data-favorite] i").removeClass("fa-star").addClass("fa-star-o").css("color", "");
+        $("button[data-favorite] i").css("color", "white");
         $("#result").html(data);
+        //お気に入りの数を格納し、数を変更
+        var fcnt = Number($(".frame-detail__action__favorite-cnt").text());
+        $(".frame-detail__action__favorite-cnt").text(fcnt-1);
       })
       .fail(function() {
         console.log("error");
       });
     }
+    //data-favorite=1はお気に入り解除されている状態
     if (fbtn.data("favorite")==1) {
       $.ajax({
         url: "favorite.php",
@@ -74,8 +38,11 @@ $(function(){
       })
       .done(function(data) {
         fbtn.data("favorite", 0);
-        $("button[data-favorite] i").removeClass("fa-star-o").addClass("fa-star").css("color", "yellow");
+        $("button[data-favorite] i").css("color", "yellow");
         $("#result").html(data);
+        //お気に入りの数を格納し、数を変更
+        var fcnt = Number($(".frame-detail__action__favorite-cnt").text());
+        $(".frame-detail__action__favorite-cnt").text(fcnt+1);
       })
       .fail(function() {
         console.log("error");

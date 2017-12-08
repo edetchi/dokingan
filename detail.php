@@ -9,6 +9,12 @@ $error_message = "";
     お気に入り用
 -----------------------------------------------------------------------------*/
 $_SESSION["frame_id"] = $_REQUEST["frame_id"];
+/*-----------------------------------------------------------------------------
+    非ログイン時にお気に入りボタンを押せなくする変数を用意
+-----------------------------------------------------------------------------*/
+$disabled = (!empty($_SESSION["user_id"])) ? "" : "disabled";
+//スパム報告は実装前
+$report_removed_flag = "";
 /*=============================================================================
     <<フレーム一覧用データ取得
 =============================================================================*/
@@ -28,13 +34,15 @@ try {
 /*-----------------------------------------------------------------------------
     フレームデータ取得
 -----------------------------------------------------------------------------*/
-  $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id where frames.frame_id = :frame_id";
+  $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id left join (select frame_id, count(removed_flag) as favorite_cnt from favorites where removed_flag = 0 group by frame_id) as t_favorite_cnt on t_favorite_cnt.frame_id = frames.frame_id where frames.frame_id = :frame_id";
   $stmt = $pdo->prepare($sql);
   $stmt->bindValue(":frame_id", $_REQUEST["frame_id"], PDO::PARAM_INT);
   $stmt->execute();
   $row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
   $pdo->commit();
   $stmt = null;
+  //フレームのお気に入りがない時、数を0にセットする
+  $row_frame["favorite_cnt"] = empty($row_frame["favorite_cnt"]) ? 0 : $row_frame["favorite_cnt"];
 /*=============================================================================
     フレーム一覧用データ取得>>
 =============================================================================*/
@@ -139,8 +147,8 @@ try {
           </ul><!--.frame-list__info-->
         </div><!--.frame-list-->
       </div><!--.frame-list__layout-->
-      <ul class="frame-detail">
         <li class="frame-detail__price">
+      <ul class="frame-detail__action">
           <span><i class="fa fa-jpy" aria-hidden="true"></i><?= he($row_frame["frame_price"]) ?></span>
         </li>
         <li class="frame-detail__seller">
@@ -153,12 +161,12 @@ try {
             <i class="fa fa-flag-o frame-detail__report-icon" aria-hidden="true"></i>
           </button>
         </li>
-        <li class="frame-detail__favorite">
-          <button data-favorite=<?= $removed_flag ?>>
-            <i class="fa fa-star-o frame-detail__favorite-icon" aria-hidden="true"></i><?= he("64") ?>
+        <li class="frame-detail__action__favorite">
+          <button data-favorite=<?= $removed_flag ?> <?= $disabled ?>>
+            <i class="fa fa-star frame-detail__action__favorite-icon" aria-hidden="true"></i><span class="frame-detail__action__favorite-cnt"><?= he($row_frame["favorite_cnt"]) ?></span>
           </button>
         </li>
-      </ul><!--.frame-detail-->
+      </ul><!--.frame-detail__action-->
       <!--<div id="result"></div>-->
     </main>
   </div>

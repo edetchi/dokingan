@@ -420,10 +420,16 @@ main {
 -----------------------------------------------------------------------------*/
 .frame-list__layout_desc_true {
   padding-bottom: 2vw;
+/*=============================================================================
+    <<.frame-detail
+=============================================================================*/
   border-bottom: 1px dotted #95989A;
 }
 .frame-detail {
   display: flex;
+/*-----------------------------------------------------------------------------
+    .frame-detail__action
+-----------------------------------------------------------------------------*/
   justify-content: space-around;
   align-items: center;
   margin-top: 2vw;
@@ -467,8 +473,13 @@ main {
 .frame-detail__report-icon, .frame-detail__favorite-icon {
   font-size: 5vmin;
 }
-
-.frame-detail__edit a, .frame-detail__delete a {
+.frame-detail__action__report-icon, .frame-detail__action__favorite-icon {
+  font-size: 4vw;
+}
+.frame-detail__action__favorite-cnt {
+  margin-left: 1vw;
+  color: #fff;
+  font-size: 4vw;
 }
 /*-----------------------------------------------------------------------------
     .frame-detail__mymenu(frmae-list.php)
@@ -476,6 +487,9 @@ main {
 .frame-list__layout_mymenu_on {
   border-bottom: 0;
 }
+/*=============================================================================
+    .frame-detail>>
+=============================================================================*/
 /*-----------------------------------------------------------------------------
     .framr-list（frame-edit.php）
 -----------------------------------------------------------------------------*/
