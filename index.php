@@ -23,6 +23,18 @@ try {
   $stmt = $pdo->query($sql);
   $frames = array();
   while($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    //お気に入り数がnullの場合0を代入
+    $row_frame["favorite_cnt"] = (!empty($row_frame["favorite_cnt"])) ? $row_frame["favorite_cnt"] : 0;
+    //レンズ端と中央の色を分けるためのクラスを計算
+    if (edgeThickness()["edge1_thick"] > edgeThickness()["edge2_thick"]) {
+      $edge1_thick_class = "frame-list__max";
+      $edge2_thick_class = "frame-list__min";
+    } else {
+      $edge1_thick_class = "frame-list__min";
+      $edge2_thick_class = "frame-list__max";
+    }
+    //価格をカンマ区切り
+    $row_frame["frame_price"] = number_format($row_frame["frame_price"]);
     $frames[] = array(
       "frame_id" => $row_frame["frame_id"],
       "frame_image" => $row_frame["frame_image"],
@@ -32,6 +44,8 @@ try {
       "frame_temple_length" => $row_frame["frame_temple_length"],
       "edge1_thick" => edgeThickness()["edge1_thick"],
       "edge2_thick" => edgeThickness()["edge2_thick"],
+      "edge1_thick_class" => $edge1_thick_class,
+      "edge2_thick_class" => $edge2_thick_class,
       "user_loginid" => $row_frame["user_loginid"],
       "favorite_cnt" => $row_frame["favorite_cnt"],
     );
@@ -55,7 +69,7 @@ require("header.php");
           </a>
           <ul class="frame-list__info">
             <li class="frame-list__price">
-              <span><?= he($frame["frame_price"]) ?></span>
+              <span><i class="fa fa-jpy" aria-hidden="true"></i><?= he($frame["frame_price"]) ?></span>
               <span><i class="fa fa-star-o" aria-hidden="true"></i><?= he($frame["favorite_cnt"]) ?></span>
             </li>
             <li class="frame-list__size">
@@ -67,7 +81,7 @@ require("header.php");
             </li>
             <?php else: ?>
             <li class="frame-list__thickness">
-              中心: <span class="frame-list__max"><?= $frame["edge1_thick"] ?></span>端: <span class="frame-list__min"><?= $frame["edge2_thick"] ?></span>
+              中心: <span class="<?= $frame["edge1_thick_class"] ?>"><?= $frame["edge1_thick"] ?></span>端: <span class="<?= $frame["edge2_thick_class"] ?>"><?= $frame["edge2_thick"] ?></span>
             </li><!--.frame-list__thickness-->
             <?php endif; ?>
           </ul><!--.frame-list__info-->
