@@ -6,7 +6,6 @@ require_once("system/common.php");
 -----------------------------------------------------------------------------*/
 $page_msgs = array();
 $error_msgs = array();
-
 if (empty($_GET)) {
   header("Location: registration.php");
   exit();

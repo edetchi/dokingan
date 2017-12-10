@@ -1,6 +1,6 @@
 $(function(){
 /*-----------------------------------------------------------------------------
-    ajaxでお気に入り登録改
+    ajaxでお気に入り登録
 -----------------------------------------------------------------------------*/
   var fbtn = $("button[data-favorite]");
   //お気に入り登録されているかどうかでボタンの見た目を変更
@@ -50,13 +50,13 @@ $(function(){
     }
   });
 /*-----------------------------------------------------------------------------
-    ajaxで登録時にバリデーションチェック
+    ajaxで新規登録時のバリデーション
 -----------------------------------------------------------------------------*/
   $(document).on('blur', '#yu-za-mei, #me-ruadoresu, #pasuwa-do', function() {
     var user_loginid = $('#yu-za-mei').val();
     var user_email = $('#me-ruadoresu').val();
     var user_password = $('#pasuwa-do').val();
-    console.log(user_password);
+    console.log(user_loginid);
     $.ajax({
       url: 'registration_validator.php',
       type: 'post',
@@ -67,14 +67,15 @@ $(function(){
         }
     })
     .done(function(data) {
+      //バリデーションの結果を表示させる
       //console.log(data);
-      $('.user_loginid_result').html(data.user_loginid);
-      $('.user_email_result').html(data.user_email);
-      $('.user_password_result').html(data.user_password);
+      $('.registration-form__loginid_result').html(data.user_loginid);
+      $('.registration-form__email_result').html(data.user_email);
+      $('.registration-form__password_result').html(data.user_password);
       //入力欄のcssを状態に応じて変化
-      errorToggle(".user_loginid_result");
-      errorToggle(".user_email_result");
-      errorToggle(".user_password_result");
+      errorToggle(".registration-form__loginid_result");
+      errorToggle(".registration-form__email_result");
+      errorToggle(".registration-form__password_result");
     })
     .fail(function() {
       console.log('error');
@@ -113,6 +114,7 @@ $(function(){
 /*-----------------------------------------------------------------------------
     .modal-register
 -----------------------------------------------------------------------------*/
+/*
   $('.modal-register__trigger').click(function() {
     $('body').append('<div class="modal-register__overlay"></div>');
     $('.modal-register__overlay').fadeIn();
@@ -137,6 +139,7 @@ $(function(){
 	  console.log(x, y);
     }
   });
+*/
 /*-----------------------------------------------------------------------------
     .modal-mymenu
 -----------------------------------------------------------------------------*/
@@ -167,45 +170,27 @@ $(function(){
 /*-----------------------------------------------------------------------------
     .nav-bar
 -----------------------------------------------------------------------------*/
-var nav = $('.nav-bar');
-offset = nav.offset();
-$(window).scroll(function() {
-  if($(window).scrollTop() > offset.top) {
-    nav.addClass('fixed');
-  } else {
-    nav.removeClass('fixed');
-  }
-});
+  var nav = $('.nav-bar');
+  offset = nav.offset();
+  $(window).scroll(function() {
+    if($(window).scrollTop() > offset.top) {
+      nav.addClass('fixed');
+    } else {
+      nav.removeClass('fixed');
+    }
+  });
 /*-----------------------------------------------------------------------------
     .frame-list__admin-action__delete
 -----------------------------------------------------------------------------*/
-$('.frame-list__admin-action__delete').on('click', function() {
-  $answer = confirm("本当に削除してよろしいですか？");
-  if ($answer) {
-    alert('削除しました');
-  } else {
-    alert('キャンセルしました');
-    return false;
-  }
-});
-/*=============================================================================
-    <<関数
-=============================================================================*/
-/*-----------------------------------------------------------------------------
-    入力欄に応じてクラスをtoggleさせる関数（会員登録ページ）
------------------------------------------------------------------------------*/
-  function errorToggle(className) {
-    if ($(className).text() == "OK") {
-      $(className).next().addClass("input-no-error");
-      $(className).next().removeClass("input-error");
+  $('.frame-list__admin-action__delete').on('click', function() {
+    $answer = confirm("本当に削除してよろしいですか？");
+    if ($answer) {
+      alert('削除しました');
     } else {
-      $(className).next().removeClass("input-no-error");
-      $(className).next().addClass("input-error");
+      alert('キャンセルしました');
+      return false;
     }
-  }
-/*=============================================================================
-    関数>>
-=============================================================================*/
+  });
 /*-----------------------------------------------------------------------------
     .tooltip
 -----------------------------------------------------------------------------*/
@@ -265,4 +250,22 @@ $('.frame-list__admin-action__delete').on('click', function() {
       $tooltip.remove();
     });
   });
+/*=============================================================================
+      <<関数
+=============================================================================*/
+/*-----------------------------------------------------------------------------
+      入力欄に応じてクラスをtoggleさせる関数（会員登録ページ）
+-----------------------------------------------------------------------------*/
+  function errorToggle(className) {
+    if ($(className).text() == "OK") {
+      $(className).next().addClass("input-no-error");
+      $(className).next().removeClass("input-error");
+    } else {
+      $(className).next().removeClass("input-no-error");
+      $(className).next().addClass("input-error");
+    }
+  }
+/*=============================================================================
+      関数>>
+=============================================================================*/
 });

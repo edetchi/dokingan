@@ -116,24 +116,24 @@ EOM;
         </p>
       </div>
       <form class="registration-form" action="registration.php" method="post">
-        <div class="user_loginid">
+        <div class="registration-form__user_loginid">
           <label for="yu-za-mei">ユーザー名<span class="attention">*</span></label>
-          <span class="user_loginid_result"></span>
+          <span class="registration-form__loginid_result"></span>
           <input type="text" name="user_loginid" id="yu-za-mei" size="10" value="<?= he($_POST["user_loginid"]) ?>">
         </div>
-        <div class="user_email">
+        <div class="registration-form__user_email">
           <label for="me-ruadoresu">メールアドレス<span class="attention">*</span></label>
-          <span class="user_email_result"></span>
+          <span class="registration-form__email_result"></span>
           <input type="text" name="user_email" id="me-ruadoresu" size="50" value="<?= he($_POST["user_email"]) ?>">
         </div>
-        <div class="user_password">
+        <div class="registration-form__user_password">
           <label for="pasuwa-do">パスワード<span class="attention">*</span></label>
-          <span class="user_password_result"></span>
+          <span class="registration-form__password_result"></span>
           <input type="password" name="user_password" id="pasuwa-do" size="32" value="<?= he($_POST["user_password"]) ?>">
         </div>
         <div>
           <input type="hidden" name="token" value="<?= he($_SESSION['token']) ?>">
-          <input class="registration-btn" type="submit" name="send" value="送信する">
+          <input class="registration-form__submit-btn" type="submit" name="send" value="送信する">
         </div>
       </form>
     </main>

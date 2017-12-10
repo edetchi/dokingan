@@ -637,7 +637,7 @@ main {
 .registration-form label {
   display: left;
 }
-.user_loginid_result, .user_email_result, .user_password_result {
+.registration-form__loginid_result, .registration-form__email_result, .registration-form__password_result {
   margin-left: 12px;
 }
 .registration-form input, .registration-form textarea {
