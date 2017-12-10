@@ -5,6 +5,40 @@ require_once("system/common.php");
     <<フレーム一覧用データ取得
 =============================================================================*/
 /*-----------------------------------------------------------------------------
+    変数をホワイトリスト化
+-----------------------------------------------------------------------------*/
+//$_REQUEST[]の取りうるキーを限定する
+$whitelists = array("sort", "order");
+$request = whitelist($whitelists);
+/*-----------------------------------------------------------------------------
+    並び替え用処理
+-----------------------------------------------------------------------------*/
+//並び替えのパラメータがあれば取得
+$sort = (!empty($request["sort"])) ? ($request["sort"]) : "";
+$order = (!empty($request["order"])) ? ($request["order"]) : "";
+//$orderの逆を変数に格納
+$reverse_order = ($order === "asc") ? "desc" : "asc";
+//$_GET["sort"]の値とリンク名の配列
+$sort_keys_names = array("frame_price"=>"価格", "frame_lens_width"=>"レンズ幅", "frame_bridge_width"=>"ブリッジ幅", "frame_temple_length"=>"テンプル長", "frame_lens_height"=>"レンズ高", "frame_frame_width"=>"フレーム幅", "favorite_cnt"=>"お気に入り数");
+//ソート用リンクを作成
+$sort_links = array();
+foreach ($sort_keys_names as $sort_key => $sort_name) {
+  if  (empty($sort)) {
+    //$url = preg_replace("/keyword=&frame_number=$/", "", $url);
+    $sort_link = "{$url}?sort={$sort_key}&order=asc";
+  } else if ($sort_key == $sort) {
+    $url = preg_replace("/sort=.*&order=.*$/", "", $url);
+    var_export($url);
+    $sort_link = "{$url}&sort={$sort_key}&order={$reverse_order}";
+  } else {
+    $url = preg_replace("/sort=.*&order=.*$/", "", $url);
+    $sort_link = "{$url}&sort={$sort_key}&order=asc";
+  }
+  $sort_links[] = array("key"=>$sort_key, "field"=>$sort_name, "sort_link"=>$sort_link);
+}
+var_export($sort_links["sort_link"]);
+
+/*-----------------------------------------------------------------------------
     ログインユーザーデーター取得
 -----------------------------------------------------------------------------*/
 try {
@@ -19,7 +53,13 @@ try {
 /*-----------------------------------------------------------------------------
     フレームデータ取得
 -----------------------------------------------------------------------------*/
-  $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id left join (select frame_id as betsu_frame_id, count(removed_flag) as favorite_cnt from favorites where removed_flag = 0 group by frame_id) as t_favorite_cnt on t_favorite_cnt.betsu_frame_id = frames.frame_id order by frame_updated desc";
+  $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id left join (select frame_id as betsu_frame_id, count(removed_flag) as favorite_cnt from favorites where removed_flag = 0 group by frame_id) as t_favorite_cnt on t_favorite_cnt.betsu_frame_id = frames.frame_id where 1";
+  //
+  if (!(!empty($sort) && !empty($order))) {
+    $sql .= " order by frame_updated desc";
+  } else {
+    $sql .= " order by $sort $order";
+  }
   $stmt = $pdo->query($sql);
   $frames = array();
   while($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)) {

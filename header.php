@@ -83,4 +83,25 @@
         </li>
       </ul>
     </div><!--.modal-mymenu-->
+    <div class="modal-sort">
+      <form action="index.php" method="get">
+        <div>
+          <label for="so-to">並び替え</label>
+          <select class="modal-sort__sort-item" id="so-to" name="sort">
+            <?php foreach ($sort_keys_names as $sort_key => $sort_name): ?>
+            <option value="<?= $sort_key ?>">
+              <?= $sort_name ?>
+            </option>
+            <?php endforeach; ?>
+          </select>
+        <div>
+          <label for="shoukoujun"><span class="attention"></span>昇降順</label>
+          <select class="modal-sort__order-item" id="shoukoujun" name="order">
+            <option value="asc">昇順</option>
+            <option value="desc">降順</option>
+          </select>
+        </div>
+        <input type="submit" value="並び替える">
+      </form>
+    </div><!--.modal-sort-->
   </header>
