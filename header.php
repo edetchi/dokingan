@@ -21,7 +21,7 @@
       <ul class="nav-bar__menu">
         <?php if (!$login_flag): ?>
         <li class="nav-bar__login"><a class="nav-bar__login-link modal-login__trigger" data-modal="modal-login">ログイン</a></li>
-        <li class="nav-bar__register"><a class="modal-register__trigger" data-modal="modal-register">新規登録</a></li>
+        <li class="nav-bar__register"><a class="modal-register__trigger nav-bar__register-link" data-modal="modal-register" href="registration.php">新規登録</a></li>
         <?php else: ?>
         <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link modal-mymenu__trigger" data-modal="modal-mymenu"><i class="fa fa-user nav-bar__mymenu-icon" aria-hidden="true"></i>マイメニュー</a></li>
         <?php endif; ?>
@@ -42,17 +42,17 @@
       <form action="mypage/login.php" method="post">
         <div>
           <label for="roguin"><span class="attention"></span></label>
-          <input type="text" name="user_loginid" class="modal-login__email-input" id="roguin" size="10" value="ユーザー名→メールアドレスに変更したい">
+          <input type="text" name="user_loginid" class="modal-login__email-input" id="roguin" size="10" placeholder="ユーザー名 or メールアドレス">
         </div>
         <div>
           <label for="pasuwa-do-header"><span class="attention"></span></label>
-          <input type="password" name="user_password" class="modal-login__password-input" id="pasuwa-do-header" size="32" value="パスワード">
+          <input type="password" name="user_password" class="modal-login__password-input" id="pasuwa-do-header" size="32" placeholder="パスワード">
         </div>
         <div>
           <input type="submit" name="send" class="modal-login__btn-input" value="ログイン">
         </div>
         <p class="modal-login__notice-password">パスワードを忘れた方は <a class="modal-login__notice-password-link" href="#  ">こちら</a></p>
-        <p class="modal-login__notice-register">アカウントをお持ちでない方 <a class="modal-login__notice-register-link" href="#">新規登録</a></p>
+        <p class="modal-login__notice-register">アカウントをお持ちでない方 <a class="modal-login__notice-register-link" href="registration.php">新規登録</a></p>
       </form>
     </div><!--.modal-login-->
     <div class="modal-register">

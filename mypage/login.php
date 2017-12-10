@@ -39,6 +39,14 @@ if (isset($request["send"]) && empty($error_msgs)) {
         $stmt->bindValue(":user_id", $request["user_loginid"], PDO::PARAM_INT);
         $stmt->execute();
         $row_user = $stmt->fetch(PDO::FETCH_ASSOC);
+        //該当のユーザー名がない場合、メールアドレスで該当があるかチェック
+        if (empty($row_user)) {
+          $sql = "SELECT * FROM users WHERE user_email = :user_id LIMIT 1";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindValue(":user_id", $request["user_loginid"], PDO::PARAM_INT);
+          $stmt->execute();
+          $row_user = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
         if ($row_user) {
             // 該当のユーザーIDレコードがあったら、パスワードを照合し、セッション名user_idにデーターベースの一意なuser_idの値を代入
             if (md5($request["user_password"]) == $row_user["user_password"]) {
@@ -56,9 +64,8 @@ if (isset($request["send"]) && empty($error_msgs)) {
 /*=============================================================================
     送信ボタンが押されて、エラーメッセージがない時、ログイン実行終了
 =============================================================================*/
-?>
-<?php $page_title = "ログイン";?>
-<?php require("header.php"); ?>
+$page_title = "ログイン";
+require("header.php"); ?>
     <div class="message">
       <p>
         <?php foreach ($page_msgs as $page_msg): ?>
@@ -73,7 +80,7 @@ if (isset($request["send"]) && empty($error_msgs)) {
     </div>
     <form class="login-page" action="login.php" method="post">
       <div>
-        <label for="roguin">ログインID<span class="attention">*</span></label>
+        <label for="roguin">ユーザー名もしくはメールアドレス<span class="attention">*</span></label>
         <input type="text" name="user_loginid" id="roguin" size="30" value="">
       </div>
       <div>
