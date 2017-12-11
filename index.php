@@ -18,10 +18,12 @@ $sort = (!empty($request["sort"])) ? ($request["sort"]) : "";
 $order = (!empty($request["order"])) ? ($request["order"]) : "";
 //$orderの逆を変数に格納
 $reverse_order = ($order === "asc") ? "desc" : "asc";
-//並び替えようリンクを計算
+//urlを変数に格納
 $url = $_SERVER["REQUEST_URI"];
 //$_GET["sort"]の値とリンク名の配列
 $sort_keys_names = array("frame_updated"=>"最終更新日", "frame_price"=>"価格", "frame_lens_width"=>"レンズ幅", "frame_bridge_width"=>"ブリッジ幅", "frame_temple_length"=>"テンプル長", "frame_lens_height"=>"レンズ高", "frame_frame_width"=>"フレーム幅", "favorite_cnt"=>"お気に入り数");
+//ログイン時にレンズの厚み用の値とリンク名を追加
+if (!empty($_SESSION["user_id"])) $sort_keys_names["frame_thickness"] = "レンズ厚み";
 //ソート用リンクを作成
 $sort_links = array();
 foreach ($sort_keys_names as $sort_key => $sort_name) {
@@ -56,6 +58,8 @@ try {
   //
   if (!(!empty($sort) && !empty($order))) {
     $sql .= " order by frame_updated desc";
+  //ソートがフレームの厚みの時はsql文を追加せず、下で配列を並び替える
+  } else if ($sort == "frame_thickness") {
   } else {
     $sql .= " order by $sort $order";
   }
@@ -68,9 +72,12 @@ try {
     if (edgeThickness()["edge1_thick"] > edgeThickness()["edge2_thick"]) {
       $edge1_thick_class = "frame-list__max";
       $edge2_thick_class = "frame-list__min";
+      //レンズ厚みの大きい方を変数に格納
+      $max_thickness = edgeThickness()["edge1_thick"];
     } else {
       $edge1_thick_class = "frame-list__min";
       $edge2_thick_class = "frame-list__max";
+      $max_thickness = edgeThickness()["edge2_thick"];
     }
     //価格をカンマ区切り
     $row_frame["frame_price"] = number_format($row_frame["frame_price"]);
@@ -83,6 +90,7 @@ try {
       "frame_temple_length" => $row_frame["frame_temple_length"],
       "edge1_thick" => edgeThickness()["edge1_thick"],
       "edge2_thick" => edgeThickness()["edge2_thick"],
+      "max_thick" => $max_thickness,
       "edge1_thick_class" => $edge1_thick_class,
       "edge2_thick_class" => $edge2_thick_class,
       "user_loginid" => $row_frame["user_loginid"],
@@ -92,6 +100,17 @@ try {
 } catch (PDOException $e) {
   die("エラー: " . $e->getMessage());
 }
+//ソートがフレームの厚みの時、格納した配列を並び替える
+if ($sort == "frame_thickness") {
+  $max_thickness_sort = array();
+  foreach ($frames as $frame) $max_thickness_sort[] = $frame['max_thick'];
+  if ($order == "asc") {
+    array_multisort($max_thickness_sort, SORT_ASC, SORT_NUMERIC, $frames);
+  } else if ($order == "desc") {
+    array_multisort($max_thickness_sort, SORT_DESC, SORT_NUMERIC, $frames);
+  }
+}
+//var_export($frames);
 /*=============================================================================
     フレーム一覧用データ取得>>
 =============================================================================*/

@@ -23,7 +23,7 @@
         <li class="nav-bar__login"><a class="nav-bar__login-link modal-login__trigger" data-modal="modal-login">ログイン</a></li>
         <li class="nav-bar__register"><a class="modal-register__trigger nav-bar__register-link" data-modal="modal-register" href="registration.php">新規登録</a></li>
         <?php else: ?>
-        <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link modal-mymenu__trigger" data-modal="modal-mymenu"><i class="fa fa-user nav-bar__mymenu-icon" aria-hidden="true"></i>マイメニュー</a></li>
+        <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link modal-mymenu__trigger" data-modal="modal-mymenu"><i class="fa fa-user nav-bar__mymenu-icon" aria-hidden="true"></i><span class="nav-bar__mymenu-text">マイメニュー</span></a></li>
         <?php endif; ?>
         <?php if(!$is_detail_page): ?>
         <li class="nav-bar__sort">

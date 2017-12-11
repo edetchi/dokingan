@@ -135,7 +135,8 @@ header {
   color: #fff;
   font-size: 32px;
   line-height: 50px;
-
+}
+.nav-bar__mymenu-text {
 }
 .nav-bar__logo-link, .nav-bar__login-link, .nav-bar__register-link, .nav-bar__mymenu-link, .nav-bar__sort-link, .nav-bar__back-link {
   display: block;
@@ -382,7 +383,7 @@ header {
   max-height: 200vmin;
   border-radius: 10px;
   background: #fff;
-  font-size: 4vh;
+  font-size: 3vh;
   text-align: center;
 }
 .modal-sort a {
@@ -450,6 +451,9 @@ main {
 }
 .frame-list__price, .frame-list__size, .frame-list_desc_true__optional {
   border-bottom: 1px solid #ccc;
+}
+.frame-list__max {
+  color: #E50640;
 }
 .frame-list__add-btn {
   display: block;
