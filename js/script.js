@@ -168,6 +168,65 @@ $(function(){
     }
   });
 /*-----------------------------------------------------------------------------
+    .modal-sort
+-----------------------------------------------------------------------------*/
+  //ソート部のアイコンを表示するための処理
+  //url格納
+  var urlForSort = location.href;
+  if (urlForSort == "http://192.168.33.10/dokingan/") {
+    //urlからどのソートで昇降順なのかを変数に格納する、デフォルトでは最終更新時の降順をセット
+    var sort = "frame_updated";
+    var order = "desc";
+  } else {
+    var sort = urlForSort.replace(/.*sort=/g, "").replace(/&order=.*/g, "");
+    var order = urlForSort.replace(/.*&order=/g, "");
+  }
+  //console.log(sort);
+  //console.log(order);
+  //デフォルト時にモーダルメニューの最終更新時に降順のアイコンを追加
+  if (urlForSort == "http://192.168.33.10/dokingan/") $(`.sort-frame_updated a i`).addClass("fa-sort-amount-desc");
+  //画面右上のトリガー部分に表示する現在設定中のソートを変数に格納する
+  var sort_text = $(`.sort-${sort} a`).text();
+  //console.log(tesuto);
+  //デフォルトのソート・昇降順がない時だけアイコンのみ表示、それ以外は何の昇降順を選択中か右上に表示
+  if (sort == "frame_updated" && order == "desc") {
+    $(`.sort-${sort} a i`).addClass("fa-sort-amount-desc");
+  } else if (order == "asc") {
+    $(`.sort-${sort} a i`).addClass("fa-sort-amount-asc");
+    $(`.sort-${sort} a i`).removeClass("fa-sort-amount-desc");
+    //
+    $('.modal-sort__trigger').html(`${sort_text}<i class="fa fa-sort-amount-${order}" aria-hidden="true"></i>`);
+  } else if (order == "desc") {
+    $(`.sort-${sort} a i`).removeClass("fa-sort-amount-asc");
+    $(`.sort-${sort} a i`).addClass("fa-sort-amount-desc");
+    $('.modal-sort__trigger').html(`${sort_text}<i class="fa fa-sort-amount-${order}" aria-hidden="true"></i>`);
+  }
+  //trigger部の実装
+  $('.modal-sort__trigger').click(function() {
+    $('body').append('<div class="modal-sort__overlay"></div>');
+    $('.modal-sort__overlay').fadeIn();
+    var modal = '.' + $(this).attr('data-modal');
+    modalResize();
+    $(modal).fadeIn();
+    $('.modal-sort__overlay').off().click(function() {
+      $(modal).fadeOut('slow', function() {
+        $('.modal-sort__overlay').remove();
+      });
+    });
+    $(window).on('resize', function() {
+      modalResize();
+    });
+    function modalResize() {
+      var w = $(window).width();
+      var h = $(window).height();
+      //.modal-sortを真ん中に表示
+      var x = (w - $(modal).outerWidth(true)) / 2;
+      var y = (h - $(modal).outerHeight(true)) / 2;
+      $(modal).css({'left': x + 'px','top': y + 'px'});
+    console.log(x, y);
+    }
+  });
+/*-----------------------------------------------------------------------------
     .nav-bar
 -----------------------------------------------------------------------------*/
   var nav = $('.nav-bar');

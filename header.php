@@ -26,8 +26,8 @@
         <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link modal-mymenu__trigger" data-modal="modal-mymenu"><i class="fa fa-user nav-bar__mymenu-icon" aria-hidden="true"></i>マイメニュー</a></li>
         <?php endif; ?>
         <?php if(!$is_detail_page): ?>
-        <li class="nav-bar__filter">
-          <a class="nav-bar__filter-link" href="#"><!--<span class="icon icon-filter">--><i class="fa fa-filter nav-bar__filter-icon" aria-hidden="true"></i></a>
+        <li class="nav-bar__sort">
+          <a class="nav-bar__sort-link modal-sort__trigger"  data-modal="modal-sort"><!--<span class="icon icon-filter">--><i class="fa fa-sort-amount-desc nav-bar__sort-icon" aria-hidden="true"></i></a>
         </li>
         <?php else: ?>
         <li class="nav-bar__back"></span>
@@ -84,24 +84,12 @@
       </ul>
     </div><!--.modal-mymenu-->
     <div class="modal-sort">
-      <form action="index.php" method="get">
-        <div>
-          <label for="so-to">並び替え</label>
-          <select class="modal-sort__sort-item" id="so-to" name="sort">
-            <?php foreach ($sort_keys_names as $sort_key => $sort_name): ?>
-            <option value="<?= $sort_key ?>">
-              <?= $sort_name ?>
-            </option>
-            <?php endforeach; ?>
-          </select>
-        <div>
-          <label for="shoukoujun"><span class="attention"></span>昇降順</label>
-          <select class="modal-sort__order-item" id="shoukoujun" name="order">
-            <option value="asc">昇順</option>
-            <option value="desc">降順</option>
-          </select>
-        </div>
-        <input type="submit" value="並び替える">
-      </form>
+      <ul class="modal-sort__layout">
+        <?php foreach ($sort_links as $sort_link): ?>
+        <li class="sort-<?= $sort_link["key"] ?>">
+          <a href="<?= $sort_link["sort_link"] ?>"><?= $sort_link["field"] ?><i class="fa" aria-hidden="true"></i></a>
+        </li>
+        <?php endforeach; ?>
+      </ul>
     </div><!--.modal-sort-->
   </header>

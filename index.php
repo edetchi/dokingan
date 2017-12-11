@@ -18,26 +18,25 @@ $sort = (!empty($request["sort"])) ? ($request["sort"]) : "";
 $order = (!empty($request["order"])) ? ($request["order"]) : "";
 //$orderの逆を変数に格納
 $reverse_order = ($order === "asc") ? "desc" : "asc";
+//並び替えようリンクを計算
+$url = $_SERVER["REQUEST_URI"];
 //$_GET["sort"]の値とリンク名の配列
-$sort_keys_names = array("frame_price"=>"価格", "frame_lens_width"=>"レンズ幅", "frame_bridge_width"=>"ブリッジ幅", "frame_temple_length"=>"テンプル長", "frame_lens_height"=>"レンズ高", "frame_frame_width"=>"フレーム幅", "favorite_cnt"=>"お気に入り数");
+$sort_keys_names = array("frame_updated"=>"最終更新日", "frame_price"=>"価格", "frame_lens_width"=>"レンズ幅", "frame_bridge_width"=>"ブリッジ幅", "frame_temple_length"=>"テンプル長", "frame_lens_height"=>"レンズ高", "frame_frame_width"=>"フレーム幅", "favorite_cnt"=>"お気に入り数");
 //ソート用リンクを作成
 $sort_links = array();
 foreach ($sort_keys_names as $sort_key => $sort_name) {
   if  (empty($sort)) {
-    //$url = preg_replace("/keyword=&frame_number=$/", "", $url);
     $sort_link = "{$url}?sort={$sort_key}&order=asc";
   } else if ($sort_key == $sort) {
     $url = preg_replace("/sort=.*&order=.*$/", "", $url);
-    var_export($url);
-    $sort_link = "{$url}&sort={$sort_key}&order={$reverse_order}";
+    $sort_link = "{$url}sort={$sort_key}&order={$reverse_order}";
   } else {
     $url = preg_replace("/sort=.*&order=.*$/", "", $url);
-    $sort_link = "{$url}&sort={$sort_key}&order=asc";
+    $sort_link = "{$url}sort={$sort_key}&order=asc";
   }
   $sort_links[] = array("key"=>$sort_key, "field"=>$sort_name, "sort_link"=>$sort_link);
 }
-var_export($sort_links["sort_link"]);
-
+//var_export($sort_links);
 /*-----------------------------------------------------------------------------
     ログインユーザーデーター取得
 -----------------------------------------------------------------------------*/

@@ -127,21 +127,21 @@ header {
   float: right;
   /*width: 60%;*/
 }
-.nav-bar__login, .nav-bar__register, .nav-bar__mymenu, .nav-bar__filter, .nav-bar__back {
+.nav-bar__login, .nav-bar__register, .nav-bar__mymenu, .nav-bar__sort, .nav-bar__back {
   float: left;
   width: 25vw;
 }
-.nav-bar__logo-icon, .nav-bar__mymenu-icon, .nav-bar__filter-icon, .nav-bar__back-icon {
+.nav-bar__logo-icon, .nav-bar__mymenu-icon, .nav-bar__sort-icon, .nav-bar__back-icon {
   color: #fff;
   font-size: 32px;
   line-height: 50px;
 
 }
-.nav-bar__logo-link, .nav-bar__login-link, .nav-bar__register-link, .nav-bar__mymenu-link, .nav-bar__filter-link, .nav-bar__back-link {
+.nav-bar__logo-link, .nav-bar__login-link, .nav-bar__register-link, .nav-bar__mymenu-link, .nav-bar__sort-link, .nav-bar__back-link {
   display: block;
   color: #fff;
 }
-.nav-bar__logo-link:hover, .nav-bar__login-link:hover, .nav-bar__register-link:hover, .nav-bar__mymenu-link:hover, .nav-bar__filter-link:hover, .nav-bar__back-link:hover {
+.nav-bar__logo-link:hover, .nav-bar__login-link:hover, .nav-bar__register-link:hover, .nav-bar__mymenu-link:hover, .nav-bar__sort-link:hover, .nav-bar__back-link:hover {
   background: #4CAF50;
   color: #fff;
 }
@@ -153,7 +153,7 @@ header {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 200;
   width: 100%;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
@@ -161,7 +161,7 @@ header {
 .modal-login {
   display: none;
   position: fixed;
-  z-index: 3;
+  z-index: 300;
   width: 50%;
   margin: 0;
   padding: 10px 20px;
@@ -234,7 +234,7 @@ header {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 200;
   width: 100%;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
@@ -242,7 +242,7 @@ header {
 .modal-register {
   display: none;
   position: fixed;
-  z-index: 3;
+  z-index: 300;
   margin: 0;
   padding: 10px 20px;
   width: 70vw;
@@ -314,7 +314,7 @@ header {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 200;
   width: 100%;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
@@ -322,7 +322,7 @@ header {
 .modal-mymenu {
   display: none;
   position: fixed;
-  z-index: 3;
+  z-index: 300;
   margin: 0;
   padding: 10px 20px;
   width: 70vw;
@@ -356,6 +356,58 @@ header {
 }
 .modal-mymenu__title {
 	font-size: 28px;
+}
+/*-----------------------------------------------------------------------------
+    .modal-sort
+-----------------------------------------------------------------------------*/
+.modal-sort__overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.modal-sort {
+  display: none;
+  position: fixed;
+  z-index: 300;
+  margin: 0;
+  padding: 10px 20px;
+  width: 70vw;
+  height: 70vh;
+  max-width: 360vmin;
+  max-height: 200vmin;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 4vh;
+  text-align: center;
+}
+.modal-sort a {
+  display: block;
+}
+.modal-sort__layout {
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.modal-sort__layout li {
+  margin: 1vh 0;
+}
+.modal-sort:after {
+/*
+  display: block;
+  clear: both;
+  content: "";
+*/
+}
+.modal-sort__trigger {
+  display: block;
+  cursor: pointer;
+  transition: 0.3s;
 }
 /*=============================================================================
     .header>>
@@ -538,7 +590,7 @@ main {
 /* ツールチップ本体 */
 .tooltip {
   position:absolute;
-  z-index:9999;
+  z-index:50;
   display:block;
   color:#fff;
   font-size:14px;
