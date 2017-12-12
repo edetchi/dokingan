@@ -87,6 +87,82 @@ function edgeThickness() {
   );
 }
 /*-----------------------------------------------------------------------------
+    ページャー
+-----------------------------------------------------------------------------*/
+function pager() {
+  global $page;
+  global $per_page;
+  global $default_per_page;
+  global $total_count;
+  global $url;
+  $url = $_SERVER["REQUEST_URI"];
+  //GETパラメータが与えられていない時リンクが計算されないので初期値をセット
+  if ($url == "/dokingan/") {
+    var_export("before1");
+    var_export("<br>");
+    var_export($url);
+    var_export("<br>");
+    $url .= "?page=1&per_page={$default_per_page}";
+  } else if (!preg_match("/^\/dokingan\/\?sort.*order.*page.*$/", $url) && $page == 1) {
+    var_export("before2");
+    var_export("<br>");
+    var_export($url);
+    var_export("<br>");
+    //preg_replace("/^\/dokingan\/\?sort.*order.*$/", $url);
+    //$url = preg_replace("/(?!_)page={$page}/", "page={$prev}", $url);
+    //$url = preg_replace("/page.*per_page.*$/", "", $url);
+    $url .= "&page=1&per_page={$default_per_page}";
+  } else {
+    var_export("before3");
+    var_export("<br>");
+    var_export($url);
+    var_export("<br>");
+    //$url .= "&page={$page}&per_page={$default_per_page}";
+  }
+  var_export("after");
+  var_export("<br>");
+  var_export($url);
+  var_export("<br>");
+  $prev = $page - 1;
+  $next = $page + 1;
+  //ページャーリンクの数
+  $pager_count = 5;
+  //前へと次へのurl作成
+  $prev_link = preg_replace("/(?!_)page={$page}/", "page={$prev}", $url);
+  $next_link = preg_replace("/(?!_)page={$page}/", "page={$next}", $url);
+  //最大ページを計算
+  $max_page = ceil($total_count / $per_page);
+  //前へリンクと省略部分
+  echo "<div class='pager'>";
+  if ($page > 1) echo "<a href={$prev_link}>前へ</a>";
+  if ($page  > 3 && $max_page > 5) echo " ... ";
+  //メインの数字部分の始まりと終わりを計算
+  //最大ページがページリンク数以下の時
+  if ($max_page <= $pager_count) {
+    $start = 1;
+    $end = $max_page;
+  } else {
+    //始まり（現在ページが1に近い時）
+    $start =  ($page > 2) ? ($page - 2) : 1;
+    //始まり再計算（現在ページが最大ページに近い時）
+    $start = ($page + 3 > $max_page) ? ($max_page-4) :$start;
+    //終わり（現在ページが最大ページに近い時）
+    $end = ($start + 4 < $max_page) ? $page + 2 : $max_page;
+    //終わり再計算（現在ページが1に近い時）
+    $end = ($page < 3) ? 5 : $end;
+  }
+  //メインの数字部分作成
+  for ($i = $start; $i <= $end; ++$i) {
+    //$page_link = str_replace("?page={$page}", "?page={$i}", $url);
+    $page_link = preg_replace("/(?!_)page={$page}/", "page={$i}", $url);
+    echo "<a href={$page_link}>{$i}</a>";
+  }
+  //次へリンクと省略部分
+  if ($page + 2 < $max_page && $max_page > 5) echo " ... ";
+  if ($page < $max_page) echo "<a href={$next_link}>次へ</a>";
+  echo "</div>";
+}
+/*-----------------------------------------------------------------------------
     定数を展開するラムダ関数
 -----------------------------------------------------------------------------*/
 $_ = function($s){return $s;};

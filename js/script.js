@@ -173,16 +173,17 @@ $(function(){
   //ソート部のアイコンを表示するための処理
   //url格納
   var urlForSort = location.href;
-  if (urlForSort == "http://192.168.33.10/dokingan/") {
+  //ソートが指定されていない時
+  if (urlForSort == "http://192.168.33.10/dokingan/" || urlForSort.match(/^http:.*dokingan\/\?page=.*per_page.*$/)) {
     //urlからどのソートで昇降順なのかを変数に格納する、デフォルトでは最終更新時の降順をセット
     var sort = "frame_updated";
     var order = "desc";
   } else {
-    var sort = urlForSort.replace(/.*sort=/g, "").replace(/&order=.*/g, "");
-    var order = urlForSort.replace(/.*&order=/g, "");
+    var sort = urlForSort.replace(/.*sort=/g, "").replace(/&order=.*/g, "").replace(/page=.*/g, "").replace(/per_page=.*/g, "");
+    var order = urlForSort.replace(/.*&order=/g, "").replace(/&page=.*/g, "").replace(/per_page=.*/g, "");
   }
-  //console.log(sort);
-  //console.log(order);
+  console.log(sort);
+  console.log(order);
   //デフォルト時にモーダルメニューの最終更新時に降順のアイコンを追加
   if (urlForSort == "http://192.168.33.10/dokingan/") $(`.sort-frame_updated a i`).addClass("fa-sort-amount-desc");
   //画面右上のトリガー部分に表示する現在設定中のソートを変数に格納する
@@ -256,7 +257,7 @@ $(function(){
   var $body = $("body");
   //ログインしているかどうかをチェックする要素
   var login = $("[data-favorite]").attr("disabled");
-  console.log(login);
+  //console.log(login);
   //tooltipのメッセージ
   var tooltipMsg = "お気に入り登録をするにはログインしてください"
   //ログイン時にお気に入りボタンの親(li)に

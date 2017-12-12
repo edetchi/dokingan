@@ -18,6 +18,13 @@ $sort = (!empty($request["sort"])) ? ($request["sort"]) : "";
 $order = (!empty($request["order"])) ? ($request["order"]) : "";
 //$orderの逆を変数に格納
 $reverse_order = ($order === "asc") ? "desc" : "asc";
+//ページ番号を変数に格納、もし空白、数字以外1をセット
+$page = (!empty($_GET["page"]) && (preg_match("/^[1-9][0-9]*/", $_GET["page"]))) ? intval($_GET["page"]) : 1;
+//上と同値だが$_GET["page"]がない場合エラーとなるのでemtpyを使った判定の方が便利
+//$page =  ($_GET["page"]) ? intval($_GET["page"]) : 1;
+$default_per_page = 3;
+//表示件数が空白じゃないand整数であれば値セット、そうでなければ$default_per_page
+$per_page = (!empty($_GET["per_page"]) && (preg_match("/^[1-9][0-9]*/", $_GET["per_page"]))) ? intval($_GET["per_page"]) : $default_per_page;
 //urlを変数に格納
 $url = $_SERVER["REQUEST_URI"];
 //$_GET["sort"]の値とリンク名の配列
@@ -63,7 +70,18 @@ try {
   } else {
     $sql .= " order by $sort $order";
   }
+  //ページング用にレコード総数をゲット
+  $csql = preg_replace("/^select \*/", "select count(*)", $sql);
+  //ページング用に表示できる件数を限定
+  if ($page != 1 && !empty($per_page)) {
+    $sql .= " limit {$per_page} offset " . $per_page * ($page - 1);
+  } else if ($page == 1 && !empty($per_page)) {
+    $sql .= " limit {$per_page}";
+  }
   $stmt = $pdo->query($sql);
+  $cstmt = $pdo->query($csql);
+  $total_count = $cstmt->fetchColumn();
+  //var_export($total_count);
   $frames = array();
   while($row_frame = $stmt->fetch(PDO::FETCH_ASSOC)) {
     //お気に入り数がnullの場合0を代入
@@ -146,6 +164,7 @@ require("header.php");
         </div><!--.frame-list-->
       </div><!--.frame-list__layout-->
       <?php endforeach; ?>
+      <?php pager(); ?>
     </main>
     <aside>
     </aside>
