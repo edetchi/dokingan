@@ -170,25 +170,20 @@ $(function(){
 /*-----------------------------------------------------------------------------
     .modal-sort
 -----------------------------------------------------------------------------*/
-  //ソート部のアイコンを表示するための処理
-  //url格納
-  var urlForSort = location.href;
-  //ソートが指定されていない時
-  if (urlForSort == "http://192.168.33.10/dokingan/" || urlForSort.match(/^http:.*dokingan\/\?page=.*per_page.*$/)) {
-    //urlからどのソートで昇降順なのかを変数に格納する、デフォルトでは最終更新時の降順をセット
-    var sort = "frame_updated";
-    var order = "desc";
-  } else {
-    var sort = urlForSort.replace(/.*sort=/g, "").replace(/&order=.*/g, "").replace(/page=.*/g, "").replace(/per_page=.*/g, "");
-    var order = urlForSort.replace(/.*&order=/g, "").replace(/&page=.*/g, "").replace(/per_page=.*/g, "");
+  //urlからgetパラメーターを取得する
+  var getparams  = new Object;
+  url = location.search.substring(1).split('&');
+  for(i=0; url[i]; i++) {
+     var k = url[i].split('=');
+     getparams[k[0]] = k[1];
   }
-  console.log(sort);
-  console.log(order);
-  //デフォルト時にモーダルメニューの最終更新時に降順のアイコンを追加
-  if (urlForSort == "http://192.168.33.10/dokingan/") $(`.sort-frame_updated a i`).addClass("fa-sort-amount-desc");
+  //page, per_pageのgetパラメータがない時、初期値をそれぞれセット
+  var sort = (getparams.sort == undefined) ? "frame_updated" : getparams.sort;
+  var order = (getparams.order == undefined) ? "desc" : getparams.order;
+  //console.log(sort);
+  //console.log(order);
   //画面右上のトリガー部分に表示する現在設定中のソートを変数に格納する
   var sort_text = $(`.sort-${sort} a`).text();
-  //console.log(tesuto);
   //デフォルトのソート・昇降順がない時だけアイコンのみ表示、それ以外は何の昇降順を選択中か右上に表示
   if (sort == "frame_updated" && order == "desc") {
     $(`.sort-${sort} a i`).addClass("fa-sort-amount-desc");
@@ -224,7 +219,7 @@ $(function(){
       var x = (w - $(modal).outerWidth(true)) / 2;
       var y = (h - $(modal).outerHeight(true)) / 2;
       $(modal).css({'left': x + 'px','top': y + 'px'});
-    console.log(x, y);
+    //console.log(x, y);
     }
   });
 /*-----------------------------------------------------------------------------
