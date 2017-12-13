@@ -28,7 +28,6 @@ function whitelist($whitelists) {
 /*-----------------------------------------------------------------------------
     フレームidからフレーム情報を配列$form[]で返す
 -----------------------------------------------------------------------------*/
-
 function frame_id($frame_id) {
   try {
     $db_type = "mysql";
@@ -56,7 +55,6 @@ function frame_id($frame_id) {
   	//エラー発生時処理停止してエラー表示
   	die("エラー: " . $e->getMessage());
   }
-
 }
 /*-----------------------------------------------------------------------------
     レンズの厚み計算、while文でフレームデータを取得している時にレンズの厚みを計算する
@@ -94,35 +92,13 @@ function pager() {
   global $per_page;
   global $default_per_page;
   global $total_count;
-  global $url;
+  global $sort;
+  global $order;
   $url = $_SERVER["REQUEST_URI"];
   //GETパラメータが与えられていない時リンクが計算されないので初期値をセット
   if ($url == "/dokingan/") {
-    var_export("before1");
-    var_export("<br>");
-    var_export($url);
-    var_export("<br>");
-    $url .= "?page=1&per_page={$default_per_page}";
-  } else if (!preg_match("/^\/dokingan\/\?sort.*order.*page.*$/", $url) && $page == 1) {
-    var_export("before2");
-    var_export("<br>");
-    var_export($url);
-    var_export("<br>");
-    //preg_replace("/^\/dokingan\/\?sort.*order.*$/", $url);
-    //$url = preg_replace("/(?!_)page={$page}/", "page={$prev}", $url);
-    //$url = preg_replace("/page.*per_page.*$/", "", $url);
-    $url .= "&page=1&per_page={$default_per_page}";
-  } else {
-    var_export("before3");
-    var_export("<br>");
-    var_export($url);
-    var_export("<br>");
-    //$url .= "&page={$page}&per_page={$default_per_page}";
+    $url .= "?sort={$sort}&order={$order}&page=1&per_page={$default_per_page}";
   }
-  var_export("after");
-  var_export("<br>");
-  var_export($url);
-  var_export("<br>");
   $prev = $page - 1;
   $next = $page + 1;
   //ページャーリンクの数
@@ -153,8 +129,8 @@ function pager() {
   }
   //メインの数字部分作成
   for ($i = $start; $i <= $end; ++$i) {
-    //$page_link = str_replace("?page={$page}", "?page={$i}", $url);
-    $page_link = preg_replace("/(?!_)page={$page}/", "page={$i}", $url);
+    $page_link = preg_replace("/[^_]page={$page}/", "&page={$i}", $url);
+    //$page_link = preg_replace("/(?!_)page={$page}/", "page={$i}", $url);
     echo "<a href={$page_link}>{$i}</a>";
   }
   //次へリンクと省略部分

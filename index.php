@@ -8,42 +8,51 @@ require_once("system/common.php");
     変数をホワイトリスト化
 -----------------------------------------------------------------------------*/
 //$_REQUEST[]の取りうるキーを限定する
-$whitelists = array("sort", "order");
+$whitelists = array("sort", "order", "page", "per_page");
 $request = whitelist($whitelists);
 /*-----------------------------------------------------------------------------
     並び替え用処理
 -----------------------------------------------------------------------------*/
 //並び替えのパラメータがあれば取得
-$sort = (!empty($request["sort"])) ? ($request["sort"]) : "";
-$order = (!empty($request["order"])) ? ($request["order"]) : "";
+$sort = (!empty($request["sort"])) ? ($request["sort"]) : "frame_updated";
+$order = (!empty($request["order"])) ? ($request["order"]) : "desc";
 //$orderの逆を変数に格納
 $reverse_order = ($order === "asc") ? "desc" : "asc";
 //ページ番号を変数に格納、もし空白、数字以外1をセット
-$page = (!empty($_GET["page"]) && (preg_match("/^[1-9][0-9]*/", $_GET["page"]))) ? intval($_GET["page"]) : 1;
+$page = (!empty($request["page"]) && (preg_match("/^[1-9][0-9]*/", $request["page"]))) ? intval($request["page"]) : 1;
 //上と同値だが$_GET["page"]がない場合エラーとなるのでemtpyを使った判定の方が便利
 //$page =  ($_GET["page"]) ? intval($_GET["page"]) : 1;
-$default_per_page = 3;
+//デフォルトのページ数をセット
+$default_per_page = 4;
 //表示件数が空白じゃないand整数であれば値セット、そうでなければ$default_per_page
-$per_page = (!empty($_GET["per_page"]) && (preg_match("/^[1-9][0-9]*/", $_GET["per_page"]))) ? intval($_GET["per_page"]) : $default_per_page;
+$per_page = (!empty($request["per_page"]) && (preg_match("/^[1-9][0-9]*/", $request["per_page"]))) ? intval($request["per_page"]) : $default_per_page;
 //urlを変数に格納
-$url = $_SERVER["REQUEST_URI"];
+$host = /*$_SERVER["HTTP_HOST"] . */ "/dokingan/";
+//var_export($host);
 //$_GET["sort"]の値とリンク名の配列
-$sort_keys_names = array("frame_updated"=>"最終更新日", "frame_price"=>"価格", "frame_lens_width"=>"レンズ幅", "frame_bridge_width"=>"ブリッジ幅", "frame_temple_length"=>"テンプル長", "frame_lens_height"=>"レンズ高", "frame_frame_width"=>"フレーム幅", "favorite_cnt"=>"お気に入り数");
+//$sort_sets = array("frame_updated"=>"最終更新日", "frame_price"=>"価格", "frame_lens_width"=>"レンズ幅", "frame_bridge_width"=>"ブリッジ幅", "frame_temple_length"=>"テンプル長", "frame_lens_height"=>"レンズ高", "frame_frame_width"=>"フレーム幅", "favorite_cnt"=>"お気に入り数");
+$sort_sets = array(
+  array("get"=>"frame_updated", "name"=>"最終更新日", "default-order"=>"desc"),
+  array("get"=>"frame_price", "name"=>"価格", "default-order"=>"asc"),
+  array("get"=>"frame_lens_width", "name"=>"レンズ幅", "default-order"=>"asc"),
+  array("get"=>"frame_bridge_width", "name"=>"ブリッジ幅", "default-order"=>"asc"),
+  array("get"=>"frame_temple_length", "name"=>"テンプル長", "default-order"=>"asc"),
+  array("get"=>"frame_lens_height", "name"=>"レンズ高", "default-order"=>"asc"),
+  array("get"=>"frame_frame_width", "name"=>"フレーム幅", "default-order"=>"asc"),
+  array("get"=>"favorite_cnt", "name"=>"お気に入り数", "default-order"=>"desc"),
+);
 //ログイン時にレンズの厚み用の値とリンク名を追加
-if (!empty($_SESSION["user_id"])) $sort_keys_names["frame_thickness"] = "レンズ厚み";
-//ソート用リンクを作成
+if (!empty($_SESSION["user_id"])) $sort_sets[] = array("get"=>"frame_thickness", "name"=>"レンズ厚み", "default-order"=>"asc");
+//$_GET["sort"]の値とリンク名の配列($sort_sets)にソート用のgetリンクを追加した配列を作成
 $sort_links = array();
-foreach ($sort_keys_names as $sort_key => $sort_name) {
-  if  (empty($sort)) {
-    $sort_link = "{$url}?sort={$sort_key}&order=asc";
-  } else if ($sort_key == $sort) {
-    $url = preg_replace("/sort=.*&order=.*$/", "", $url);
-    $sort_link = "{$url}sort={$sort_key}&order={$reverse_order}";
+foreach ($sort_sets as $sort_set) {
+  //ソート値が与えられている時は、並び順を逆にする
+  if (!empty($order) && $sort_set["get"] == $sort) {
+    $sort_link = $host . "?sort={$sort_set["get"]}&order={$reverse_order}&page=1&per_page={$per_page}";
   } else {
-    $url = preg_replace("/sort=.*&order=.*$/", "", $url);
-    $sort_link = "{$url}sort={$sort_key}&order=asc";
+    $sort_link = $host . "?sort={$sort_set["get"]}&order={$sort_set["default-order"]}&page=1&per_page={$per_page}";
   }
-  $sort_links[] = array("key"=>$sort_key, "field"=>$sort_name, "sort_link"=>$sort_link);
+  $sort_links[] = array("key"=>$sort_set["get"], "field"=>$sort_set["name"], "sort_link"=>$sort_link);
 }
 //var_export($sort_links);
 /*-----------------------------------------------------------------------------
@@ -62,11 +71,8 @@ try {
     フレームデータ取得
 -----------------------------------------------------------------------------*/
   $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id left join (select frame_id as betsu_frame_id, count(removed_flag) as favorite_cnt from favorites where removed_flag = 0 group by frame_id) as t_favorite_cnt on t_favorite_cnt.betsu_frame_id = frames.frame_id where 1";
-  //
-  if (!(!empty($sort) && !empty($order))) {
-    $sql .= " order by frame_updated desc";
   //ソートがフレームの厚みの時はsql文を追加せず、下で配列を並び替える
-  } else if ($sort == "frame_thickness") {
+  if ($sort == "frame_thickness") {
   } else {
     $sql .= " order by $sort $order";
   }
