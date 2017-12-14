@@ -308,47 +308,36 @@ $(function(){
 /*-----------------------------------------------------------------------------
     .mobile-pager
 -----------------------------------------------------------------------------*/
-  var $mobilePager = $(".mobile-pager");
-  var mobilePagerHeight = $mobilePager.height();
-  var mobilePagerTop = $mobilePager.offset().top;
-  var windowHeight = $(window).height();
-  var cssTopValue = windowHeight * 0.03;
-  var endpoint = mobilePagerTop - (windowHeight - mobilePagerHeight) - cssTopValue;
-  //console.log(endpoint);
-  $(window).on("resize", function() {
-     $mobilePager = $(".mobile-pager");
-     mobilePagerHeight = $mobilePager.height();
-     mobilePagerTop = $mobilePager.offset().top;
-     windowHeight = $(window).height();
-     cssTopValue = windowHeight * 0.03;
-     endpoint = mobilePagerTop - (windowHeight - mobilePagerHeight) - cssTopValue;
+  if ($(".mobile-pager").length != 0) {
+    var $mobilePager = $(".mobile-pager");
+    var mobilePagerHeight = $mobilePager.height();
+    var mobilePagerTop = $mobilePager.offset().top;
+    var windowHeight = $(window).height();
+    var cssTopValue = windowHeight * 0.03;
+    var endpoint = mobilePagerTop - (windowHeight - mobilePagerHeight) - cssTopValue;
     //console.log(endpoint);
-  });
-  //$('.mobile-pager').css("top",mobilePagerTop)
-  $(window).scroll(function() {
-    var sc = $(this).scrollTop();
-    console.log(sc);
-    if(sc > endpoint) {
-      $(".mobile-pager").removeClass('mobile-pager__fixed');
-      $(".dummy").css("display", "none");
-    } else {
-      $(".mobile-pager").addClass('mobile-pager__fixed');
-      $(".dummy").css("display", "inline");
-    }
-  });
-
-/*
-  var $mobilePager = $(".mobile-pager"), offset = mobilePager.offset();
-  $(window).scroll(function(){
-    var mobilePagerBottom = $mobilePager.height() + $(this).scrollTop();
-    var parentBottom = $mobilePager.parent().offset().top +  $mobilePager.parent().height();
-    if($(window).scrollTop() > offset.top) {
-      if (parentBottom < mobilePagerBottom) {
-
+    $(window).on("resize", function() {
+       $mobilePager = $(".mobile-pager");
+       mobilePagerHeight = $mobilePager.height();
+       mobilePagerTop = $mobilePager.offset().top;
+       windowHeight = $(window).height();
+       cssTopValue = windowHeight * 0.03;
+       endpoint = mobilePagerTop - (windowHeight - mobilePagerHeight) - cssTopValue;
+      //console.log(endpoint);
+    });
+    //$('.mobile-pager').css("top",mobilePagerTop)
+    $(window).scroll(function() {
+      var sc = $(this).scrollTop();
+      console.log(sc);
+      if(sc > endpoint) {
+        $(".mobile-pager").removeClass('mobile-pager__fixed');
+        $(".dummy").css("display", "none");
+      } else {
+        $(".mobile-pager").addClass('mobile-pager__fixed');
+        $(".dummy").css("display", "inline");
       }
-    }
-  });
-*/
+    });
+  }
 /*=============================================================================
       <<関数
 =============================================================================*/
