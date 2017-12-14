@@ -170,7 +170,7 @@ require("header.php");
         </div><!--.frame-list-->
       </div><!--.frame-list__layout-->
       <?php endforeach; ?>
-      <?php pager(); ?>
+      <?php mobilepager(); ?>
     </main>
     <aside>
     </aside>

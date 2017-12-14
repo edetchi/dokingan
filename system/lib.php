@@ -139,6 +139,62 @@ function pager() {
   echo "</div>";
 }
 /*-----------------------------------------------------------------------------
+    モバイル用ページャー
+-----------------------------------------------------------------------------*/
+function mobilepager() {
+  global $page;
+  global $per_page;
+  global $default_per_page;
+  global $total_count;
+  global $sort;
+  global $order;
+  $url = $_SERVER["REQUEST_URI"];
+  //GETパラメータが与えられていない時リンクが計算されないので初期値をセット
+  if ($url == "/dokingan/") {
+    $url .= "?sort={$sort}&order={$order}&page=1&per_page={$default_per_page}";
+  }
+  $prev = $page - 1;
+  $next = $page + 1;
+  //ページャーリンクの数
+  $pager_count = 5;
+  //前へと次へのurl作成
+  $prev_link = preg_replace("/(?!_)page={$page}/", "page={$prev}", $url);
+  $next_link = preg_replace("/(?!_)page={$page}/", "page={$next}", $url);
+  //最大ページを計算
+  $max_page = ceil($total_count / $per_page);
+  //前へリンクと省略部分
+  echo "<div class='mobile-pager'>";
+  if ($page > 1) {
+    echo "<a href={$prev_link}><i class='fa fa-chevron-left' aria-hidden='true'></i></a>";
+  } else {
+    echo "<a><i class='fa fa-minus' aria-hidden='true'></i></a>";
+  }
+  //メインの数字部分作成
+  echo "<div class='mobile-pager__selector-info'>";
+  echo "<span>{$page} OF {$max_page}</span>";
+  echo "</div>";
+  /*
+  echo "<select class='mobile-pager__selector'>";
+  for ($i = 1; $i <= $max_page; ++$i) {
+    //$page_link = preg_replace("/[^_]page={$page}/", "&page={$i}", $url);
+    if ($i == $page) {
+      echo "<option value='{$i}' selected>{$i}</a>";
+    } else {
+      echo "<option value='{$i}'>{$i}</a>";
+    }
+  }
+  echo "</select>";
+  */
+  //次へリンクと省略部分
+  if ($page < $max_page) {
+    echo "<a href={$next_link}><i class='fa fa-chevron-right' aria-hidden='true'></i></a>";
+  } else {
+    echo "<a><i class='fa fa-minus' aria-hidden='true'></i></a>";
+  }
+  echo "</div>";
+  echo "<div class='dummy'>{$page} OF {$max_page}</div>";
+}
+/*-----------------------------------------------------------------------------
     定数を展開するラムダ関数
 -----------------------------------------------------------------------------*/
 $_ = function($s){return $s;};
