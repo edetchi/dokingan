@@ -16,8 +16,6 @@ $error_msgs = array();
 $_POST["user_loginid"] = (!empty($_POST["user_loginid"])) ? $_POST["user_loginid"] : "";
 $_POST["user_email"] = (!empty($_POST["user_email"])) ? $_POST["user_email"] : "";
 $_POST["user_password"] = (!empty($_POST["user_password"])) ? md5($_POST["user_password"]) : "";
-$_SESSION["msg_user_loginid"] = (!empty($_SESSION["msg_user_loginid"])) ? $_SESSION["msg_user_loginid"] : "";
-$_SESSION["msg_user_email"] = (!empty($_SESSION["msg_user_email"])) ? $_SESSION["msg_user_email"] : "";
 /*-----------------------------------------------------------------------------
     エラー時の入力項目のセッションに保持する
 -----------------------------------------------------------------------------*/
@@ -28,20 +26,53 @@ $_SESSION["user_password"] = (!empty($_POST["user_password"])) ? $_POST["user_pa
     フォーム項目のエラーチェック
 -----------------------------------------------------------------------------*/
 if (!empty($_POST["send"])) {
-  if (empty($_POST["user_loginid"])) $error_msgs[] =  "ユーザー名を入力してください";
-  if (empty($_POST["user_email"])) $error_msgs[] =  "メールアドレスを入力してください";
-  if(!empty($_POST["user_email"]) && !preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $_POST["user_email"])) $error_msgs[] =  "メールアドレスの形式が正しくありません。";
-  if (empty($_POST["user_password"])) $error_msgs[] =  "パスワードを入力してください";
-  if ($_SESSION["msg_user_loginid"] == 1) $error_msgs[] =  "そのユーザーIDは使用されています";
-  if ($_SESSION["msg_user_email"] == 1) $error_msgs[] =  "そのメールアドレスは登録済みです";
-  //var_dump($_SESSION["msg_user_loginid"]);
+  //ユーザー名
+  if (empty($_POST["user_loginid"])) {
+     $error_msgs[] =  "ユーザー名を入力してください";
+  } else {
+    if (!preg_match("/^[a-zA-Z0-9]{1,10}$/", $_POST["user_loginid"])) $error_msgs[] = "ユーザーIDは英数字のみ、10文字以内にしてください";
+  }
+  //メールアドレス
+  if (empty($_POST["user_email"])) {
+    $error_msgs[] =  "メールアドレスを入力してください";
+  } else {
+    if(!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", $_POST["user_email"])) $error_msgs[] =  "メールアドレスの形式が正しくありません。";
+    if (strlen($_POST["user_email"]) > 50) $error_msgs[] = "メールアドレスは50文字以内にしてください";
+  }
+  //パスワード
+  if (empty($_POST["user_password"])) {
+    $error_msgs[] =  "パスワードを入力してください";
+  } else {
+    if (!preg_match("/^[a-zA-Z0-9\\\*\+\.\?\{\}\(\)\[\]\^\$\-\|\/!\"#%&'=~@;:,`_]{6,32}$/", $_POST["user_password"])) $error_msgs[] = "パスワードは半角英数記号で6文字以上32文字以下にしてください";
+  }
+  //ユーザー名、メアドの重複チェック
+  try {
+    //ユーザー名の一覧を配列に格納
+    $sql = "select * from users where user_loginid = :user_loginid";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(":user_loginid", $_POST["user_loginid"], PDO::PARAM_STR);
+    $stmt->execute();
+    $row_users = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = null;
+    //登録済みメールアドレスの一覧を配列に格納
+    $sql = "select * from users where user_email = :user_email";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(":user_email", $_POST["user_email"], PDO::PARAM_STR);
+    $stmt->execute();
+    $user_email = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = null;
+  } catch (PDOException $e) {
+    die("エラー: " . $e->getMessage());
+  }
+  if ($row_users["user_loginid"]) $error_msgs[] = "そのユーザーIDは使用されています";
+  if ($user_email["user_email"]) $error_msgs[] = "登録済みです、他のメールアドレスを使用してください";
   //var_dump($error_msgs);
 }
 /*-----------------------------------------------------------------------------
     エラーなしでメール送信、
 -----------------------------------------------------------------------------*/
 if (!empty($_POST["send"]) && empty($error_msgs)) {
-  $url = "http://192.168.33.10/dokingan/registration_complete.php?urltoken=" . $_SESSION["token"];
+  $url = $_SERVER["HTTP_HOST"] . "/registration_complete.php?urltoken=" . $_SESSION["token"];
   try {
     $pdo->beginTransaction();
     $sql = "insert into pre_users (pre_urltoken, pre_userid, pre_email, pre_password) values (:pre_urltoken, :pre_userid, :pre_email, :pre_password)";

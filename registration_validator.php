@@ -23,7 +23,6 @@ try {
 }
 //ユーザー名のバリデーション
 if (!empty($_POST["user_loginid"])) {
-  $_SESSION["msg_user_loginid"] = 1;
   if ($row_users["user_loginid"]) {
     $msg_user_loginid[] = "そのユーザーIDは使用されています";
   }
@@ -33,11 +32,9 @@ if (!empty($_POST["user_loginid"])) {
 }
 if (empty($msg_user_loginid)) {
   $msg_user_loginid[] = "OK";
-  $_SESSION["msg_user_loginid"] = 0;
 }
 //メールアドレスのバリデーション
 if (!empty($_POST["user_email"])) {
-  $_SESSION["msg_user_email"] = 1;
   if ($user_email["user_email"]) {
     $msg_user_email[] = "登録済みです、他のメールアドレスを使用してください";
   }
@@ -48,7 +45,6 @@ if (!empty($_POST["user_email"])) {
 }
 if (empty($msg_user_email)) {
   $msg_user_email[] = "OK";
-  $_SESSION["msg_user_email"] = 0;
 }
 //パスワードのバリデーション(使える記号はヤフーのものを参考)
 if (!empty($_POST["user_password"])) {
