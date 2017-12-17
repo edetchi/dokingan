@@ -94,9 +94,13 @@ function pager() {
   global $total_count;
   global $sort;
   global $order;
+  //config.phpで定義されている変数を使うにはグローグル変数として宣言することを忘れずに
+  global $app_dir;
   $url = $_SERVER["REQUEST_URI"];
-  //GETパラメータが与えられていない時リンクが計算されないので初期値をセット
-  if ($url == "/dokingan/") {
+  //GETパラメータが与えられていない時($url == アプリのルートディレクトリ)、リンクが計算されないので初期値をセット
+  //var_export(preg_replace("/\/$/", "", $url));
+  //if ($url == "/") {
+  if (preg_replace("/\/$/", "", $url) == $app_dir) {
     $url .= "?sort={$sort}&order={$order}&page=1&per_page={$default_per_page}";
   }
   $prev = $page - 1;
@@ -148,9 +152,13 @@ function mobilepager() {
   global $total_count;
   global $sort;
   global $order;
+  //config.phpで定義されている変数を使うにはグローグル変数として宣言することを忘れずに
+  global $app_dir;
   $url = $_SERVER["REQUEST_URI"];
-  //GETパラメータが与えられていない時リンクが計算されないので初期値をセット
-  if ($url == "/dokingan/") {
+  //GETパラメータが与えられていない時($url == アプリのルートディレクトリ)、リンクが計算されないので初期値をセット
+  //var_export(preg_replace("/\/$/", "", $url));
+  //if ($url == "/") {
+  if (preg_replace("/\/$/", "", $url) == $app_dir) {
     $url .= "?sort={$sort}&order={$order}&page=1&per_page={$default_per_page}";
   }
   $prev = $page - 1;
