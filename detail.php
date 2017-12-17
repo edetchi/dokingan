@@ -61,8 +61,8 @@ try {
 } catch (PDOException $e) {
   die("エラー: " . $e->getMessage());
 }
-$removed_flag = ($row_favorite["removed_flag"] == null or $row_favorite["removed_flag"] == 1) ? 1 : 0;
-//var_export($removed_flag);
+//removed_flagフィールドが0ならお気に入り済み、それ以外のnullもしくは1ならお気に入りなし
+$removed_flag = ($row_favorite["removed_flag"] === 0) ? 0 : 1;
 /*-----------------------------------------------------------------------------
     レンズの厚み計算
 -----------------------------------------------------------------------------*/
