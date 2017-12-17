@@ -23,23 +23,13 @@
         <li class="nav-bar__login"><a class="nav-bar__login-link modal-login__trigger" data-modal="modal-login">ログイン</a></li>
         <li class="nav-bar__register"><a class="modal-register__trigger nav-bar__register-link" data-modal="modal-register" href="../registration.php">新規登録</a></li>
         <?php else: ?>
-        <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link modal-mymenu__trigger" data-modal="modal-mymenu"><i class="fa fa-user nav-bar__mymenu-icon" aria-hidden="true"></i>マイメニュー</a></li>
-        <?php endif; ?>
-        <?php if(!$is_detail_page): ?>
-        <li class="nav-bar__filter">
-          <a class="nav-bar__filter-link" href="#"><!--<span class="icon icon-filter">--><i class="fa fa-filter nav-bar__filter-icon" aria-hidden="true"></i></a>
-        </li>
-        <?php else: ?>
-        <li class="nav-bar__back"></span>
-          <a class="nav-bar__back-link" href="../"><!--<span class="icon icon-undo"></span>--><i class="fa fa-arrow-left nav-bar__back-icon" aria-hidden="true"></i>
-          </a>
-        </li>
+        <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link modal-mymenu__trigger" data-modal="modal-mymenu"><i class="fa fa-user nav-bar__mymenu-icon" aria-hidden="true"></i><span class="nav-bar__mymenu-text">マイメニュー</span></a></li>
         <?php endif; ?>
       </ul>
     </div><!--.nav-bar-->
     <div class="modal-login">
       <h2 class="modal-login__title">ログイン</h2>
-      <form action="login.php" method="post">
+      <form action="../mypage/login.php" method="post">
         <div>
           <label for="roguin"><span class="attention"></span></label>
           <input type="text" name="user_loginid" class="modal-login__email-input" id="roguin" size="10" placeholder="ユーザー名 or メールアドレス">
@@ -52,12 +42,12 @@
           <input type="submit" name="send" class="modal-login__btn-input" value="ログイン">
         </div>
         <p class="modal-login__notice-password">パスワードを忘れた方は <a class="modal-login__notice-password-link" href="#  ">こちら</a></p>
-        <p class="modal-login__notice-register">アカウントをお持ちでない方 <a class="modal-login__notice-register-link" href="registration.php">新規登録</a></p>
+        <p class="modal-login__notice-register">アカウントをお持ちでない方 <a class="modal-login__notice-register-link" href="../registration.php">新規登録</a></p>
       </form>
     </div><!--.modal-login-->
     <div class="modal-register">
       <h2 class="modal-register__title">アカウントの作成</h2>
-      <p class="modal-register__notice">すでにアカウントをお持ちの方は <a class="modal-register__notice-link" href="#  ">こちら</a></p>
+      <p class="modal-register__notice">すでにアカウントをお持ちの方は <a class="modal-register__notice-link" href="#">こちら</a></p>
     </div><!--.modal-register-->
     <div class="modal-mymenu">
       <ul class="modal-mymenu__layout">
