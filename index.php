@@ -1,4 +1,5 @@
 <?php
+var_export(str_replace($_SERVER["HTTP_HOST"], "", $_SERVER["REQUEST_URI"]));
 //ライブラリの読み込み
 require_once("system/common.php");
 /*=============================================================================
@@ -27,7 +28,7 @@ $default_per_page = 4;
 //表示件数が空白じゃないand整数であれば値セット、そうでなければ$default_per_page
 $per_page = (!empty($request["per_page"]) && (preg_match("/^[1-9][0-9]*/", $request["per_page"]))) ? intval($request["per_page"]) : $default_per_page;
 //urlを変数に格納
-$host = /*$_SERVER["HTTP_HOST"] . */ "/dokingan/";
+$host = /*$_SERVER["HTTP_HOST"] . */ "/";
 //var_export($host);
 //$_GET["sort"]の値とリンク名の配列
 //$sort_sets = array("frame_updated"=>"最終更新日", "frame_price"=>"価格", "frame_lens_width"=>"レンズ幅", "frame_bridge_width"=>"ブリッジ幅", "frame_temple_length"=>"テンプル長", "frame_lens_height"=>"レンズ高", "frame_frame_width"=>"フレーム幅", "favorite_cnt"=>"お気に入り数");
