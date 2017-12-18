@@ -3,8 +3,8 @@
 /*-----------------------------------------------------------------------------
     メッセージの初期化
 -----------------------------------------------------------------------------*/
-$page_message = "";
-$error_message = "";
+$page_msgs = array();
+$error_msgs = array();
 /*-----------------------------------------------------------------------------
     お気に入り用
 -----------------------------------------------------------------------------*/
@@ -111,19 +111,29 @@ $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $ce
 //送信ボタンが押された時の処理
 if (isset($_REQUEST["send"])) {
   //空欄チェック
-  if ($_REQUEST["frame_comment"] == "") $error_message .= "コメントを入力してください\n";
+  if (empty($request["comment_content"])) {
+    $error_msgs[] = "コメントを入力してください";
+  } else {
+    if (mb_strlen($request["comment_content"]) > 100) $error_msgs[] = "コメントは100文字以内にしてください";
+  }
 }
 ?>
 <?php $page_title = "フレーム詳細";?>
 <?php require("header.php"); ?>
   <div class="main-wrap">
     <main>
-      <p>
-        <?= he($page_message) ?>
-      </p>
-      <p class="attention">
-        <?= nl2br(he($error_message)) ?>
-      </p>
+      <div class="message">
+        <p>
+          <?php foreach ($page_msgs as $page_msg): ?>
+          <p><?= he($page_msg) ?></p>
+          <?php endforeach; ?>
+        </p>
+        <p class="attention">
+          <?php foreach ($error_msgs as $error_msg): ?>
+          <p><?= he($error_msg) ?></p>
+          <?php endforeach; ?>
+        </p>
+      </div>
       <div class="frame-detail__layout frame-detail__layout_desc_true">
         <div class="frame-detail frame-detail_desc_true">
           <img class="frame-detail__image" src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
