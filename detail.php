@@ -1,5 +1,10 @@
-<?php require_once("./system/common.php"); ?>
-<?php
+<?php require_once("./system/common.php");
+/*-----------------------------------------------------------------------------
+    変数をホワイトリスト化
+-----------------------------------------------------------------------------*/
+//$_REQUEST[]の取りうるキーを限定する
+$whitelists = array("frame_id", "comment_frame_id", "comment_poster_id", "comment_content", "send");
+$request = whitelist($whitelists);
 /*-----------------------------------------------------------------------------
     メッセージの初期化
 -----------------------------------------------------------------------------*/
@@ -8,7 +13,7 @@ $error_msgs = array();
 /*-----------------------------------------------------------------------------
     お気に入り用
 -----------------------------------------------------------------------------*/
-$_SESSION["frame_id"] = $_REQUEST["frame_id"];
+$_SESSION["frame_id"] = $request["frame_id"];
 /*-----------------------------------------------------------------------------
     非ログイン時にお気に入りボタンを押せなくする変数を用意
 -----------------------------------------------------------------------------*/
@@ -18,7 +23,7 @@ $report_removed_flag = "";
 /*-----------------------------------------------------------------------------
     エラー避け
 -----------------------------------------------------------------------------*/
-$_POST['comment_content'] = (!empty($_POST['comment_content'])) ? $_POST['comment_content'] : "";
+$request['comment_content'] = (!empty($request['comment_content'])) ? $request['comment_content'] : "";
 /*=============================================================================
     <<フレーム一覧用データ取得
 =============================================================================*/
@@ -40,7 +45,7 @@ try {
 -----------------------------------------------------------------------------*/
   $sql = "select * from frames left join users on frames.frame_poster_id = users.user_id left join (select frame_id, count(removed_flag) as favorite_cnt from favorites where removed_flag = 0 group by frame_id) as t_favorite_cnt on t_favorite_cnt.frame_id = frames.frame_id where frames.frame_id = :frame_id";
   $stmt = $pdo->prepare($sql);
-  $stmt->bindValue(":frame_id", $_REQUEST["frame_id"], PDO::PARAM_INT);
+  $stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
   $stmt->execute();
   $row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
   $pdo->commit();
@@ -67,7 +72,7 @@ try {
 -----------------------------------------------------------------------------*/
   $sql = "select * from comments left join users on comments.comment_poster_id = users.user_id where comment_frame_id = :frame_id order by comment_created asc";
   $stmt = $pdo->prepare($sql);
-  $stmt->bindValue(":frame_id", $_REQUEST["frame_id"], PDO::PARAM_INT);
+  $stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
   $stmt->execute();
   $comments = array();
   while($row_comment = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -109,7 +114,7 @@ $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $ce
     フォーム項目のエラーチェック
 -----------------------------------------------------------------------------*/
 //送信ボタンが押された時の処理
-if (isset($_REQUEST["send"])) {
+if (!empty($request["send"])) {
   //空欄チェック
   if (empty($request["comment_content"])) {
     $error_msgs[] = "コメントを入力してください";
@@ -194,13 +199,11 @@ if (isset($_REQUEST["send"])) {
           </li>
         <?php endforeach; ?>
         </ul>
-        <form class="frame-detail__comment-form" action="detail.php" method="post">
+        <form class="frame-detail__comment-form my-tooltip" title="コメントするにはログインしてください" action="detail.php?frame_id=<?= $request["frame_id"] ?>" method="post">
           <div>
-            <input type="text" name="comment_content" max="100" placeholder="コメントを入力してください" value="<?= he($_POST['comment_content']); ?>">
-          </div>
-          <div>
-            <input type="submit" name="send" value="送信">
-            <input type="hidden" name="comment_frame_id" value="<?= he($request['frame_id']); ?>">
+            <input type="text" name="comment_content" max="100" placeholder="コメントを入力してください" value="<?= he($request['comment_content']); ?>" <?= $disabled ?>>
+            <input type="submit" name="send" value="送信" <?= $disabled ?>>
+            <input type="hidden" name="comment_frame_id" value="<?= he($request["frame_id"]); ?>">
             <input type="hidden" name="comment_poster_id" value="<?= he($_SESSION["user_id"]); ?>">
           </div>
         </form>
