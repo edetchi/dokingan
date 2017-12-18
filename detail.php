@@ -199,7 +199,7 @@ if (!empty($request["send"])) {
           </li>
         <?php endforeach; ?>
         </ul>
-        <form class="frame-detail__comment-form my-tooltip" title="コメントするにはログインしてください" action="detail.php?frame_id=<?= $request["frame_id"] ?>" method="post">
+        <form class="frame-detail__comment-form" action="detail.php?frame_id=<?= $request["frame_id"] ?>" method="post">
           <div>
             <input type="text" name="comment_content" max="100" placeholder="コメントを入力してください" value="<?= he($request['comment_content']); ?>" <?= $disabled ?>>
             <input type="submit" name="send" value="送信" <?= $disabled ?>>

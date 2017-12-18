@@ -253,12 +253,17 @@ $(function(){
   //ログインしているかどうかをチェックする要素
   var login = $("[data-favorite]").attr("disabled");
   //console.log(login);
-  //tooltipのメッセージ
-  var tooltipMsg = "お気に入り登録をするにはログインしてください"
+  //tooltipのメッセージ(お気に入りとコメント欄)
+  var tooltipFavoriteMsg = "お気に入り登録をするにはログインしてください"
+  var tooltipCommentMsg = "コメントするにはログインしてください"
   //ログイン時にお気に入りボタンの親(li)に
   if (login == "disabled") {
+    //お気に入りへのツールチップ
     $("[data-favorite]").parent().addClass("my-tooltip");
-    $("[data-favorite]").parent().attr("title", tooltipMsg);
+    $("[data-favorite]").parent().attr("title", tooltipFavoriteMsg);
+    //コメント欄へのツールチップ
+    $(".frame-detail__comment-form").addClass("my-tooltip");
+    $(".frame-detail__comment-form").attr("title", tooltipCommentMsg);
   }
   // 各 `.my-tooltip` 要素に対して処理をしていきます
   $(".my-tooltip").each(function(){
