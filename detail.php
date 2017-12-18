@@ -15,6 +15,10 @@ $_SESSION["frame_id"] = $_REQUEST["frame_id"];
 $disabled = (!empty($_SESSION["user_id"])) ? "" : "disabled";
 //スパム報告は実装前
 $report_removed_flag = "";
+/*-----------------------------------------------------------------------------
+    エラー避け
+-----------------------------------------------------------------------------*/
+$_POST['comment_content'] = (!empty($_POST['comment_content'])) ? $_POST['comment_content'] : "";
 /*=============================================================================
     <<フレーム一覧用データ取得
 =============================================================================*/
@@ -58,6 +62,25 @@ try {
   $stmt->execute();
   $row_favorite = $stmt->fetch(PDO::FETCH_ASSOC);
   $stmt = null;
+/*-----------------------------------------------------------------------------
+    コメントを取得
+-----------------------------------------------------------------------------*/
+  $sql = "select * from comments left join users on comments.comment_poster_id = users.user_id where comment_frame_id = :frame_id order by comment_created asc";
+  $stmt = $pdo->prepare($sql);
+  $stmt->bindValue(":frame_id", $_REQUEST["frame_id"], PDO::PARAM_INT);
+  $stmt->execute();
+  $comments = array();
+  while($row_comment = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $row_comment["comment_created"] = str_replace("-", "/", substr($row_comment["comment_created"], 0, 10));
+    $comments[] = array(
+      "comment_loginid" => $row_comment["user_loginid"],
+      "comment_icon" => "./images/users/" . $row_comment["user_icon"],
+      "comment_content" => $row_comment["comment_content"],
+      "comment_created" => $row_comment["comment_created"],
+    );
+  }
+  //$stmt = null;
+  //var_export($comments);
 } catch (PDOException $e) {
   die("エラー: " . $e->getMessage());
 }
@@ -90,27 +113,6 @@ if (isset($_REQUEST["send"])) {
   //空欄チェック
   if ($_REQUEST["frame_comment"] == "") $error_message .= "コメントを入力してください\n";
 }
-/*=============================================================================
-    <<お気に入り登録機能
-=============================================================================*/
-/*
-try {
-  $pdo->beginTransaction();
-  $sql = "insert into favorites (user_id, frame_id, removed_flag) values(:user_id, :frame_id, :removed_flag)";
-  $stmt = $pdo->prepare($sql);
-  $stmt->bindValue(":user_id", $_SESSION["user_id"], PDO::PARAM_INT);
-  $stmt->bindValue(":frame_id", $_REQUEST["frame_id"], PDO::PARAM_INT);
-  $stmt->bindValue(":frame_id", , PDO::PARAM_INT);
-  $stmt->execute();
-  $row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
-  $pdo->commit();
-  $stmt = null;
-} catch (PDOException $e) {
-  $pdo->rollBack();
-  die("エラー: " . $e->getMessage());
-}
-*/
-
 ?>
 <?php $page_title = "フレーム詳細";?>
 <?php require("header.php"); ?>
@@ -168,6 +170,31 @@ try {
         </li>
       </ul><!--.frame-detail__action-->
       <!--<div id="result"></div>-->
+      <div class="frame-detail__comment">
+        <h2 class="frame-detail__comment-title">コメント<i class="fa fa-commenting frame-detail__comment-icon" aria-hidden="true"></i></h2>
+        <ul class="frame-detail__comment-section">
+          <?php foreach($comments as $comment): ?>
+          <li class="frame-detail__each-comment">
+            <img class="frame-detail__each-comment-image" src="<?= $comment["comment_icon"] ?>">
+            <div class="frame-detail__each-comment-text">
+              <p class="frame-detail__each-comment-user-id"><?= $comment["comment_loginid"] ?></p>
+              <p class="frame-detail__each-comment-comment"><?= $comment["comment_content"] ?></p>
+            </div>
+            <p class="frame-detail__each-comment-date"><?= $comment["comment_created"] ?></p>
+          </li>
+        <?php endforeach; ?>
+        </ul>
+        <form class="frame-detail__comment-form" action="detail.php" method="post">
+          <div>
+            <input type="text" name="comment_content" max="100" placeholder="コメントを入力してください" value="<?= he($_POST['comment_content']); ?>">
+          </div>
+          <div>
+            <input type="submit" name="send" value="送信">
+            <input type="hidden" name="comment_frame_id" value="<?= he($request['frame_id']); ?>">
+            <input type="hidden" name="comment_poster_id" value="<?= he($_SESSION["user_id"]); ?>">
+          </div>
+        </form>
+      </div>
     </main>
   </div>
 <?php require("footer.php"); ?>
