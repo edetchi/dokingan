@@ -83,7 +83,8 @@ try {
 /*-----------------------------------------------------------------------------
     コメントを投稿
 -----------------------------------------------------------------------------*/
-  if (!empty($request["send"]) && empty($error_msgs)){// && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  if (!empty($request["send"]) && empty($error_msgs)){
+  //if (!empty($request["send"]) && empty($error_msgs) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $sql = "insert into comments (comment_frame_id, comment_poster_id, comment_content) values (:comment_frame_id, :comment_poster_id, :comment_content)";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(":comment_frame_id", $request["comment_frame_id"], PDO::PARAM_INT);

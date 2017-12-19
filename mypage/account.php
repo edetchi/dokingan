@@ -103,6 +103,18 @@ if (isset($request["send"]) && empty($error_msgs)) {
     //サムネ作成
     $original_image = imagecreatefromjpeg("../images/users/{$user_icon_name}");
     list($original_w, $original_h) = getimagesize("../images/users/{$user_icon_name}");
+    //サムネを正方形にする為にずらす量を計算
+    if ( $original_w >= $original_h ) {
+      // 横長の画像の時
+      $x = floor(($original_w - $original_h) / 2);
+      $y = 0;
+      $original_w = $original_h;
+    } else {
+      // 縦長の画像の時
+      $x = 0;
+      $y = floor(($original_h - $original_w) / 2);
+      $original_h = $original_w;
+    }
     //ファイルサイズがない時はエラー表示、それ以外はサムネ作成
     if ($original_w == 0 || $original_h == 0) {
         $error_msgs[] = "画像ファイルではありません";
@@ -112,7 +124,7 @@ if (isset($request["send"]) && empty($error_msgs)) {
         $thumb_w = 120;
         $thumb_h = $original_h*$thumb_w/$original_w;
         $thumb_image = imagecreatetruecolor($thumb_w, $thumb_h);
-        imagecopyresized($thumb_image, $original_image, 0, 0, 0, 0, $thumb_w, $thumb_h, $original_w, $original_h);
+        imagecopyresized($thumb_image, $original_image, 0, 0, $x, $y, $thumb_w, $thumb_h, $original_w, $original_h);
         //できたサムネイルをオリジナルに上書き保存
         imagejpeg($thumb_image, "../images/users/{$user_icon_name}");
         imagedestroy($original_image);
