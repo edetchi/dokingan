@@ -653,7 +653,10 @@ main {
 .frame-detail__each-comment {
   display: flex;
   justify-content: space-around;
-  margin-top: 2vw;
+  /*margin-top: 2vw;*/
+  border: 1vw dotted transparent;
+  border-radius: 3vw;
+  padding: 1vw 2vw;
 }
 .frame-detail__each-comment-image__layout {
   margin-right: 2vw;
@@ -689,10 +692,21 @@ main {
   border-top: 1.5vw solid transparent;
   border-bottom: 1.5vw solid transparent;
 }
+.frame-detail__each-comment-right {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 15vw;
+}
+.frame-detail__each-comment-right-close {
+  display: none;
+  font-size: 2vw;
+  align-self: flex-end;
+}
 .frame-detail__each-comment-date {
   font-size: 2vw;
-  width: 20vw;
-  align-self: flex-end;
+  position: absolute;
+  bottom: 0;
 }
 .frame-detail__comment-form {
   margin-top: 2vw;

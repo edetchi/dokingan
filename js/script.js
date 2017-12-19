@@ -247,6 +247,18 @@ $(function(){
     }
   });
 /*-----------------------------------------------------------------------------
+    .frame-detail__each-comment
+-----------------------------------------------------------------------------*/
+  $(document).on("mouseenter", ".frame-detail__each-comment", function(){
+    console.log("mouseenter");
+    $(this).find(".frame-detail__each-comment-right-close").css("display", "inline");
+    $(this).css("border", "1vw dotted #f5f5f5");
+  });
+  $(document).on("mouseleave", ".frame-detail__each-comment", function(){
+    $(this).find(".frame-detail__each-comment-right-close").css("display", "none");
+    $(this).css("border", "1vw dotted transparent");
+  });
+/*-----------------------------------------------------------------------------
     .tooltip
 -----------------------------------------------------------------------------*/
   var $body = $("body");

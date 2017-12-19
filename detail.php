@@ -217,7 +217,10 @@ $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $ce
                 <p class="frame-detail__each-comment-user-id"><?= he($comment["comment_loginid"]) ?></p>
                 <p class="frame-detail__each-comment-comment frame-detail__each-comment-balloon-left"><?= he($comment["comment_content"]) ?></p>
               </div>
-              <p class="frame-detail__each-comment-date"><?= he($comment["comment_created"]) ?></p>
+              <div class="frame-detail__each-comment-right">
+                <p class="frame-detail__each-comment-right-close"><i class="fa fa-times" aria-hidden="true"></i></p>
+                <p class="frame-detail__each-comment-date"><?= he($comment["comment_created"]) ?></p>
+              </div>
             </li>
             <?php endforeach; ?>
           </ul><!-- .frame-detail__comment-section -->
