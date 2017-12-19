@@ -164,49 +164,55 @@ if (!empty($request["send"])) {
           </ul><!--.frame-detail__info-->
         </div><!--.frame-detail-->
       </div><!--.frame-detail__layout-->
-      <ul class="frame-detail__action">
-        <li class="frame-detail__action__price">
-          <span><i class="fa fa-jpy" aria-hidden="true"></i><?= he($row_frame["frame_price"]) ?></span>
-        </li>
-        <li class="frame-detail__action__seller">
-          <a class="frame-detail__action__seller-link" href="<?= he($row_frame['frame_link']) ?>" target="_blank">
-            <i class="fa fa-external-link" aria-hidden="true"></i>Buy
-          </a>
-        </li>
-        <li class="frame-detail__action__report">
-          <button data-report=<?= $report_removed_flag ?>>
-            <i class="fa fa-flag-o frame-detail__action__report-icon" aria-hidden="true"></i>
-          </button>
-        </li>
-        <li class="frame-detail__action__favorite">
-          <button data-favorite=<?= $removed_flag ?> <?= $disabled ?>>
-            <i class="fa fa-star frame-detail__action__favorite-icon" aria-hidden="true"></i><span class="frame-detail__action__favorite-cnt"><?= he($row_frame["favorite_cnt"]) ?></span>
-          </button>
-        </li>
-      </ul><!--.frame-detail__action-->
-      <!--<div id="result"></div>-->
-      <div class="frame-detail__comment">
-        <h2 class="frame-detail__comment-title">コメント<i class="fa fa-commenting frame-detail__comment-icon" aria-hidden="true"></i></h2>
-        <ul class="frame-detail__comment-section">
-          <?php foreach($comments as $comment): ?>
-          <li class="frame-detail__each-comment">
-            <img class="frame-detail__each-comment-image" src="<?= $comment["comment_icon"] ?>">
-            <div class="frame-detail__each-comment-text">
-              <p class="frame-detail__each-comment-user-id"><?= $comment["comment_loginid"] ?></p>
-              <p class="frame-detail__each-comment-comment"><?= $comment["comment_content"] ?></p>
-            </div>
-            <p class="frame-detail__each-comment-date"><?= $comment["comment_created"] ?></p>
+      <div class="frame-detail__action__layout">
+        <ul class="frame-detail__action">
+          <li class="frame-detail__action__price">
+            <span><i class="fa fa-jpy" aria-hidden="true"></i><?= he($row_frame["frame_price"]) ?></span>
           </li>
-        <?php endforeach; ?>
-        </ul>
-        <form class="frame-detail__comment-form" action="detail.php?frame_id=<?= $request["frame_id"] ?>" method="post">
-          <div>
-            <input type="text" name="comment_content" max="100" placeholder="コメントを入力してください" value="<?= he($request['comment_content']); ?>" <?= $disabled ?>>
-            <input type="submit" name="send" value="送信" <?= $disabled ?>>
-            <input type="hidden" name="comment_frame_id" value="<?= he($request["frame_id"]); ?>">
-            <input type="hidden" name="comment_poster_id" value="<?= he($_SESSION["user_id"]); ?>">
-          </div>
-        </form>
+          <li class="frame-detail__action__seller">
+            <a class="frame-detail__action__seller-link" href="<?= he($row_frame['frame_link']) ?>" target="_blank">
+              <i class="fa fa-external-link" aria-hidden="true"></i>Buy
+            </a>
+          </li>
+          <li class="frame-detail__action__report">
+            <button data-report=<?= $report_removed_flag ?>>
+              <i class="fa fa-flag-o frame-detail__action__report-icon" aria-hidden="true"></i>
+            </button>
+          </li>
+          <li class="frame-detail__action__favorite">
+            <button data-favorite=<?= $removed_flag ?> <?= $disabled ?>>
+              <i class="fa fa-star frame-detail__action__favorite-icon" aria-hidden="true"></i><span class="frame-detail__action__favorite-cnt"><?= he($row_frame["favorite_cnt"]) ?></span>
+            </button>
+          </li>
+        </ul><!--.frame-detail__action-->
+      </div>
+      <!--<div id="result"></div>-->
+      <div class=".frame-detail__comment__layout">
+        <div class="frame-detail__comment">
+          <h2 class="frame-detail__comment-title"><i class="fa fa-commenting frame-detail__comment-icon" aria-hidden="true"></i>コメント</h2>
+          <ul class="frame-detail__comment-section">
+            <?php foreach($comments as $comment): ?>
+            <li class="frame-detail__each-comment">
+              <div class="frame-detail__each-comment-image__layout">
+                <img class="frame-detail__each-comment-image" src="<?= $comment["comment_icon"] ?>">
+              </div>
+              <div class="frame-detail__each-comment-text">
+                <p class="frame-detail__each-comment-user-id"><?= $comment["comment_loginid"] ?></p>
+                <p class="frame-detail__each-comment-comment frame-detail__each-comment-balloon-left"><?= $comment["comment_content"] ?></p>
+              </div>
+              <p class="frame-detail__each-comment-date"><?= $comment["comment_created"] ?></p>
+            </li>
+            <?php endforeach; ?>
+          </ul><!-- .frame-detail__comment-section -->
+          <form class="frame-detail__comment-form" action="detail.php?frame_id=<?= $request["frame_id"] ?>" method="post">
+            <div>
+              <input class="frame-detail__comment-form__input" type="text" name="comment_content" max="100" placeholder="コメントを入力してください" value="<?= he($request['comment_content']); ?>" <?= $disabled ?>>
+              <input class="frame-detail__comment-form__submit" type="submit" name="send" value="送信" <?= $disabled ?>>
+              <input type="hidden" name="comment_frame_id" value="<?= he($request["frame_id"]); ?>">
+              <input type="hidden" name="comment_poster_id" value="<?= he($_SESSION["user_id"]); ?>">
+            </div>
+          </form>
+        </div><!-- .frame-detail__comment -->
       </div>
     </main>
   </div>
