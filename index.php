@@ -1,5 +1,5 @@
 <?php
-var_export(str_replace($_SERVER["HTTP_HOST"], "", $_SERVER["REQUEST_URI"]));
+//var_export(str_replace($_SERVER["HTTP_HOST"], "", $_SERVER["REQUEST_URI"]));
 //ライブラリの読み込み
 require_once("system/common.php");
 /*=============================================================================

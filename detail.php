@@ -1,4 +1,5 @@
 <?php require_once("./system/common.php");
+//var_export($_SERVER['REQUEST_METHOD']);
 /*-----------------------------------------------------------------------------
     変数をホワイトリスト化
 -----------------------------------------------------------------------------*/
@@ -24,6 +25,18 @@ $report_removed_flag = "";
     エラー避け
 -----------------------------------------------------------------------------*/
 $request['comment_content'] = (!empty($request['comment_content'])) ? $request['comment_content'] : "";
+/*-----------------------------------------------------------------------------
+    フォーム項目のエラーチェック
+-----------------------------------------------------------------------------*/
+//送信ボタンが押された時の処理
+if (!empty($request["send"])) {
+  //空欄チェック
+  if (empty($request["comment_content"])) {
+    $error_msgs[] = "コメントを入力してください";
+  } else {
+    if (mb_strlen($request["comment_content"]) > 100) $error_msgs[] = "コメントは100文字以内にしてください";
+  }
+}
 /*=============================================================================
     <<フレーム一覧用データ取得
 =============================================================================*/
@@ -68,6 +81,21 @@ try {
   $row_favorite = $stmt->fetch(PDO::FETCH_ASSOC);
   $stmt = null;
 /*-----------------------------------------------------------------------------
+    コメントを投稿
+-----------------------------------------------------------------------------*/
+  if (!empty($request["send"]) && empty($error_msgs)){// && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $sql = "insert into comments (comment_frame_id, comment_poster_id, comment_content) values (:comment_frame_id, :comment_poster_id, :comment_content)";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(":comment_frame_id", $request["comment_frame_id"], PDO::PARAM_INT);
+    $stmt->bindValue(":comment_poster_id", $request["comment_poster_id"], PDO::PARAM_INT);
+    $stmt->bindValue(":comment_content", $request["comment_content"], PDO::PARAM_STR);
+    $stmt->execute();
+    //$page_msgs[] = "コメントを投稿しました";
+    //$request["comment_content"] = "";
+    header("Location: {$_SERVER['PHP_SELF']}?frame_id={$request['frame_id']}", true, 303);
+    exit;
+  }
+/*-----------------------------------------------------------------------------
     コメントを取得
 -----------------------------------------------------------------------------*/
   $sql = "select * from comments left join users on comments.comment_poster_id = users.user_id where comment_frame_id = :frame_id order by comment_created asc";
@@ -110,18 +138,6 @@ $thick= round((pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center
 $edge1_thick = round((pow($edge1, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
 //端の厚さ
 $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
-/*-----------------------------------------------------------------------------
-    フォーム項目のエラーチェック
------------------------------------------------------------------------------*/
-//送信ボタンが押された時の処理
-if (!empty($request["send"])) {
-  //空欄チェック
-  if (empty($request["comment_content"])) {
-    $error_msgs[] = "コメントを入力してください";
-  } else {
-    if (mb_strlen($request["comment_content"]) > 100) $error_msgs[] = "コメントは100文字以内にしてください";
-  }
-}
 ?>
 <?php $page_title = "フレーム詳細";?>
 <?php require("header.php"); ?>
@@ -197,10 +213,10 @@ if (!empty($request["send"])) {
                 <img class="frame-detail__each-comment-image" src="<?= $comment["comment_icon"] ?>">
               </div>
               <div class="frame-detail__each-comment-text">
-                <p class="frame-detail__each-comment-user-id"><?= $comment["comment_loginid"] ?></p>
-                <p class="frame-detail__each-comment-comment frame-detail__each-comment-balloon-left"><?= $comment["comment_content"] ?></p>
+                <p class="frame-detail__each-comment-user-id"><?= he($comment["comment_loginid"]) ?></p>
+                <p class="frame-detail__each-comment-comment frame-detail__each-comment-balloon-left"><?= he($comment["comment_content"]) ?></p>
               </div>
-              <p class="frame-detail__each-comment-date"><?= $comment["comment_created"] ?></p>
+              <p class="frame-detail__each-comment-date"><?= he($comment["comment_created"]) ?></p>
             </li>
             <?php endforeach; ?>
           </ul><!-- .frame-detail__comment-section -->

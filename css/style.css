@@ -653,6 +653,7 @@ main {
 .frame-detail__each-comment {
   display: flex;
   justify-content: space-around;
+  margin-top: 2vw;
 }
 .frame-detail__each-comment-image__layout {
   margin-right: 2vw;
