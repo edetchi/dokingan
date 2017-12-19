@@ -249,6 +249,7 @@ $(function(){
 /*-----------------------------------------------------------------------------
     .frame-detail__each-comment
 -----------------------------------------------------------------------------*/
+  //各コメントにマウスが乗った時に見た目を変化させる
   $(document).on("mouseenter", ".frame-detail__each-comment", function(){
     console.log("mouseenter");
     $(this).find(".frame-detail__each-comment-right-close").css("display", "inline");
@@ -257,6 +258,10 @@ $(function(){
   $(document).on("mouseleave", ".frame-detail__each-comment", function(){
     $(this).find(".frame-detail__each-comment-right-close").css("display", "none");
     $(this).css("border", "1vw dotted transparent");
+  });
+  //バッテンをクリックでコメントを消す
+  $(document).on("click", ".frame-detail__each-comment-right-close", function(){
+    $(this).parent().parent().hide(500);
   });
 /*-----------------------------------------------------------------------------
     .tooltip
