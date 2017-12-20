@@ -249,16 +249,27 @@ $(function(){
 /*-----------------------------------------------------------------------------
     .frame-detail__each-comment
 -----------------------------------------------------------------------------*/
-  //各コメントにマウスが乗った時に見た目を変化させる
-  $(document).on("mouseenter", ".frame-detail__each-comment", function(){
-    console.log("mouseenter");
-    $(this).find(".frame-detail__each-comment-right-close").css("display", "inline");
-    $(this).css("border", "1vw dotted #f5f5f5");
-  });
-  $(document).on("mouseleave", ".frame-detail__each-comment", function(){
-    $(this).find(".frame-detail__each-comment-right-close").css("display", "none");
-    $(this).css("border", "1vw dotted transparent");
-  });
+  console.log(getDevice());
+  if (getDevice() == "mobile") {
+    $("[data-ownpost=1]").find(".frame-detail__each-comment-right-close").css("display", "inline");
+    $("[data-ownpost=1]").css("border", "1vw dotted #f5f5f5");
+  } else {
+    //自分の投稿のコメントにマウスが乗った時に見た目を変化させる
+    $(document).on("mouseenter", ".frame-detail__each-comment", function(){
+      var ownpost = $(this).data("ownpost");
+      if (ownpost == 1) {
+        $(this).find(".frame-detail__each-comment-right-close").css("display", "inline");
+        $(this).css("border", "1vw dotted #f5f5f5");
+      }
+    });
+    $(document).on("mouseleave", ".frame-detail__each-comment", function(){
+      $(this).find(".frame-detail__each-comment-right-close").css("display", "none");
+      $(this).css("border", "1vw dotted transparent");
+    });
+  }
+/*-----------------------------------------------------------------------------
+    ajaxでコメント削除
+-----------------------------------------------------------------------------*/
   //バッテンをクリックでコメントを消す
   $(document).on("click", ".frame-detail__each-comment-right-close", function(){
     //確認用のアラートを出す
@@ -400,6 +411,17 @@ $(function(){
     } else {
       $(className).next().removeClass("input-no-error");
       $(className).next().addClass("input-error");
+    }
+  }
+/*-----------------------------------------------------------------------------
+    ディバイスを取得
+-----------------------------------------------------------------------------*/
+  function getDevice() {
+    var ua = navigator.userAgent;
+    if (ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0 || ua.indexOf('iPad') > 0 || ua.indexOf('Android') > 0){
+        return 'mobile';
+    } else {
+        return 'pc';
     }
   }
 /*=============================================================================
