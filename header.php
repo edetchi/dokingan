@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/font-awesome.min.css">
   <link href="https://fonts.googleapis.com/earlyaccess/mplus1p.css" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="shortcut icon" href="images/favicon.ico">
 </head>
 <body>
 <div class="wrapper">
