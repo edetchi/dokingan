@@ -105,12 +105,17 @@ try {
   $stmt->execute();
   $comments = array();
   while($row_comment = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    //投稿日の整形
     $row_comment["comment_created"] = str_replace("-", "/", substr($row_comment["comment_created"], 0, 10));
+    //自分の投稿かのデータを格納
+    $comment_own_post = ($_SESSION["user_id"] == $row_comment["user_id"]) ? 1 : 0;
     $comments[] = array(
+      "comment_id" => $row_comment["comment_id"],
       "comment_loginid" => $row_comment["user_loginid"],
       "comment_icon" => "./images/users/" . $row_comment["user_icon"],
       "comment_content" => $row_comment["comment_content"],
       "comment_created" => $row_comment["comment_created"],
+      "comment_own_post" => $comment_own_post,
     );
   }
   //$stmt = null;
@@ -209,7 +214,7 @@ $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $ce
           <h2 class="frame-detail__comment-title"><i class="fa fa-commenting frame-detail__comment-icon" aria-hidden="true"></i>コメント</h2>
           <ul class="frame-detail__comment-section">
             <?php foreach($comments as $comment): ?>
-            <li class="frame-detail__each-comment">
+            <li class="frame-detail__each-comment" data-commentid="<?= $comment["comment_id"] ?>" data-ownpost="<?= $comment["comment_own_post"] ?>">
               <div class="frame-detail__each-comment-image__layout">
                 <img class="frame-detail__each-comment-image" src="<?= $comment["comment_icon"] ?>">
               </div>

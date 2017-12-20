@@ -261,7 +261,34 @@ $(function(){
   });
   //バッテンをクリックでコメントを消す
   $(document).on("click", ".frame-detail__each-comment-right-close", function(){
-    $(this).parent().parent().hide(500);
+    //確認用のアラートを出す
+    $answer = confirm("コメントを削除してよろしいですか？");
+    if ($answer) {
+      var commentid = $(this).parent().parent().data("commentid");
+      var ownpost = $(this).parent().parent().data("ownpost");
+      console.log(commentid);
+      if (ownpost == 1) {
+        //見た目を削除して変化させる
+        $(this).parent().parent().hide(500);
+        console.log(commentid);
+        $.ajax({
+          url: "ajax.php",
+          type: "post",
+          data: {
+            commentid: commentid,
+            //ownpost: ownpost,
+          }
+        })
+        .done(function(data) {
+        })
+        .fail(function() {
+          console.log("comme_error");
+        });
+      }
+    } else {
+      //alert('キャンセルしました');
+      return false;
+    }
   });
 /*-----------------------------------------------------------------------------
     .tooltip
@@ -364,7 +391,7 @@ $(function(){
       <<関数
 =============================================================================*/
 /*-----------------------------------------------------------------------------
-      入力欄に応じてクラスをtoggleさせる関数（会員登録ページ）
+    入力欄に応じてクラスをtoggleさせる関数（会員登録ページ）
 -----------------------------------------------------------------------------*/
   function errorToggle(className) {
     if ($(className).text() == "OK") {
