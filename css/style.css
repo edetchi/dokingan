@@ -737,6 +737,64 @@ main {
     .frame-detail>>
 =============================================================================*/
 /*-----------------------------------------------------------------------------
+    .account-form
+-----------------------------------------------------------------------------*/
+.account-form {
+  margin: 0 auto;
+  width: 80vw;
+}
+.account-form-image p {
+  text-align: center;
+}
+.account-form img {
+  margin: 0 auto;
+  width: 50vw;
+  height: 50vw;
+  text-align: center;
+  border-radius: 50%;
+}
+.account-form label {
+  display: block;
+  margin-top: 2vw;
+}
+.account-form input {
+  box-sizing: border-box;
+  width: 80vw;
+  padding: 2vw;
+  font-size: 1.3em;
+  /*ボーダー初期化*/
+  border:0;
+  border:solid 1px #ccc;
+  /*丸角*/
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  /*シャドー*/
+  -moz-box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+  -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+  box-shadow: inner 0 0 4px rgba(0, 0, 0, 0.2);
+}
+.account-form input[type="submit"] {
+  margin-top: 2vw;
+}
+.account-form-btn {
+  display: block;
+  width: 38vw;
+  margin-top: 2vw;
+  margin-left: 5vw;
+  padding: 1vw 2vw;
+  background: #4CAF50;
+  border-radius: 2vw;
+  color: #fff;
+  font-size: 4vw;
+}
+.account-form-btn:hover {
+  color: #fff;
+  -moz-box-shadow: inset 0 5px 5px rgba(0,0,0,0.3);
+  -webkit-box-shadow: inset 0 5px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+}
+/*-----------------------------------------------------------------------------
     .framr-list（frame-edit.php）
 -----------------------------------------------------------------------------*/
 .frame-edit {
@@ -978,6 +1036,27 @@ main {
   margin-top: 2vw;
   font-size: 5vw;
   color: transparent;
+}
+/*-----------------------------------------------------------------------------
+    .fixed-pages
+-----------------------------------------------------------------------------*/
+.fixed-pages {
+  margin-top: 2vw;
+  font-size: 4vw;
+}
+.fixed-pages p {
+}
+.fixed-pages h2 {
+  margin-bottom: 4vw;
+  font-size: 6vw;
+  border-bottom: 1px dotted #95989A;
+}
+.fixed-pages figure {
+  margin-top: 2vw;
+  padding: 2vw;
+}
+.fixed-pages ul {
+  margin-top: 2vw;
 }
 /*=============================================================================
     .wrapper>>

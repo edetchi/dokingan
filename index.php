@@ -24,7 +24,7 @@ $page = (!empty($request["page"]) && (preg_match("/^[1-9][0-9]*/", $request["pag
 //上と同値だが$_GET["page"]がない場合エラーとなるのでemtpyを使った判定の方が便利
 //$page =  ($_GET["page"]) ? intval($_GET["page"]) : 1;
 //デフォルトのページ数をセット
-$default_per_page = 4;
+$default_per_page = 6;
 //表示件数が空白じゃないand整数であれば値セット、そうでなければ$default_per_page
 $per_page = (!empty($request["per_page"]) && (preg_match("/^[1-9][0-9]*/", $request["per_page"]))) ? intval($request["per_page"]) : $default_per_page;
 //urlを変数に格納

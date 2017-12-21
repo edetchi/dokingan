@@ -206,12 +206,11 @@ print "<br>";
 var_export($form["user_icon"]);
 print "<br>";
 */
-?>
-<?php $page_title = "アカウント設定";?>
-<?php require("header.php"); ?>
+$page_title = "アカウント設定";
+require("header.php"); ?>
 <div class="main-wrap">
   <main>
-    <a href="frame_list.php">一覧へ戻る</a>
+    <a class="account-form-btn" href="frame_list.php">一覧へ戻る</a>
     <p>
       <?php foreach ($page_msgs as $page_msg): ?>
       <p><?= he($page_msg) ?></p>
@@ -222,12 +221,8 @@ print "<br>";
       <p><?= he($error_msg) ?></p>
       <?php endforeach; ?>
     </p>
-    <form enctype="multipart/form-data" action="account.php" method="post">
-      <div>
-      <label for="pasuwa-do">パスワード</label>
-        <input type="password" name="user_password" id="pasuwa-do" size="30" >
-      </div>
-      <div>
+    <form class="account-form" enctype="multipart/form-data" action="account.php" method="post">
+      <div class="account-form-image">
         <label for="aikon">アイコン<span class="attention"></span></label>
         <?php if ($user_icon["error"] === 0 && empty($error_msgs)): ?>
         <p><img src='<?= "../images/users/" . he($user_icon_name) ?>'></p>
@@ -235,6 +230,10 @@ print "<br>";
         <p><img src="<?= '../images/users/' . he($form["user_icon"]) ?>"></p>
         <?php endif; ?>
         <input type="file" name="user_icon" id="aikon">
+      </div>
+      <div>
+      <label for="pasuwa-do">パスワード</label>
+        <input type="password" name="user_password" id="pasuwa-do" size="30" >
       </div>
       <div>
       <label for="meado">メールアドレス<span class="attention">*</span></label>
