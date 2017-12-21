@@ -3,7 +3,7 @@
   <ul class="footer-nav">
     <li class="footer-nav__item">
       <i class="fa fa-chevron-right" aria-hidden="true"></i>
-      <a href="#">このサイトの使い方</a>
+      <a href="./howto.php">このサイトの使い方</a>
     </li>
     <li class="footer-nav__item">
       <i class="fa fa-chevron-right" aria-hidden="true"></i>
