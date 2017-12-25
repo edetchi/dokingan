@@ -368,15 +368,9 @@ $(function(){
 /*-----------------------------------------------------------------------------
     .mobile-pager
 -----------------------------------------------------------------------------*/
+  var endpoint;
   if ($(".mobile-pager").length != 0) {
-    var $mobilePager = $(".mobile-pager");
-    var mobilePagerHeight = $mobilePager.height();
-    var mobilePagerTop = $mobilePager.offset().top;
-    var windowHeight = $(window).height();
-    var cssTopValue = windowHeight * 0.03;
-    var endpoint = mobilePagerTop - (windowHeight - mobilePagerHeight) - cssTopValue;
-    //console.log(endpoint);
-    $(window).on("resize", function() {
+    $(window).on("load resize", function() {
        $mobilePager = $(".mobile-pager");
        mobilePagerHeight = $mobilePager.height();
        mobilePagerTop = $mobilePager.offset().top;
@@ -386,9 +380,9 @@ $(function(){
       //console.log(endpoint);
     });
     //$('.mobile-pager').css("top",mobilePagerTop)
-    $(window).scroll(function() {
+    $(window).on("load scroll", function() {
       var sc = $(this).scrollTop();
-      console.log(sc);
+      //console.log(sc);
       if(sc > endpoint) {
         $(".mobile-pager").removeClass('mobile-pager__fixed');
         $(".dummy").css("display", "none");
