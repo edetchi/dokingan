@@ -155,6 +155,7 @@ function mobilepager() {
   //config.phpで定義されている変数を使うにはグローグル変数として宣言することを忘れずに
   global $app_dir;
   $url = $_SERVER["REQUEST_URI"];
+  var_export($url);
   //GETパラメータが与えられていない時($url == アプリのルートディレクトリ)、リンクが計算されないので初期値をセット
   //var_export(preg_replace("/\/$/", "", $url));
   //if ($url == "/") {

@@ -22,14 +22,14 @@ define("EMAIL_NOREPLY_SENDER", "noreply@dokingan.com");
 -----------------------------------------------------------------------------*/
 $db_type = "mysql";
 $db_host = "localhost";
-
+/*
 $db_name = "framerefugee";
 $db_user = "root";
 $db_pass = "root";
-/*
+*/
 $db_name = "dokingan.com";
 $db_user = "dokingan";
 $db_pass = "gFQAomViTotlfxuL7P0r";
-*/
+
 $dsn = "{$db_type}:host={$db_host};dbname={$db_name};charset=utf8";
 ?>
