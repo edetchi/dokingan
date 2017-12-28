@@ -85,6 +85,20 @@ function edgeThickness() {
   );
 }
 /*-----------------------------------------------------------------------------
+    フレームの画像投稿時の拡張子チェック
+-----------------------------------------------------------------------------*/
+function imageExtensionFlag($extension){
+  $allowed_extensions = array("jpg", "jpeg", "gif", "png",);
+  foreach($allowed_extensions as $allowed_extension){
+    if ($allowed_extension === $extension){
+      return 1;
+    }
+  }
+  return 0;
+}
+
+
+/*-----------------------------------------------------------------------------
     ページャー
 -----------------------------------------------------------------------------*/
 function pager() {

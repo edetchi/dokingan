@@ -91,9 +91,16 @@ if (isset($request["send"])) {
   //空欄チェック
   if ($request["frame_price"] == "") $error_msgs[] = "価格を入力してください";
   //if ($request["frame_image"] == "") $error_msgs[] = "画像をアップロードしてください";
-  //ブラウザが判断するファイルタイプがjpegじゃなかったら、もしくは拡張子がjpegじゃなかったら
+  //ブラウザが判断するファイルタイプが、もしくは拡張子が、jpg, jpeg, gif, pngでなかったら
   if (!$image["error"]) {
-    if (($image["type"] != "image/jpeg"  && $image["type"] != "image/pjpeg") || strtolower(mb_strrchr($image["name"], ".", false)) != ".jpg") $error_msgs[] = "画像(jpegファイル)をアップロードして下さい";
+    $image_extension = strtolower(mb_strrchr($image["name"], ".", false));
+    $image_extension = str_replace(".", "", $image_extension);
+    var_export($image_extension);
+    if (
+      ($image["type"] != "image/jpeg"  && $image["type"] != "image/pjpeg"  && $image["type"] != "image/gif"  && $image["type"] != "image/png")
+      ||
+      (imageExtensionFlag($image_extension) == 0)
+    ) $error_msgs[] = "画像(jpg, jpeg, gif, png)をアップロードして下さい";
     //画像サイズを制限
     if ($image["size"] > 10*1024*1024) $error_msgs[] = "画像サイズは10MB以下にして下さい";
   }
