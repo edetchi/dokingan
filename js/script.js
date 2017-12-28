@@ -368,6 +368,7 @@ $(function(){
 /*-----------------------------------------------------------------------------
     .mobile-pager
 -----------------------------------------------------------------------------*/
+/*
   var endpoint;
   if ($(".mobile-pager").length != 0) {
     $(window).on("load resize", function() {
@@ -392,6 +393,27 @@ $(function(){
       }
     });
   }
+*/
+/*-----------------------------------------------------------------------------
+    .selected-images
+-----------------------------------------------------------------------------*/
+  $(document).on("change", "#aikon", function(){
+    var $fp = $("#aikon");
+    var images = $fp[0].files;
+    var length = images.length;
+    var result = "";
+    if (length > 0) {
+      for (var i = 0; i < length; i++) {
+        var imageName = images[i].name;
+        if (i != length - 1) {
+          result += imageName + ", ";
+        } else {
+          result += imageName;
+        }
+      }
+    }
+    $(".selected-images-result").html(result);
+  });
 /*=============================================================================
       <<関数
 =============================================================================*/

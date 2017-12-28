@@ -258,7 +258,8 @@ require("header.php");
         <?php if ($row_frame["frame_image"]): ?>
         <p><img src="<?= '../images/frames/' . he($row_frame["frame_image"]) ?>"></p>
       <?php endif; ?>
-        <input type="file" name="frame_image" id="aikon">
+        <input type="file" name="frame_image" id="aikon" multiple>
+        <div class="selected-images-result"></div>
       </div>
       <div>
         <label for="shohinrinku">商品リンク<span class="attention">*</span></label>
