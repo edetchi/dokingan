@@ -8,9 +8,23 @@ $page_msgs = array();
 $error_msgs = array();
 if (empty($_GET)) {
   header("Location: registration.php");
-  exit();
+  exit;
 } else {
   $token = $_GET["urltoken"];
+/*-----------------------------------------------------------------------------
+    デフォルトのアイコンをランダムに選択
+-----------------------------------------------------------------------------*/
+  //デフォルトのイメージフォルダ
+  $default_image_dir = "images/users/default";
+  $defalt_images = array();
+  foreach(glob("{$default_image_dir}/*") as $defalt_image){
+    if (is_file($defalt_image)) {
+      $defalt_image = str_replace("{$default_image_dir}/", "", $defalt_image);
+      $defalt_images[] = $defalt_image;
+    }
+  }
+  $defalt_image_key = array_rand($defalt_images);
+  $defalt_image = $defalt_images[$defalt_image_key];
   try {
     $pdo->beginTransaction();
     //トークンが有効なものかチェック
@@ -46,18 +60,21 @@ if (empty($_GET)) {
       if ($row_user_email["user_email"]) $error_msgs[] = "ご希望のメールアドレスは既に取得されています。他のメールアドレスをご使用ください。\n";
       //被りがなかったら登録
       if (empty($row_user_loginid["user_loginid"]) && empty($row_user_email["user_email"])) {
-        $sql = "insert into users (user_loginid, user_password, user_email) values(:user_loginid, :user_password, :user_email)";
+        $sql = "insert into users (user_loginid, user_password, user_icon, user_email) values(:user_loginid, :user_password, :user_icon, :user_email)";
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(":user_loginid", $row_pre_users["pre_userid"], PDO::PARAM_STR);
         $stmt->bindValue(":user_password", $row_pre_users["pre_password"], PDO::PARAM_STR);
+        //user_iconのデフォルト画像を指定
+        $stmt->bindValue(":user_icon", $defalt_image, PDO::PARAM_STR);
         $stmt->bindValue(":user_email", $row_pre_users["pre_email"], PDO::PARAM_STR);
         $stmt->execute();
         $stmt = null;
         //登録が完了すれば、ログイン状態にしてマイページに飛ばす
         $_SESSION["user_id"] = $pdo->lastInsertId("user_id");
         $pdo->commit();
-        $_SESSION["page_message"] = "登録が完了しました。";
-        header("Location: mypage");
+        //$_SESSION["page_message"] = "登録が完了しました。SPH(度数)、PD(瞳孔間距離)を入力してレンズ厚を参照できるようにしましょう。";
+        header("Location: mypage/account.php");
+        exit;
       }
     } else {
     $page_title = "登録エラー";

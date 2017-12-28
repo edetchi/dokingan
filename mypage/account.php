@@ -33,6 +33,10 @@ try {
     $row_user = $stmt->fetch(PDO::FETCH_ASSOC);
     $stmt = null;
 /*-----------------------------------------------------------------------------
+    SPH, PD値無しの時
+-----------------------------------------------------------------------------*/
+    if (empty($row_user["user_sph"]) || empty($row_user["user_pd"])) $page_msgs[] = "SPH(度数)、PD(瞳孔間距離)を入力するとレンズ厚を参照できるようになります。";
+/*-----------------------------------------------------------------------------
     フォームの初期化
 -----------------------------------------------------------------------------*/
     if ($row_user) {
@@ -97,8 +101,8 @@ if (isset($request["send"]) && empty($error_msgs)) {
     画像の投稿処理
 -----------------------------------------------------------------------------*/
   if ($user_icon["error"] == 0){
-    //古い画像削除
-    unlink("../images/users/{$_SESSION["old_image"]}");
+    //古い画像があれば削除
+    if (is_file(("../images/users/{$_SESSION["old_image"]}"))) unlink("../images/users/{$_SESSION["old_image"]}");
     move_uploaded_file($user_icon["tmp_name"], "../images/users/{$user_icon_name}");
     //サムネ作成
     $original_image = imagecreatefromjpeg("../images/users/{$user_icon_name}");
@@ -121,7 +125,7 @@ if (isset($request["send"]) && empty($error_msgs)) {
         unlink("../images/users/{$user_icon_name}");
     } else {
         //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
-        $thumb_w = 120;
+        $thumb_w = 240;
         $thumb_h = $original_h*$thumb_w/$original_w;
         $thumb_image = imagecreatetruecolor($thumb_w, $thumb_h);
         imagecopyresized($thumb_image, $original_image, 0, 0, $x, $y, $thumb_w, $thumb_h, $original_w, $original_h);
@@ -206,21 +210,35 @@ print "<br>";
 var_export($form["user_icon"]);
 print "<br>";
 */
+//
+$default_image_dir = "../images/users/default";
+$defalt_images = array();
+foreach(glob("{$default_image_dir}/*") as $defalt_image){
+  if (is_file($defalt_image)) {
+    $defalt_image = str_replace("{$default_image_dir}/", "", $defalt_image);
+    $defalt_images[] = $defalt_image;
+  }
+}
+if (array_search($row_user["user_icon"], $defalt_images) != false) $form["user_icon"] = "default/" . $row_user["user_icon"];
+var_export(array_search($row_user["user_icon"], $defalt_images));
+
 $page_title = "アカウント設定";
 require("header.php"); ?>
 <div class="main-wrap">
   <main>
     <a class="account-form-btn" href="frame_list.php">一覧へ戻る</a>
-    <p>
-      <?php foreach ($page_msgs as $page_msg): ?>
-      <p><?= he($page_msg) ?></p>
-      <?php endforeach; ?>
-    </p>
-    <p class="attention">
-      <?php foreach ($error_msgs as $error_msg): ?>
-      <p><?= he($error_msg) ?></p>
-      <?php endforeach; ?>
-    </p>
+    <div class="message">
+      <p>
+        <?php foreach ($page_msgs as $page_msg): ?>
+        <p><?= he($page_msg) ?></p>
+        <?php endforeach; ?>
+      </p>
+      <p class="attention">
+        <?php foreach ($error_msgs as $error_msg): ?>
+        <p><?= he($error_msg) ?></p>
+        <?php endforeach; ?>
+      </p>
+    </div>
     <form class="account-form" enctype="multipart/form-data" action="account.php" method="post">
       <div class="account-form-image">
         <label for="aikon">アイコン<span class="attention"></span></label>
