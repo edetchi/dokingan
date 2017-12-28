@@ -380,7 +380,7 @@ $(function(){
       //console.log(endpoint);
     });
     //$('.mobile-pager').css("top",mobilePagerTop)
-    $(window).on("load scroll", function() {
+    $(window).on("load scroll resize", function() {
       var sc = $(this).scrollTop();
       //console.log(sc);
       if(sc > endpoint) {
@@ -419,6 +419,47 @@ $(function(){
     }
   }
 /*=============================================================================
-      関数>>
+    関数>>
 =============================================================================*/
+});
+/*=============================================================================
+    loadはreadyの外で発火
+=============================================================================*/
+/*-----------------------------------------------------------------------------
+    .mobile-pager
+-----------------------------------------------------------------------------*/
+//グローバル変数の汚染を防ぐのに名前空間を用意
+var pager = {};
+$(window).on({
+  "load resize": function() {
+    if ($(".mobile-pager").length != 0) {
+      pager.$mobilePager = $(".mobile-pager");
+      pager.mobilePagerHeight = pager.$mobilePager.height();
+      pager.mobilePagerTop = pager.$mobilePager.offset().top;
+      pager.windowHeight = $(window).height();
+      pager.cssTopValue = pager.windowHeight * 0.03;
+      pager.endpoint = pager.mobilePagerTop - (pager.windowHeight - pager.mobilePagerHeight) - pager.cssTopValue;
+      pager.sc = $(this).scrollTop();
+      //console.log(sc);
+      if(pager.sc > pager.endpoint) {
+        $(".mobile-pager").removeClass('mobile-pager__fixed');
+        $(".dummy").css("display", "none");
+      } else {
+        $(".mobile-pager").addClass('mobile-pager__fixed');
+        $(".dummy").css("display", "inline");
+      }
+    }
+  },
+  "scroll": function() {
+    if ($(".mobile-pager").length != 0) {
+      pager.sc = $(this).scrollTop();
+      if(pager.sc > pager.endpoint) {
+        $(".mobile-pager").removeClass('mobile-pager__fixed');
+        $(".dummy").css("display", "none");
+      } else {
+        $(".mobile-pager").addClass('mobile-pager__fixed');
+        $(".dummy").css("display", "inline");
+      }
+    }
+  },
 });
