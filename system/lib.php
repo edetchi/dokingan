@@ -99,8 +99,8 @@ function pager() {
   $url = $_SERVER["REQUEST_URI"];
   //GETパラメータが与えられていない時($url == アプリのルートディレクトリ)、リンクが計算されないので初期値をセット
   //var_export(preg_replace("/\/$/", "", $url));
-  //if ($url == "/") {
-  if (preg_replace("/\/$/", "", $url) == $app_dir) {
+  if ($url == "/") {
+  //if (preg_replace("/\/$/", "", $url) == $app_dir) {
     $url .= "?sort={$sort}&order={$order}&page=1&per_page={$default_per_page}";
   }
   $prev = $page - 1;
@@ -155,11 +155,11 @@ function mobilepager() {
   //config.phpで定義されている変数を使うにはグローグル変数として宣言することを忘れずに
   global $app_dir;
   $url = $_SERVER["REQUEST_URI"];
-  var_export($url);
+  //var_export($url);
   //GETパラメータが与えられていない時($url == アプリのルートディレクトリ)、リンクが計算されないので初期値をセット
   //var_export(preg_replace("/\/$/", "", $url));
-  //if ($url == "/") {
-  if (preg_replace("/\/$/", "", $url) == $app_dir) {
+  if ($url == "/") {
+  //if (preg_replace("/\/$/", "", $url) == $app_dir) {
     $url .= "?sort={$sort}&order={$order}&page=1&per_page={$default_per_page}";
   }
   $prev = $page - 1;
@@ -215,9 +215,9 @@ $_ = function($s){return $s;};
 =============================================================================*/
 $url = $_SERVER['REQUEST_URI'];
 /*-----------------------------------------------------------------------------
-    マイページのディレクトリの中かどうかのチェック
+    マイページのディレクトリの中かどうか(strposは検索文字列を含まなければfalseを返す)
 -----------------------------------------------------------------------------*/
-$is_mypage = strpos($url,'/mypage/');
+$is_mypage = (strpos($url,'/mypage/') !== false) ? true : false;
 /*-----------------------------------------------------------------------------
     マイページのトップ画面かどうかのチェック
 -----------------------------------------------------------------------------*/
