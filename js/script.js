@@ -405,10 +405,12 @@ $(function(){
     if (length > 0) {
       for (var i = 0; i < length; i++) {
         var imageName = images[i].name;
+        //単位をMBにして小数点第一位を切り上げ
+        var imageSize = Math.ceil(images[i].size / (1024 * 1024) * 100) / 100;
         if (i != length - 1) {
-          result += imageName + ", ";
+          result += imageName + "【" + imageSize + "MB】, ";
         } else {
-          result += imageName;
+          result += imageName + "【" + imageSize + "MB】";
         }
       }
     }
