@@ -14,7 +14,14 @@ $_FILES["frame_image"] = (!empty($_FILES["frame_image"])) ? $_FILES["frame_image
 //画像アップ時に変数に格納
 if ($_FILES["frame_image"]) {
   $image = $_FILES["frame_image"];
-  $image_name = date("YmdHis") . $image["name"];
+  $image_tmp = $image["tmp_name"];
+  //画像の拡張子をファイル名から抽出
+  $image_str_extension = substr($image["name"], strrpos($image["name"], '.') + 1);
+  //画像から拡張子を除いたファイル名をゲット
+  $image_basename = str_replace(".{$image_str_extension}", "", $image["name"]);
+  //拡張子をjpgにして時間をプリフィックスにして画像名を作成
+  $image_name = date("YmdHis") . $image_basename . ".jpg";
+  //var_export($image_basename);
 }
 /*-----------------------------------------------------------------------------
     メッセージの初期化
@@ -80,29 +87,30 @@ if ($mode == "delete"/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) 
   header("Location: frame_list.php");
   exit;
 }
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    <<送信ボタンが押されて、エラーメッセージがない時
-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-/*-----------------------------------------------------------------------------
-    フォーム項目のエラーチェック
------------------------------------------------------------------------------*/
+/*=============================================================================
+    <<フォームのバリデーション
+=============================================================================*/
 //送信ボタンが押された時の処理
 if (isset($request["send"])) {
   //空欄チェック
   if ($request["frame_price"] == "") $error_msgs[] = "価格を入力してください";
   //if ($request["frame_image"] == "") $error_msgs[] = "画像をアップロードしてください";
-  //ブラウザが判断するファイルタイプが、もしくは拡張子が、jpg, jpeg, gif, pngでなかったら
+/*-----------------------------------------------------------------------------
+    画像のチェック
+-----------------------------------------------------------------------------*/
   if (!$image["error"]) {
-    $image_extension = strtolower(mb_strrchr($image["name"], ".", false));
-    $image_extension = str_replace(".", "", $image_extension);
-    var_export($image_extension);
-    if (
-      ($image["type"] != "image/jpeg"  && $image["type"] != "image/pjpeg"  && $image["type"] != "image/gif"  && $image["type"] != "image/png")
-      ||
-      (imageExtensionFlag($image_extension) == 0)
-    ) $error_msgs[] = "画像(jpg, jpeg, gif, png)をアップロードして下さい";
+    //文字列から抽出した拡張子($image_str_extension)と$_FILE["type"]の拡張子は偽装できるので、getimagesizeで本当の拡張子ゲット
+    $image_extension = str_replace("image/", "", getimagesize($image_tmp)["mime"]);
+    //var_dump($image_extension);
+    if (imageExtensionFlag($image_extension) == 0) {
+      $error_msgs[] = "拡張子が、jpg, jpeg, gif, pngの画像ファイルをアップロードしてください";
+      unlink($image_tmp);
+    }
     //画像サイズを制限
-    if ($image["size"] > 10*1024*1024) $error_msgs[] = "画像サイズは10MB以下にして下さい";
+    if ($image["size"] > 5*1024*1024) {
+    $error_msgs[] = "画像サイズは5MB以下にして下さい";
+    unlink($image_tmp);
+    }
   }
   //新規登録時のみ画像必須
   if (empty($mode) && $image["error"] != 0) $error_msgs[] = "画像を選択してください";
@@ -113,6 +121,9 @@ if (isset($request["send"])) {
   if ($request["frame_temple_length"] == "") $error_msgs[] = "テンプルの長さを入力してください";
   //if ($request["frame_frame_width"] == "") $error_msgs .= "フレーム幅を入力してください";
 }
+/*=============================================================================
+    フォームのバリデーション>>
+=============================================================================*/
 /*-----------------------------------------------------------------------------
     フォーム項目が空欄の場合、NULLに設定(SQLのinteger型は""だとエラーがでるので)
 -----------------------------------------------------------------------------*/
@@ -126,28 +137,40 @@ if (isset($request["send"]) && empty($error_msgs)) {
     画像の投稿処理
 -----------------------------------------------------------------------------*/
   if ($image["error"] == 0){
+    /*
     //フレーム時のみ古い画像を削除
     if ($mode == "change") {
       //古い画像削除
       unlink("../images/frames/{$_SESSION["old_image"]}");
       unlink("../images/frames/thumb_{$_SESSION["old_image"]}");
     }
-    move_uploaded_file($image["tmp_name"], "../images/frames/{$image_name}");
-    //サムネ作成
-    $original_image = imagecreatefromjpeg("../images/frames/{$image_name}");
-    list($original_w, $original_h) = getimagesize("../images/frames/{$image_name}");
-    //ファイルサイズがない時はエラー表示、それ以外はサムネ作成
-    if ($original_w == 0 || $original_h == 0) {
-      $error_msgs[] = "画像ファイルではありません";
-      unlink("../images/frames/{$image_name}");
-    } else {
-      //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
-      $thumb_w = 320;
-      $thumb_h = $original_h*$thumb_w/$original_w;
-      $thumb_image = imagecreatetruecolor($thumb_w, $thumb_h);
-      imagecopyresized($thumb_image, $original_image, 0, 0, 0, 0, $thumb_w, $thumb_h, $original_w, $original_h);
-      imagejpeg($thumb_image, "../images/frames/thumb_{$image_name}");
-    }
+    */
+    //画像リソースを作成
+    //jpeg, jpg
+    if ($image_extension == "jpeg" || $image_extension == "jpg") $original_image = imagecreatefromjpeg($image_tmp);
+    //png
+    if ($image_extension == "png") $original_image = imagecreatefrompng($image_tmp);
+    //gif
+    if ($image_extension == "gif") $original_image = imagecreatefromgif($image_tmp);
+    //画像サイズを変数に格納
+    list($original_w, $original_h) = getimagesize($image_tmp);
+    //リソースからリサイズした画像作成
+    //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
+    $resized_w = 600;
+    $resized_h = $original_h*$resized_w/$original_w;
+    $resized_image = imagecreatetruecolor($resized_w, $resized_h);
+    imagecopyresized($resized_image, $original_image, 0, 0, 0, 0, $resized_w, $resized_h, $original_w, $original_h);
+    imagejpeg($resized_image, "../images/frames/{$image_name}");
+    //リソースからサムネの画像作成
+    //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
+    $thumb_w = 240;
+    $thumb_h = $original_h*$thumb_w/$original_w;
+    $thumb_image = imagecreatetruecolor($thumb_w, $thumb_h);
+    imagecopyresized($thumb_image, $original_image, 0, 0, 0, 0, $thumb_w, $thumb_h, $original_w, $original_h);
+    imagejpeg($thumb_image, "../images/frames/thumb_{$image_name}");
+    //古い画像削除
+    unlink("../images/frames/{$_SESSION["old_image"]}");
+    unlink("../images/frames/thumb_{$_SESSION["old_image"]}");
   }
 /*=============================================================================
     <<データベース更新
@@ -294,6 +317,7 @@ require("header.php");
       </div>
       <div>
         <input type="submit" name="send" value="送信する">
+        <input type="hidden" name="MAX_FILE_SIZE" value="5242880" />
         <input type="hidden" name="mode" value="<?= he($mode); ?>">
         <input type="hidden" name="frame_id" value="<?= he($request['frame_id']); ?>">
       </div>

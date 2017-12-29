@@ -1,4 +1,6 @@
-Options +FollowSymLinks
-RewriteEngine on
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://dokingan.com/$1 [R=301,L]
+#Options +FollowSymLinks
+#RewriteEngine on
+#RewriteCond %{HTTPS} off
+#RewriteRule ^(.*)$ https://dokingan.com/$1 [R=301,L]
+php_value upload_max_filesize 10M
+php_value post_max_size 50M
