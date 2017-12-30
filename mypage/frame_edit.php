@@ -14,14 +14,38 @@ $_FILES["frame_image"] = (!empty($_FILES["frame_image"])) ? $_FILES["frame_image
 //画像アップ時に変数に格納
 if ($_FILES["frame_image"]) {
   $image = $_FILES["frame_image"];
+  print('$image');
+  print("<br>");
+  var_export($image);
+  print("<br>");
   $image_tmp = $image["tmp_name"];
+  print('$image_tmp');
+  print("<br>");
+  var_export($image_tmp);
+  print("<br>");
+  $image_names = array();
+  foreach ($image["name"] as $key => $value) {
+    //画像の拡張子をファイル名から抽出
+    $image_str_extension = substr($value, strrpos($value, '.') + 1);
+    //画像から拡張子を除いたファイル名をゲット
+    $image_basename = str_replace(".{$image_str_extension}", "", $value);
+    //拡張子をjpgにして時間をプリフィックスにして画像名を作成
+    $image_name = date("YmdHis") . $image_basename . ".jpg";
+    //var_export($image_basename);
+    $image_names[] = $image_name;
+  }
+  //var_export($image_names);
+  //print("<br>");
+  /*
   //画像の拡張子をファイル名から抽出
   $image_str_extension = substr($image["name"], strrpos($image["name"], '.') + 1);
+  var_export($image_str_extension);
   //画像から拡張子を除いたファイル名をゲット
   $image_basename = str_replace(".{$image_str_extension}", "", $image["name"]);
   //拡張子をjpgにして時間をプリフィックスにして画像名を作成
   $image_name = date("YmdHis") . $image_basename . ".jpg";
   //var_export($image_basename);
+  */
 }
 /*-----------------------------------------------------------------------------
     メッセージの初期化
@@ -98,18 +122,24 @@ if (isset($request["send"])) {
 /*-----------------------------------------------------------------------------
     画像のチェック
 -----------------------------------------------------------------------------*/
-  if (!$image["error"]) {
-    //文字列から抽出した拡張子($image_str_extension)と$_FILE["type"]の拡張子は偽装できるので、getimagesizeで本当の拡張子ゲット
-    $image_extension = str_replace("image/", "", getimagesize($image_tmp)["mime"]);
-    //var_dump($image_extension);
-    if (imageExtensionFlag($image_extension) == 0) {
-      $error_msgs[] = "拡張子が、jpg, jpeg, gif, pngの画像ファイルをアップロードしてください";
-      unlink($image_tmp);
+  //var_dump(array_search(0, $image["error"]));
+  if (true) {
+    foreach ($image_tmp as $key => $value) {
+      //文字列から抽出した拡張子($image_str_extension)と$_FILE["type"]の拡張子は偽装できるので、getimagesizeで本当の拡張子ゲット
+      var_export(getimagesize($value));
+      $image_extension = str_replace("image/", "", getimagesize($value)["mime"]);
+      //var_dump($image_extension);
+      if (imageExtensionFlag($image_extension) == 0) {
+        $error_msgs[] = "【{$image['name'][$key]}】拡張子は、jpg, jpeg, gif, pngのものにしてください";
+        unlink($image_tmp["{$key}"]);
+      }
     }
-    //画像サイズを制限
-    if ($image["size"] > 5*1024*1024) {
-    $error_msgs[] = "画像サイズは5MB以下にして下さい";
-    unlink($image_tmp);
+    foreach ($image["size"] as $key => $value) {
+      //画像サイズを制限
+      if ($value > 5*1024*1024) {
+      $error_msgs[] = "【{$image['name'][$key]}】画像サイズは、5MB以下にして下さい";
+      unlink($image_tmp["{$key}"]);
+      }
     }
   }
   //新規登録時のみ画像必須
@@ -288,7 +318,7 @@ require("header.php");
         <?php if ($row_frame["frame_image"]): ?>
         <p><img src="<?= '../images/frames/' . he($row_frame["frame_image"]) ?>"></p>
       <?php endif; ?>
-        <input type="file" name="frame_image" id="aikon" multiple>
+        <input type="file" name="frame_image[]" id="aikon" multiple>
         <div class="selected-images-result"></div>
       </div>
       <div>
