@@ -397,24 +397,49 @@ $(function(){
 /*-----------------------------------------------------------------------------
     .selected-images
 -----------------------------------------------------------------------------*/
-  $(document).on("change", "#aikon", function(){
-    var $fp = $("#aikon");
-    var images = $fp[0].files;
-    var length = images.length;
+  $(document).on('change', '[name="frame_image[]"]', function(){
+    //画像投稿用input全て格納
+    var $fp = $('[name="frame_image[]"]');
+    //console.log($fp);
+    //1枚目の画像要素
+    //console.log($fp[0].files);
+    //console.log($fp[1].files);
+    //選択要素数
+    //console.log($fp.length);
     var result = "";
-    if (length > 0) {
-      for (var i = 0; i < length; i++) {
-        var imageName = images[i].name;
-        //単位をMBにして小数点第一位を切り上げ
-        var imageSize = Math.ceil(images[i].size / (1024 * 1024) * 100) / 100;
-        if (i != length - 1) {
-          result += imageName + "【" + imageSize + "MB】, ";
-        } else {
-          result += imageName + "【" + imageSize + "MB】";
+    //画像のアップロードが一枚でもある時
+    if ($fp.length > 0) {
+      for (var i = 0; i < $fp.length; i++) {
+        //ファイルが選択されていない時、undefinedとなるため選択された時のみ実行
+        if ($fp[i].files[0] != undefined) {
+          //i枚目の画像サイズ
+          console.log(i);
+          console.log($fp[i].files[0]);
+          var imageSize = $fp[i].files[0]['size'];
+          //console.log(imageSize);
+          //画像サイズの単位をMBにして小数点第2位を切り上げ
+          imageSize = Math.ceil(imageSize / (1024 * 1024) * 100) / 100;
+          //画像追加選択用の要素
+          var input = '<input type="file" name="frame_image[]" accept="image/png, image/jpeg, image/gif">';
+          var ok_msg = `<span class="ok_msg">${$fp[i].files[0]['name']}【${imageSize}MB】: OK</span>`;
+          var error_msg = `<span class="error_msg">${$fp[i].files[0]['name']}【${imageSize}MB】: 画像サイズが5MBを超えています</span>`;
+          //画像サイズが5MB以下の場合のノーエラーで追加選択用の要素追加
+          if (imageSize < 5) {
+            //forのループ中なので最後のinput要素が5MB以下の場合追加選択用の要素追加、if (i == $fp.length - 1)がないと選択要素の数だけ追加されてしまうので注意
+            if (i == $fp.length - 1 ) $('.image-upload').append(input);
+            $(`[name="frame_image[]"]:eq(${i})`).addClass('image-no-error');
+            $(`[name="frame_image[]"]:eq(${i})`).removeClass('image-error');
+            $(`[name="frame_image[]"]:eq(${i})`).next('.ok_msg, .error_msg').remove();
+            $(`[name="frame_image[]"]:eq(${i})`).after(ok_msg);
+          } else {
+            $(`[name="frame_image[]"]:eq(${i})`).addClass('image-error');
+            $(`[name="frame_image[]"]:eq(${i})`).removeClass('image-no-error');
+            $(`[name="frame_image[]"]:eq(${i})`).next('.ok_msg, .error_msg').remove();
+            $(`[name="frame_image[]"]:eq(${i})`).after(error_msg);
+          }
         }
       }
     }
-    $(".selected-images-result").html(result);
   });
 /*=============================================================================
       <<関数
