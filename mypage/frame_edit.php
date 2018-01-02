@@ -122,16 +122,24 @@ if (isset($request["send"])) {
 /*-----------------------------------------------------------------------------
     画像のチェック
 -----------------------------------------------------------------------------*/
-  //var_dump(array_search(0, $image["error"]));
-  if (true) {
+  print('array_search(0, $image["error"])');
+  print("<br>");
+  var_dump(array_search(0, $image["error"]));
+  print("<br>");
+  if (array_search(0, $image["error"]) !== false) {
     foreach ($image_tmp as $key => $value) {
-      //文字列から抽出した拡張子($image_str_extension)と$_FILE["type"]の拡張子は偽装できるので、getimagesizeで本当の拡張子ゲット
-      var_export(getimagesize($value));
-      $image_extension = str_replace("image/", "", getimagesize($value)["mime"]);
-      //var_dump($image_extension);
-      if (imageExtensionFlag($image_extension) == 0) {
-        $error_msgs[] = "【{$image['name'][$key]}】拡張子は、jpg, jpeg, gif, pngのものにしてください";
-        unlink($image_tmp["{$key}"]);
+      if (!empty($value)) {
+        //文字列から抽出した拡張子($image_str_extension)と$_FILE["type"]の拡張子は偽装できるので、getimagesizeで本当の拡張子ゲット
+        print('getimagesize($value)');
+        print("<br>");
+        var_export(getimagesize($value));
+        print("<br>");
+        $image_extension = str_replace("image/", "", getimagesize($value)["mime"]);
+        //var_dump($image_extension);
+        if (imageExtensionFlag($image_extension) == 0) {
+          $error_msgs[] = "【{$image['name'][$key]}】拡張子は、jpg, jpeg, gif, pngのものにしてください";
+          unlink($image_tmp["{$key}"]);
+        }
       }
     }
     foreach ($image["size"] as $key => $value) {
@@ -143,7 +151,7 @@ if (isset($request["send"])) {
     }
   }
   //新規登録時のみ画像必須
-  if (empty($mode) && $image["error"] != 0) $error_msgs[] = "画像を選択してください";
+  if (empty($mode) && array_search(0, $image["error"]) === false) $error_msgs[] = "画像を選択してください";
   if ($request["frame_link"] == "") $error_msgs[] = "商品リンクを入力してください";
   if ($request["frame_lens_width"] == "") $error_msgs[] = "レンズ幅を入力してください";
   //if ($request["frame_lens_height"] == "") $error_msgs[] = "レンズの高さを入力してください";
@@ -166,7 +174,7 @@ if (isset($request["send"]) && empty($error_msgs)) {
 /*-----------------------------------------------------------------------------
     画像の投稿処理
 -----------------------------------------------------------------------------*/
-  if ($image["error"] == 0){
+  if (array_search(0, $image["error"]) !== false){
     /*
     //フレーム時のみ古い画像を削除
     if ($mode == "change") {
@@ -175,29 +183,34 @@ if (isset($request["send"]) && empty($error_msgs)) {
       unlink("../images/frames/thumb_{$_SESSION["old_image"]}");
     }
     */
-    //画像リソースを作成
-    //jpeg, jpg
-    if ($image_extension == "jpeg" || $image_extension == "jpg") $original_image = imagecreatefromjpeg($image_tmp);
-    //png
-    if ($image_extension == "png") $original_image = imagecreatefrompng($image_tmp);
-    //gif
-    if ($image_extension == "gif") $original_image = imagecreatefromgif($image_tmp);
-    //画像サイズを変数に格納
-    list($original_w, $original_h) = getimagesize($image_tmp);
-    //リソースからリサイズした画像作成
-    //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
-    $resized_w = 600;
-    $resized_h = $original_h*$resized_w/$original_w;
-    $resized_image = imagecreatetruecolor($resized_w, $resized_h);
-    imagecopyresized($resized_image, $original_image, 0, 0, 0, 0, $resized_w, $resized_h, $original_w, $original_h);
-    imagejpeg($resized_image, "../images/frames/{$image_name}");
-    //リソースからサムネの画像作成
-    //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
-    $thumb_w = 240;
-    $thumb_h = $original_h*$thumb_w/$original_w;
-    $thumb_image = imagecreatetruecolor($thumb_w, $thumb_h);
-    imagecopyresized($thumb_image, $original_image, 0, 0, 0, 0, $thumb_w, $thumb_h, $original_w, $original_h);
-    imagejpeg($thumb_image, "../images/frames/thumb_{$image_name}");
+    foreach ($image_tmp as $key => $value) {
+      if ($value === 0) {
+        $image_extension = str_replace("image/", "", getimagesize($value)["mime"]);
+        //画像リソースを作成
+        //jpeg, jpg
+        if ($image_extension == "jpeg" || $image_extension == "jpg") $original_image = imagecreatefromjpeg($value);
+        //png
+        if ($image_extension == "png") $original_image = imagecreatefrompng($value);
+        //gif
+        if ($image_extension == "gif") $original_image = imagecreatefromgif($value);
+        //画像サイズを変数に格納
+        list($original_w, $original_h) = getimagesize($value);
+        //リソースからリサイズした画像作成
+        //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
+        $resized_w = 600;
+        $resized_h = $original_h*$resized_w/$original_w;
+        $resized_image = imagecreatetruecolor($resized_w, $resized_h);
+        imagecopyresized($resized_image, $original_image, 0, 0, 0, 0, $resized_w, $resized_h, $original_w, $original_h);
+        imagejpeg($resized_image, "../images/frames/{$image_name}");
+        //リソースからサムネの画像作成
+        //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
+        $thumb_w = 240;
+        $thumb_h = $original_h*$thumb_w/$original_w;
+        $thumb_image = imagecreatetruecolor($thumb_w, $thumb_h);
+        imagecopyresized($thumb_image, $original_image, 0, 0, 0, 0, $thumb_w, $thumb_h, $original_w, $original_h);
+        imagejpeg($thumb_image, "../images/frames/thumb_{$image_name}");
+      }
+    }
     //古い画像削除
     unlink("../images/frames/{$_SESSION["old_image"]}");
     unlink("../images/frames/thumb_{$_SESSION["old_image"]}");
@@ -313,12 +326,12 @@ require("header.php");
         <label for="kakaku">価格(円)<span class="attention">*</span></label>
         <input type="number" name="frame_price" id="kakaku" max="99999" value="<?= he($row_frame['frame_price']); ?>">
       </div>
-      <div>
+      <div class="image-upload">
         <label for="gazou">画像<span class="attention">*</span></label>
         <?php if ($row_frame["frame_image"]): ?>
         <p><img src="<?= '../images/frames/' . he($row_frame["frame_image"]) ?>"></p>
       <?php endif; ?>
-        <input type="file" name="frame_image[]" id="aikon" multiple>
+      <input type="file" name="frame_image[]" id="aikon" accept="image/png, image/jpeg, image/gif">
         <div class="selected-images-result"></div>
       </div>
       <div>
@@ -327,23 +340,23 @@ require("header.php");
       </div>
       <div>
         <label for="renzuhaba">レンズ幅(mm)<span class="attention">*</span></label>
-        <input type="number" name="frame_lens_width" id="renzuhaba" max="999" value="<?= he($row_frame['frame_lens_width']); ?>">
+        <input type="number" name="frame_lens_width" id="renzuhaba" max="70" min="30" value="<?= he($row_frame['frame_lens_width']); ?>">
       </div>
       <div>
         <label for="burijjihaba">ブリッジ幅(mm)<span class="attention">*</span></label>
-        <input type="number" name="frame_bridge_width" id="burijjihaba" max="999" value="<?= he($row_frame['frame_bridge_width']); ?>">
+        <input type="number" name="frame_bridge_width" id="burijjihaba" max="40" min="10" value="<?= he($row_frame['frame_bridge_width']); ?>">
       </div>
       <div>
         <label for="tenpurunonagasa">テンプルの長さ(mm)<span class="attention">*</span></label>
-        <input type="number" name="frame_temple_length" id="tenpurunonagasa" max="999" value="<?= he($row_frame['frame_temple_length']); ?>">
+        <input type="number" name="frame_temple_length" id="tenpurunonagasa" max="160" min="110" value="<?= he($row_frame['frame_temple_length']); ?>">
       </div>
       <div>
         <label for="renzunotakasa">レンズの高さ(mm)</label>
-        <input type="number" name="frame_lens_height" id="renzunotakasa" max="999" value="<?= he($row_frame['frame_lens_height']); ?>">
+        <input type="number" name="frame_lens_height" id="renzunotakasa" max="60" min="20" value="<?= he($row_frame['frame_lens_height']); ?>">
       </div>
       <div>
         <label for="hure-muhaba">フレーム幅(mm)</label>
-        <input type="number" name="frame_frame_width" id="hure-muhaba" max="999" value="<?= he($row_frame['frame_frame_width']); ?>">
+        <input type="number" name="frame_frame_width" id="hure-muhaba" max="160" min="110" value="<?= he($row_frame['frame_frame_width']); ?>">
       </div>
       <div>
         <input type="submit" name="send" value="送信する">
