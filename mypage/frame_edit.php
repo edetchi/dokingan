@@ -60,7 +60,14 @@ $mode = $request["mode"];
     <<getでframe_idの値が与えられている時、各値を取得
 =============================================================================*/
 try {
-  $sql = "select * from frames where frame_id = :frame_id";
+  $sql = "
+    SELECT
+      *
+    FROM
+      frames
+    WHERE
+      frame_id = :frame_id
+  ";
   $stmt = $pdo->prepare($sql);
   $stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
   $stmt->execute();
@@ -94,7 +101,12 @@ if (!empty($mode) && $row_frame["frame_poster_id"] !== $_SESSION["user_id"]) {
 if ($mode == "delete"/* && $form["frame_poster_id"] === $_SESSION["user_id"]*/) {
   try {
     $pdo->beginTransaction();
-    $sql = "delete from frames where frame_id = :frame_id";
+    $sql = "
+      DELETE FROM
+        frames
+      WHERE
+        frame_id = :frame_id
+    ";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
     $row_frame = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -224,7 +236,22 @@ if (isset($request["send"]) && empty($error_msgs)) {
     修正モード
 -----------------------------------------------------------------------------*/
     if ($mode == "change" && $row_frame["frame_poster_id"] === $_SESSION["user_id"]) {
-      $sql = "update frames set frame_poster_id = :frame_poster_id, frame_price = :frame_price, frame_image = :frame_image, frame_link = :frame_link, frame_lens_width = :frame_lens_width, frame_lens_height = :frame_lens_height, frame_bridge_width = :frame_bridge_width, frame_temple_length = :frame_temple_length, frame_frame_width = :frame_frame_width where frame_id = :frame_id";
+      $sql = "
+        UPDATE
+          frames
+        SET
+          frame_poster_id = :frame_poster_id,
+          frame_price = :frame_price,
+          frame_image = :frame_image,
+          frame_link = :frame_link,
+          frame_lens_width = :frame_lens_width,
+          frame_lens_height = :frame_lens_height,
+          frame_bridge_width = :frame_bridge_width,
+          frame_temple_length = :frame_temple_length,
+          frame_frame_width = :frame_frame_width
+        WHERE
+          frame_id = :frame_id
+      ";
       $stmt = $pdo->prepare($sql);
       $request["frame_poster_id"] = $_SESSION["user_id"];
       $stmt->bindValue(":frame_poster_id", $request["frame_poster_id"], PDO::PARAM_INT);
@@ -248,7 +275,30 @@ if (isset($request["send"]) && empty($error_msgs)) {
     新規登録モード
 -----------------------------------------------------------------------------*/
     } else {
-      $sql = "insert into frames (frame_poster_id, frame_price, frame_image, frame_link, frame_lens_width, frame_lens_height, frame_bridge_width, frame_temple_length, frame_frame_width) values (:frame_poster_id, :frame_price, :frame_image, :frame_link, :frame_lens_width, :frame_lens_height, :frame_bridge_width, :frame_temple_length, :frame_frame_width)";
+      $sql = "
+        INSERT INTO frames (
+          frame_poster_id,
+          frame_price,
+          frame_image,
+          frame_link,
+          frame_lens_width,
+          frame_lens_height,
+          frame_bridge_width,
+          frame_temple_length,
+          frame_frame_width
+        )
+        VALUES (
+          :frame_poster_id,
+          :frame_price,
+          :frame_image,
+          :frame_link,
+          :frame_lens_width,
+          :frame_lens_height,
+          :frame_bridge_width,
+          :frame_temple_length,
+          :frame_frame_width
+        )
+      ";
       $stmt = $pdo->prepare($sql);
       $request["frame_poster_id"] = $_SESSION["user_id"];
       $stmt->bindValue(":frame_poster_id", $request["frame_poster_id"], PDO::PARAM_INT);
@@ -272,7 +322,14 @@ if (isset($request["send"]) && empty($error_msgs)) {
 /*-----------------------------------------------------------------------------
     アップデート後の各値を取得
 -----------------------------------------------------------------------------*/
-    $sql = "select * from frames where frame_id = :frame_id";
+    $sql = "
+      SELECT
+        *
+      FROM
+        frames
+      WHERE
+        frame_id = :frame_id
+    ";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(":frame_id", $request["frame_id"], PDO::PARAM_INT);
     $stmt->execute();
