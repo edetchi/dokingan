@@ -17,25 +17,27 @@ if ($_FILES["frame_image"]) {
   print('$image');
   print("<br>");
   var_export($image);
-  print("<br>");
+  print("<br><br>");
   $image_tmp = $image["tmp_name"];
   print('$image_tmp');
   print("<br>");
   var_export($image_tmp);
-  print("<br>");
+  print("<br><br>");
   $image_names = array();
   foreach ($image["name"] as $key => $value) {
     //画像の拡張子をファイル名から抽出
     $image_str_extension = substr($value, strrpos($value, '.') + 1);
     //画像から拡張子を除いたファイル名をゲット
     $image_basename = str_replace(".{$image_str_extension}", "", $value);
-    //拡張子をjpgにして時間をプリフィックスにして画像名を作成
-    $image_name = date("YmdHis") . $image_basename . ".jpg";
+    //拡張子をjpgにして時間をプリフィックスにして画像名を作成、ベースのファイル名がない時は空白
+    $image_name = (!empty($image_basename)) ? date("YmdHis") . $image_basename . ".jpg" : "";
     //var_export($image_basename);
     $image_names[] = $image_name;
   }
-  //var_export($image_names);
-  //print("<br>");
+  print('$image_names');
+  print("<br>");
+  var_export($image_names);
+  print("<br><br>");
   /*
   //画像の拡張子をファイル名から抽出
   $image_str_extension = substr($image["name"], strrpos($image["name"], '.') + 1);
@@ -136,8 +138,8 @@ if (isset($request["send"])) {
 -----------------------------------------------------------------------------*/
   print('array_search(0, $image["error"])');
   print("<br>");
-  var_dump(array_search(0, $image["error"]));
-  print("<br>");
+  var_export(array_search(0, $image["error"]));
+  print("<br><br>");
   if (array_search(0, $image["error"]) !== false) {
     foreach ($image_tmp as $key => $value) {
       if (!empty($value)) {
@@ -145,7 +147,7 @@ if (isset($request["send"])) {
         print('getimagesize($value)');
         print("<br>");
         var_export(getimagesize($value));
-        print("<br>");
+        print("<br><br>");
         $image_extension = str_replace("image/", "", getimagesize($value)["mime"]);
         //var_dump($image_extension);
         if (imageExtensionFlag($image_extension) == 0) {
@@ -186,6 +188,10 @@ if (isset($request["send"]) && empty($error_msgs)) {
 /*-----------------------------------------------------------------------------
     画像の投稿処理
 -----------------------------------------------------------------------------*/
+  print('array_search(0, $image["error"]) !== false');
+  print("<br>");
+  var_export(array_search(0, $image["error"]) !== false);
+  print("<br><br>");
   if (array_search(0, $image["error"]) !== false){
     /*
     //フレーム時のみ古い画像を削除
@@ -195,32 +201,45 @@ if (isset($request["send"]) && empty($error_msgs)) {
       unlink("../images/frames/thumb_{$_SESSION["old_image"]}");
     }
     */
-    foreach ($image_tmp as $key => $value) {
-      if ($value === 0) {
-        $image_extension = str_replace("image/", "", getimagesize($value)["mime"]);
+    for ($i = 0; $i < count($image_tmp); ++$i) {
+      print('$image["error"][$i] === 0');
+      print("<br>");
+      var_export($image['error'][$i] === 0);
+      print("<br><br>");
+      if ($image['error'][$i] === 0) {
+        //getimagesize($image_tmp['tmp_name'][0,1,2...])
+        $image_extension = str_replace("image/", "", getimagesize($image_tmp[$i])["mime"]);
+        print('$image_tmp[$i]');
+        print("<br>");
+        var_export($image_tmp[$i]);
+        print("<br><br>");
         //画像リソースを作成
         //jpeg, jpg
-        if ($image_extension == "jpeg" || $image_extension == "jpg") $original_image = imagecreatefromjpeg($value);
+        if ($image_extension == "jpeg" || $image_extension == "jpg") $original_image = imagecreatefromjpeg($image_tmp[$i]);
         //png
-        if ($image_extension == "png") $original_image = imagecreatefrompng($value);
+        if ($image_extension == "png") $original_image = imagecreatefrompng($image_tmp[$i]);
         //gif
-        if ($image_extension == "gif") $original_image = imagecreatefromgif($value);
+        if ($image_extension == "gif") $original_image = imagecreatefromgif($image_tmp[$i]);
+        print('$original_image');
+        print("<br>");
+        var_export($original_image);
+        print("<br><br>");
         //画像サイズを変数に格納
-        list($original_w, $original_h) = getimagesize($value);
+        list($original_w, $original_h) = getimagesize($image_tmp[$i]);
         //リソースからリサイズした画像作成
         //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
         $resized_w = 600;
         $resized_h = $original_h*$resized_w/$original_w;
         $resized_image = imagecreatetruecolor($resized_w, $resized_h);
         imagecopyresized($resized_image, $original_image, 0, 0, 0, 0, $resized_w, $resized_h, $original_w, $original_h);
-        imagejpeg($resized_image, "../images/frames/{$image_name}");
+        imagejpeg($resized_image, "../images/frames/{$image_names[$i]}");
         //リソースからサムネの画像作成
         //比率の計算 $original_w : $original_h = $thumb_w : $thumb_h
         $thumb_w = 240;
         $thumb_h = $original_h*$thumb_w/$original_w;
         $thumb_image = imagecreatetruecolor($thumb_w, $thumb_h);
         imagecopyresized($thumb_image, $original_image, 0, 0, 0, 0, $thumb_w, $thumb_h, $original_w, $original_h);
-        imagejpeg($thumb_image, "../images/frames/thumb_{$image_name}");
+        imagejpeg($thumb_image, "../images/frames/thumb_{$image_names[$i]}");
       }
     }
     //古い画像削除
