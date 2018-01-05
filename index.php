@@ -148,7 +148,7 @@ require("header.php");
       <div class="frame-list__layout">
         <div class="frame-list">
           <a href="detail.php?frame_id=<?= he($frame["frame_id"]) ?>">
-            <img class="frame-list__image" src='<?= "./images/frames/" . he($frame["frame_image"]) ?>'>
+            <img class="frame-list__image" src='<?= "./images/frames/" . he(getMainImage($frame["frame_image"])) ?>'>
           </a>
           <ul class="frame-list__info">
             <li class="frame-list__price">
