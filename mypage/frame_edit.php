@@ -14,15 +14,15 @@ $_FILES["frame_image"] = (!empty($_FILES["frame_image"])) ? $_FILES["frame_image
 //画像アップ時に変数に格納
 if ($_FILES["frame_image"]) {
   $image = $_FILES["frame_image"];
-  print('$image');
-  print("<br>");
-  var_dump($image);
-  print("<br><br>");
+  //print('$image');
+  //print("<br>");
+  //var_dump($image);
+  //print("<br><br>");
   $image_tmp = $image["tmp_name"];
-  print('$image_tmp');
-  print("<br>");
-  var_export($image_tmp);
-  print("<br><br>");
+  //print('$image_tmp');
+  //print("<br>");
+  //var_export($image_tmp);
+  //print("<br><br>");
 /*-----------------------------------------------------------------------------
     画像の名前用配列を用意
 -----------------------------------------------------------------------------*/
@@ -38,16 +38,16 @@ if ($_FILES["frame_image"]) {
     //最後のinputが空白の場合、$image_namesに名前を追加しない
     if (!empty($image_basename)) $image_names[] = $image_name;
   }
-  print('$image_names');
-  print("<br>");
-  var_export($image_names);
-  print("<br><br>");
+  //print('$image_names');
+  //print("<br>");
+  //var_export($image_names);
+  //print("<br><br>");
   //データベース登録用に配列を文字列に変換し、変数に格納
-  print('$image_names_imploded');
-  print("<br>");
+  //print('$image_names_imploded');
+  //print("<br>");
   $image_names_imploded = toggleStrArray($image_names);
-  var_dump($image_names_imploded);
-  print("<br><br>");
+  //var_dump($image_names_imploded);
+  //print("<br><br>");
 }
 /*=============================================================================
     画像のアップロードがある時に行う事前処理>>
@@ -142,19 +142,19 @@ if (isset($request["send"])) {
 -----------------------------------------------------------------------------*/
   //画像のアップロードがある時の処理開始
   //画像のアップロードがある時、$_FILES["name"]["error"]で得られる連想配列の値が0となる
-  print('array_search(0, $image["error"])');
-  print("<br>");
-  var_export(array_search(0, $image["error"]));
-  print("<br><br>");
+  //print('array_search(0, $image["error"])');
+  //print("<br>");
+  //var_export(array_search(0, $image["error"]));
+  //print("<br><br>");
   if (array_search(0, $image["error"]) !== false) {
     //拡張子のバリデーションチェック
     foreach ($image_tmp as $key => $value) {
       if (!empty($value)) {
         //文字列から抽出した拡張子($image_str_extension)と$_FILE["type"]の拡張子は偽装できるので、getimagesizeで本当の拡張子ゲット
-        print('getimagesize($value)');
-        print("<br>");
-        var_export(getimagesize($value));
-        print("<br><br>");
+        //print('getimagesize($value)');
+        //print("<br>");
+        //var_export(getimagesize($value));
+        //print("<br><br>");
         $image_extension = str_replace("image/", "", getimagesize($value)["mime"]);
         //var_dump($image_extension);
         //許可された拡張子か関数でチェック
@@ -182,7 +182,9 @@ if (isset($request["send"])) {
   }
   //新規登録時のみ画像必須、array_searchは配列中に該当データがなければfalseを返す
   if (empty($mode) && array_search(0, $image["error"]) === false) $error_msgs[] = "画像を選択してください";
-  if ($request["frame_link"] == "") $error_msgs[] = "商品リンクを入力してください";
+  //商品リンクのチェック
+  if (empty($request["frame_link"])) $error_msgs[] = "商品リンクを入力してください";
+  if (!empty($request["frame_link"]) && !preg_match("/^(http|https|ftp):\/\/([A-Z0-9][A-Z0-9_-]*(?:\.[A-Z0-9][A-Z0-9_-]*)+):?(\d+)?\/?/i", $request["frame_link"])) $error_msgs[] = "商品リンクのURL形式が正しくありません";
   if ($request["frame_lens_width"] == "") $error_msgs[] = "レンズ幅を入力してください";
   //if ($request["frame_lens_height"] == "") $error_msgs[] = "レンズの高さを入力してください";
   if ($request["frame_bridge_width"] == "") $error_msgs[] = "ブリッジ幅を入力してください";
@@ -204,27 +206,27 @@ if (isset($request["send"]) && empty($error_msgs)) {
 /*-----------------------------------------------------------------------------
     画像の投稿処理
 -----------------------------------------------------------------------------*/
-  print('array_search(0, $image["error"]) !== false');
-  print("<br>");
-  var_export(array_search(0, $image["error"]) !== false);
-  print("<br><br>");
+  //print('array_search(0, $image["error"]) !== false');
+  //print("<br>");
+  //var_export(array_search(0, $image["error"]) !== false);
+  //print("<br><br>");
   //画像のアップロードがある時の処理開始
   if (array_search(0, $image["error"]) !== false){
     //画像が複数ある時、$_FILESは多次元の連想配列になり、値に格納される配列のインデックスがファイルの番号と関係するので、ファイルの数count($image_tmp)分forで回す
     for ($i = 0; $i < count($image_tmp); ++$i) {
-      print('$image["error"][$i] === 0');
-      print("<br>");
-      var_export($image['error'][$i] === 0);
-      print("<br><br>");
+      //print('$image["error"][$i] === 0');
+      //print("<br>");
+      //var_export($image['error'][$i] === 0);
+      //print("<br><br>");
       //画像データの投稿がある時のみ実行
       if ($image['error'][$i] === 0) {
         //本物の画像拡張子をgetimagesizeでゲットし、拡張子だけ(jpg, png, gif等)に整形
         //getimagesize($image_tmp['tmp_name'][0,1,2...])
         $image_extension = str_replace("image/", "", getimagesize($image_tmp[$i])["mime"]);
-        print('$image_tmp[$i]');
-        print("<br>");
-        var_export($image_tmp[$i]);
-        print("<br><br>");
+        //print('$image_tmp[$i]');
+        //print("<br>");
+        //var_export($image_tmp[$i]);
+        //print("<br><br>");
         //画像リソースを拡張子に応じて作成
         //jpeg, jpg
         if ($image_extension == "jpeg" || $image_extension == "jpg") $original_image = imagecreatefromjpeg($image_tmp[$i]);
@@ -232,10 +234,10 @@ if (isset($request["send"]) && empty($error_msgs)) {
         if ($image_extension == "png") $original_image = imagecreatefrompng($image_tmp[$i]);
         //gif
         if ($image_extension == "gif") $original_image = imagecreatefromgif($image_tmp[$i]);
-        print('$original_image');
-        print("<br>");
-        var_export($original_image);
-        print("<br><br>");
+        //print('$original_image');
+        //print("<br>");
+        //var_export($original_image);
+        //print("<br><br>");
         //画像サイズを変数に格納
         list($original_w, $original_h) = getimagesize($image_tmp[$i]);
         //リソースからリサイズした画像作成
