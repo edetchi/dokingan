@@ -144,6 +144,7 @@ $thick= round((pow($max_edge, 2)*abs($user_sph) / (2000*($index - 1))) + $center
 $edge1_thick = round((pow($edge1, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
 //端の厚さ
 $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $center_thick, 2);
+//var_dump(count(toggleStrArray($row_frame["frame_image"])));
 ?>
 <?php $page_title = "フレーム詳細";?>
 <?php require("header.php"); ?>
@@ -163,7 +164,22 @@ $edge2_thick = round((pow($edge2, 2)*abs($user_sph) / (2000*($index - 1))) + $ce
       </div>
       <div class="frame-detail__layout frame-detail__layout_desc_true">
         <div class="frame-detail frame-detail_desc_true">
-          <img class="frame-detail__image" src='<?= "./images/frames/" . he($row_frame["frame_image"]) ?>'>
+          <?php if (count(toggleStrArray($row_frame["frame_image"])) != 1) : ?>
+          <div id="slider" class="frame-detail__image">
+            <div id="sld_area">
+            <?php foreach (toggleStrArray($row_frame["frame_image"]) as $key => $value) : ?>
+              <div id="sld<?= $key + 1 ?>" class="sld">
+                <img src="<?= './images/frames/' . he($value) ?>">
+              </div>
+            <?php endforeach; ?>
+            </div>
+            <div id="sld_nav"></div>
+            <a id="sld_prev" class="sld_dir_btn">&lt; </a>
+            <a id="sld_next" class="sld_dir_btn">&gt;</a>
+          </div>
+          <?php else: ?>
+            <img class="frame-detail__image" src="<?= './images/frames/' . he($row_frame["frame_image"]) ?>">
+          <?php endif; ?>
           <ul class="frame-detail__info">
             <li class="frame-detail__userid"><i class="fa fa-user-o" aria-hidden="true"></i><?= he($row_frame["user_loginid"]) ?></li>
             <li class="frame-detail__size">
