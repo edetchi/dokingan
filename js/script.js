@@ -426,7 +426,7 @@ $(function(){
           //画像サイズが5MB以下の場合のノーエラーで追加選択用の要素追加
           if (imageSize < 5) {
             //forのループ中なので最後のinput要素が5MB以下の場合追加選択用の要素追加、if (i == $fp.length - 1)がないと選択要素の数だけ追加されてしまうので注意
-            if (i == $fp.length - 1 ) $('.image-upload').append(input);
+            if (i == $fp.length - 1 && $fp.length < 10) $('.image-upload').append(input);
             $(`[name="frame_image[]"]:eq(${i})`).addClass('image-no-error');
             $(`[name="frame_image[]"]:eq(${i})`).removeClass('image-error');
             $(`[name="frame_image[]"]:eq(${i})`).next('.ok_msg, .error_msg').remove();

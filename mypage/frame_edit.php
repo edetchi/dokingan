@@ -16,7 +16,7 @@ if ($_FILES["frame_image"]) {
   $image = $_FILES["frame_image"];
   print('$image');
   print("<br>");
-  var_export($image);
+  var_dump($image);
   print("<br><br>");
   $image_tmp = $image["tmp_name"];
   print('$image_tmp');
@@ -172,6 +172,13 @@ if (isset($request["send"])) {
       //unlink($image_tmp["{$key}"]);
       }
     }
+    //画像枚数のチェック
+    $uploaded_count = 0;
+    foreach ($image["error"] as $key => $value) {
+      if ($value == 0) ++$uploaded_count;
+    }
+    if ($uploaded_count > 10) $error_msgs[] = "画像の登録は10枚までにしてください";
+    //var_dump($uploaded_count);
   }
   //新規登録時のみ画像必須、array_searchは配列中に該当データがなければfalseを返す
   if (empty($mode) && array_search(0, $image["error"]) === false) $error_msgs[] = "画像を選択してください";
