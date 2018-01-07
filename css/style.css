@@ -89,7 +89,7 @@ a {/*aもh系と一緒でブラウザのcssが強く効きやすいので注意*
 }
 @media screen and (min-width: 769px) {
   a:hover {
-    color: #E50640;
+    color: #4CAF50;
   }
 }
 img {
@@ -644,7 +644,7 @@ main {
   cursor: pointer;
 }
 .frame-detail__action__report button:hover {
-  color: #E50640;
+  color: #4CAF50;
 }
 .frame-detail__action__favorite {
   background: #4CAF50;

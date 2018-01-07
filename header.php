@@ -26,11 +26,12 @@
         <?php else: ?>
         <li class="nav-bar__mymenu"><a class="nav-bar__mymenu-link modal-mymenu__trigger" data-modal="modal-mymenu"><i class="fa fa-user nav-bar__mymenu-icon" aria-hidden="true"></i><span class="nav-bar__mymenu-text">マイメニュー</span></a></li>
         <?php endif; ?>
-        <?php if(!$is_detail_page): ?>
+        <?php if($is_home): ?>
         <li class="nav-bar__sort">
           <a class="nav-bar__sort-link modal-sort__trigger"  data-modal="modal-sort"><!--<span class="icon icon-filter">--><i class="fa fa-sort-amount-desc nav-bar__sort-icon" aria-hidden="true"></i></a>
         </li>
-        <?php else: ?>
+        <?php endif; ?>
+        <?php if($is_detail_page): ?>
         <li class="nav-bar__back"></span>
           <a class="nav-bar__back-link" href="./"><!--<span class="icon icon-undo"></span>--><i class="fa fa-arrow-left nav-bar__back-icon" aria-hidden="true"></i>
           </a>
