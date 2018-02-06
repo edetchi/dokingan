@@ -11,7 +11,7 @@
     </li>
     <li class="footer-nav__item">
       <i class="fa fa-chevron-right" aria-hidden="true"></i>
-      <a href="#"> 管理人プロフィール</a>
+      <a href="./profile.php"> 管理人プロフィール</a>
     </li>
     <li class="footer-nav__item">
       <i class="fa fa-chevron-right" aria-hidden="true"></i>

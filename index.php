@@ -158,14 +158,14 @@ require("header.php");
             <li class="frame-list__size">
               <?= he($frame["frame_lens_width"]) ?>□<?= he($frame["frame_bridge_width"]) ?>-<?= he($frame["frame_temple_length"]) ?>
             </li>
-            <?php if (empty($_SESSION["user_id"])):?>
-            <li class="frame-list__userid">
-              <i class="fa fa-user-o" aria-hidden="true"></i><?= he($frame["user_loginid"]) ?>
-            </li>
-            <?php else: ?>
+            <?php if (!empty($row_user["user_pd"]) && !empty($row_user["spd"]) && !empty($_SESSION["user_id"])): ?>
             <li class="frame-list__thickness">
               中心: <span class="<?= $frame["edge1_thick_class"] ?>"><?= $frame["edge1_thick"] ?></span>端: <span class="<?= $frame["edge2_thick_class"] ?>"><?= $frame["edge2_thick"] ?></span>
             </li><!--.frame-list__thickness-->
+            <?php else :?>
+            <li class="frame-list__userid">
+              <i class="fa fa-user-o" aria-hidden="true"></i><?= he($frame["user_loginid"]) ?>
+            </li>
             <?php endif; ?>
           </ul><!--.frame-list__info-->
         </div><!--.frame-list-->
